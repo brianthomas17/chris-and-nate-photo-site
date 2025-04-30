@@ -16,32 +16,46 @@ export const seedTestAccounts = async () => {
   console.log("Starting to seed test accounts...");
   
   try {
+    // For demonstration purposes only, we'll set up direct access to bypass RLS
+    // In a production environment, you would use a secure serverless function with admin rights
+    
     for (const account of testAccounts) {
-      // Check if account exists
-      console.log(`Checking if ${account.email} exists...`);
-      const { data: existingGuests, error: findError } = await supabase
+      // First, check if account already exists using ilike for case-insensitive matching
+      const { data: existingGuests } = await supabase
         .from('guests')
         .select('id, email')
         .ilike('email', account.email.trim().toLowerCase());
-        
-      if (findError) {
-        console.error(`Error checking if ${account.email} exists:`, findError);
-        continue;
-      }
       
       if (!existingGuests || existingGuests.length === 0) {
-        console.log(`Creating test account: ${account.email}`);
-        
-        // Insert the account if it doesn't exist
-        const { data, error } = await supabase
-          .from('guests')
-          .insert(account)
-          .select();
+        // Record doesn't exist, try to insert it through direct SQL using RPC
+        // This is a workaround for testing purposes
+        try {
+          const { data, error } = await supabase.rpc('create_test_guest', {
+            p_email: account.email.trim().toLowerCase(),
+            p_first_name: account.first_name,
+            p_invitation_type: account.invitation_type
+          });
           
-        if (error) {
-          console.error(`Error creating test account ${account.email}:`, error);
-        } else {
-          console.log(`Successfully created test account: ${account.email}`, data);
+          if (error) {
+            console.error(`Failed to create test account ${account.email} using RPC:`, error);
+            console.log("Attempting fallback method...");
+            
+            // Fallback: Try direct insert and accept it might not work due to RLS
+            const { data: insertData, error: insertError } = await supabase
+              .from('guests')
+              .insert(account)
+              .select();
+              
+            if (insertError) {
+              console.error(`Error creating test account ${account.email}:`, insertError);
+            } else {
+              console.log(`Successfully created test account: ${account.email}`, insertData);
+            }
+          } else {
+            console.log(`Successfully created test account: ${account.email} using RPC`);
+          }
+        } catch (error) {
+          console.error(`Exception when creating test account ${account.email}:`, error);
         }
       } else {
         console.log(`Test account ${account.email} already exists`);
