@@ -6,26 +6,45 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { AlertCircle } from "lucide-react";
 
 export default function AuthForm() {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formError, setFormError] = useState('');
   const { login } = useAuth();
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setFormError('');
+
+    if (!email.trim()) {
+      setFormError('Please enter your email address');
+      setIsSubmitting(false);
+      return;
+    }
 
     try {
       const success = await login(email);
+      
       if (!success) {
+        setFormError('Sorry, we couldn\'t find your email on our guest list.');
         toast({
           title: "Access Denied",
           description: "Sorry, we couldn't find your email on our guest list.",
           variant: "destructive",
         });
       }
+    } catch (error) {
+      console.error('Login error:', error);
+      setFormError('An error occurred. Please try again.');
+      toast({
+        title: "Error",
+        description: "An error occurred while trying to log in. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -50,9 +69,14 @@ export default function AuthForm() {
                     placeholder="your.email@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    required
-                    className="border-anniversary-navy"
+                    className={`border-anniversary-navy ${formError ? 'border-red-500' : ''}`}
                   />
+                  {formError && (
+                    <div className="flex items-center gap-2 text-sm text-red-500 mt-1">
+                      <AlertCircle size={16} />
+                      <span>{formError}</span>
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="mt-6">
@@ -66,8 +90,11 @@ export default function AuthForm() {
               </div>
             </form>
           </CardContent>
-          <CardFooter className="flex justify-center border-t border-anniversary-gold/20 pt-4">
+          <CardFooter className="flex flex-col justify-center border-t border-anniversary-gold/20 pt-4">
             <p className="text-sm text-gray-500">Not invited? Contact the event organizers.</p>
+            <div className="mt-4 text-xs text-gray-400">
+              <p>Test accounts: john@example.com, jane@example.com, admin@example.com</p>
+            </div>
           </CardFooter>
         </Card>
       </div>

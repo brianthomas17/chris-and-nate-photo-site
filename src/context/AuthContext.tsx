@@ -47,30 +47,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           invitation_type,
           rsvps(*)
         `)
-        .ilike('email', email)
-        .limit(1)
-        .single();
+        .ilike('email', email);
       
-      if (error || !guests) {
-        console.error('Error finding guest:', error);
+      if (error || !guests || guests.length === 0) {
+        console.error('Error finding guest:', error || 'No guest found');
         setIsLoading(false);
         return false;
       }
       
+      // Get the first guest match
+      const guestData = guests[0];
+      
       // Transform the data to match our Guest interface
       const guest: Guest = {
-        id: guests.id,
-        first_name: guests.first_name,
-        email: guests.email,
-        invitation_type: guests.invitation_type,
+        id: guestData.id,
+        first_name: guestData.first_name,
+        email: guestData.email,
+        invitation_type: guestData.invitation_type,
       };
       
       // Add RSVP data if it exists
-      if (guests.rsvps) {
+      if (guestData.rsvps && guestData.rsvps[0]) {
         guest.rsvp = {
-          attending: guests.rsvps.attending,
-          plus_one: guests.rsvps.plus_one,
-          dietary_restrictions: guests.rsvps.dietary_restrictions
+          attending: guestData.rsvps[0].attending,
+          plus_one: guestData.rsvps[0].plus_one,
+          dietary_restrictions: guestData.rsvps[0].dietary_restrictions
         };
       }
       
