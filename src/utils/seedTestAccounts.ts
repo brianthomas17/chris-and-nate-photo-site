@@ -43,7 +43,11 @@ export const seedTestAccounts = async () => {
             // Fallback: Try direct insert and accept it might not work due to RLS
             const { data: insertData, error: insertError } = await supabase
               .from('guests')
-              .insert(account)
+              .insert({
+                email: account.email.trim().toLowerCase(),
+                first_name: account.first_name,
+                invitation_type: account.invitation_type
+              })
               .select();
               
             if (insertError) {
