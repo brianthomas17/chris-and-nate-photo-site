@@ -78,7 +78,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       };
       
       // Add RSVP data if it exists
-      if (guestData.rsvps && guestData.rsvps.length > 0) {
+      // Fix: Check if rsvps is an array and has items before accessing by index
+      if (guestData.rsvps && Array.isArray(guestData.rsvps) && guestData.rsvps.length > 0) {
         guest.rsvp = {
           attending: guestData.rsvps[0].attending,
           plus_one: guestData.rsvps[0].plus_one,
