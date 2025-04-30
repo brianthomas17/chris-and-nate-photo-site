@@ -46,6 +46,7 @@ export type Database = {
           first_name: string
           id: string
           invitation_type: Database["public"]["Enums"]["invitation_type"]
+          party_id: string | null
           updated_at: string
         }
         Insert: {
@@ -54,6 +55,7 @@ export type Database = {
           first_name: string
           id?: string
           invitation_type: Database["public"]["Enums"]["invitation_type"]
+          party_id?: string | null
           updated_at?: string
         }
         Update: {
@@ -62,6 +64,36 @@ export type Database = {
           first_name?: string
           id?: string
           invitation_type?: Database["public"]["Enums"]["invitation_type"]
+          party_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "guests_party_id_fkey"
+            columns: ["party_id"]
+            isOneToOne: false
+            referencedRelation: "parties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      parties: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
           updated_at?: string
         }
         Relationships: []

@@ -8,11 +8,20 @@ export interface Guest {
   invitation_type: InvitationType;
   created_at?: string;
   updated_at?: string;
+  party_id?: string | null;
   rsvp?: {
     attending: boolean;
     plus_one: boolean;
     dietary_restrictions?: string;
   };
+}
+
+export interface Party {
+  id: string;
+  name: string;
+  created_at?: string;
+  updated_at?: string;
+  members?: Guest[];
 }
 
 export interface ContentSection {

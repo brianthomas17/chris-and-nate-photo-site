@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import ContentSections from "./ContentSections";
 import RSVPForm from "./RSVPForm";
 import PhotoGallery from "./PhotoGallery";
+import PartyView from "./PartyView";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function EventLayout() {
@@ -22,6 +23,7 @@ export default function EventLayout() {
   };
 
   const isAdmin = currentGuest.invitation_type === 'admin';
+  const hasParty = !!currentGuest.party_id;
 
   return (
     <div className="min-h-screen bg-anniversary-cream">
@@ -54,10 +56,11 @@ export default function EventLayout() {
         </div>
 
         <Tabs defaultValue="details" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-8">
+          <TabsList className="grid w-full grid-cols-4 mb-8">
             <TabsTrigger value="details">Event Details</TabsTrigger>
             <TabsTrigger value="rsvp">RSVP</TabsTrigger>
             <TabsTrigger value="gallery">Photo Gallery</TabsTrigger>
+            {hasParty && <TabsTrigger value="party">Your Party</TabsTrigger>}
           </TabsList>
           <TabsContent value="details" className="animate-fade-in">
             <ContentSections invitationType={currentGuest.invitation_type} />
@@ -68,6 +71,11 @@ export default function EventLayout() {
           <TabsContent value="gallery" className="animate-fade-in">
             <PhotoGallery />
           </TabsContent>
+          {hasParty && (
+            <TabsContent value="party" className="animate-fade-in">
+              <PartyView guestId={currentGuest.id} partyId={currentGuest.party_id} />
+            </TabsContent>
+          )}
         </Tabs>
       </div>
     </div>

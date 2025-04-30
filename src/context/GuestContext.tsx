@@ -1,17 +1,20 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Guest, InvitationType, RSVP } from '../types';
+import { Guest, InvitationType, RSVP, Party } from '../types';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from "@/integrations/supabase/client";
-import { v4 as uuidv4 } from 'uuid';
 
 interface GuestContextType {
   guests: Guest[];
+  parties: Party[];
   addGuest: (guest: Omit<Guest, 'id'>) => Promise<void>;
   updateGuest: (guest: Guest) => Promise<void>;
   deleteGuest: (id: string) => Promise<void>;
   updateRSVP: (guestId: string, attending: boolean, plusOne: boolean, dietaryRestrictions?: string) => Promise<void>;
   getGuestByEmail: (email: string) => Promise<Guest | undefined>;
+  createParty: (name: string) => Promise<string | undefined>;
+  updatePartyMembers: (partyId: string, guestIds: string[]) => Promise<void>;
+  getPartyById: (partyId: string) => Promise<Party | undefined>;
+  getPartyMembers: (partyId: string) => Promise<Guest[]>;
 }
 
 const GuestContext = createContext<GuestContextType | undefined>(undefined);
@@ -26,15 +29,16 @@ export const useGuests = () => {
 
 export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [guests, setGuests] = useState<Guest[]>([]);
+  const [parties, setParties] = useState<Party[]>([]);
   const { toast } = useToast();
 
   useEffect(() => {
     fetchGuests();
+    fetchParties();
   }, []);
 
   const fetchGuests = async () => {
     try {
-      // Fetch guests from Supabase
       const { data, error } = await supabase
         .from('guests')
         .select(`
@@ -42,6 +46,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           first_name, 
           email, 
           invitation_type,
+          party_id,
           rsvps(*)
         `);
 
@@ -55,7 +60,6 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         return;
       }
 
-      // Transform the data to match our Guest interface
       if (data && data.length > 0) {
         const transformedGuests: Guest[] = data.map((g: any) => {
           const guest: Guest = {
@@ -63,9 +67,9 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             first_name: g.first_name,
             email: g.email,
             invitation_type: g.invitation_type,
+            party_id: g.party_id,
           };
           
-          // Add RSVP data if it exists
           if (g.rsvps && Array.isArray(g.rsvps) && g.rsvps.length > 0) {
             guest.rsvp = {
               attending: g.rsvps[0].attending,
@@ -92,6 +96,38 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   };
 
+  const fetchParties = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('parties')
+        .select('*');
+
+      if (error) {
+        console.error('Error fetching parties from database:', error);
+        toast({
+          title: "Error",
+          description: "Could not fetch parties list",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      if (data && data.length > 0) {
+        setParties(data as Party[]);
+      } else {
+        console.log('No parties found in database');
+        setParties([]);
+      }
+    } catch (error) {
+      console.error('Error fetching parties:', error);
+      toast({
+        title: "Error",
+        description: "Could not fetch parties list",
+        variant: "destructive"
+      });
+    }
+  };
+
   const addGuest = async (guest: Omit<Guest, 'id'>) => {
     try {
       const { data, error } = await supabase
@@ -99,7 +135,8 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         .insert({
           first_name: guest.first_name,
           email: guest.email,
-          invitation_type: guest.invitation_type
+          invitation_type: guest.invitation_type,
+          party_id: guest.party_id
         })
         .select();
         
@@ -133,7 +170,8 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         .update({
           first_name: guest.first_name,
           email: guest.email,
-          invitation_type: guest.invitation_type
+          invitation_type: guest.invitation_type,
+          party_id: guest.party_id
         })
         .eq('id', guest.id);
 
@@ -283,6 +321,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           first_name, 
           email, 
           invitation_type,
+          party_id,
           rsvps(*)
         `)
         .ilike('email', normalizedEmail)
@@ -300,6 +339,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         first_name: data.first_name,
         email: data.email,
         invitation_type: data.invitation_type,
+        party_id: data.party_id,
       };
       
       // Add RSVP data if it exists
@@ -318,14 +358,161 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   };
 
+  const createParty = async (name: string): Promise<string | undefined> => {
+    try {
+      const { data, error } = await supabase
+        .from('parties')
+        .insert({ name })
+        .select();
+
+      if (error) {
+        console.error('Error creating party:', error);
+        toast({
+          title: "Error",
+          description: "Could not create party",
+          variant: "destructive"
+        });
+        return undefined;
+      }
+
+      if (data && data[0]) {
+        // Add the new party to local state
+        setParties(prev => [...prev, data[0] as Party]);
+        toast({
+          title: "Party Created",
+          description: `${name} party has been created.`,
+        });
+        return data[0].id;
+      }
+      return undefined;
+    } catch (error) {
+      console.error('Error creating party:', error);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred",
+        variant: "destructive"
+      });
+      return undefined;
+    }
+  };
+
+  const updatePartyMembers = async (partyId: string, guestIds: string[]) => {
+    try {
+      // Update all guests with the new party ID
+      for (const guestId of guestIds) {
+        const { error } = await supabase
+          .from('guests')
+          .update({ party_id: partyId })
+          .eq('id', guestId);
+
+        if (error) {
+          throw error;
+        }
+      }
+
+      // Update local state
+      setGuests(prevGuests => 
+        prevGuests.map(guest => 
+          guestIds.includes(guest.id) 
+            ? { ...guest, party_id: partyId } 
+            : guest
+        )
+      );
+      
+      toast({
+        title: "Party Updated",
+        description: "Party members have been updated.",
+      });
+    } catch (error) {
+      console.error('Error updating party members:', error);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const getPartyById = async (partyId: string): Promise<Party | undefined> => {
+    try {
+      const { data, error } = await supabase
+        .from('parties')
+        .select('*')
+        .eq('id', partyId)
+        .maybeSingle();
+
+      if (error || !data) {
+        console.error('Error fetching party:', error);
+        return undefined;
+      }
+
+      return data as Party;
+    } catch (error) {
+      console.error('Error fetching party:', error);
+      return undefined;
+    }
+  };
+
+  const getPartyMembers = async (partyId: string): Promise<Guest[]> => {
+    try {
+      const { data, error } = await supabase
+        .from('guests')
+        .select(`
+          id, 
+          first_name, 
+          email, 
+          invitation_type,
+          party_id,
+          rsvps(*)
+        `)
+        .eq('party_id', partyId);
+
+      if (error) {
+        console.error('Error fetching party members:', error);
+        return [];
+      }
+
+      if (data && data.length > 0) {
+        return data.map((g: any) => {
+          const guest: Guest = {
+            id: g.id,
+            first_name: g.first_name,
+            email: g.email,
+            invitation_type: g.invitation_type,
+            party_id: g.party_id,
+          };
+          
+          if (g.rsvps && Array.isArray(g.rsvps) && g.rsvps.length > 0) {
+            guest.rsvp = {
+              attending: g.rsvps[0].attending,
+              plus_one: g.rsvps[0].plus_one,
+              dietary_restrictions: g.rsvps[0].dietary_restrictions
+            };
+          }
+          
+          return guest;
+        });
+      }
+      return [];
+    } catch (error) {
+      console.error('Error fetching party members:', error);
+      return [];
+    }
+  };
+
   return (
     <GuestContext.Provider value={{ 
       guests, 
+      parties,
       addGuest, 
       updateGuest, 
       deleteGuest,
       updateRSVP,
-      getGuestByEmail
+      getGuestByEmail,
+      createParty,
+      updatePartyMembers,
+      getPartyById,
+      getPartyMembers
     }}>
       {children}
     </GuestContext.Provider>

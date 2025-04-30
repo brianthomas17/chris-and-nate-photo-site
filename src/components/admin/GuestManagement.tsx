@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { useGuests } from "@/context/GuestContext";
-import { Guest, InvitationType } from "@/types";
+import { Guest, InvitationType, Party } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,22 +9,32 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { PlusCircle, User, Users } from "lucide-react";
 
 export default function GuestManagement() {
-  const { guests, addGuest, updateGuest, deleteGuest } = useGuests();
+  const { guests, parties, addGuest, updateGuest, deleteGuest, createParty, updatePartyMembers } = useGuests();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isPartyDialogOpen, setIsPartyDialogOpen] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
   const [invitationType, setInvitationType] = useState<InvitationType>("evening");
+  const [partyId, setPartyId] = useState<string | null>(null);
   const [currentGuest, setCurrentGuest] = useState<Guest | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [newPartyName, setNewPartyName] = useState("");
+  const [selectedGuests, setSelectedGuests] = useState<string[]>([]);
+  const [selectedParty, setSelectedParty] = useState<string | null>(null);
 
   const resetForm = () => {
     setFirstName("");
     setEmail("");
     setInvitationType("evening");
+    setPartyId(null);
     setCurrentGuest(null);
+    setNewPartyName("");
+    setSelectedGuests([]);
+    setSelectedParty(null);
   };
 
   const handleAddGuest = async () => {
@@ -33,6 +43,7 @@ export default function GuestManagement() {
       first_name: firstName,
       email,
       invitation_type: invitationType,
+      party_id: partyId,
     });
     setIsSubmitting(false);
     setIsAddDialogOpen(false);
@@ -48,6 +59,7 @@ export default function GuestManagement() {
       first_name: firstName,
       email,
       invitation_type: invitationType,
+      party_id: partyId,
     });
     setIsSubmitting(false);
     setIsEditDialogOpen(false);
@@ -59,6 +71,7 @@ export default function GuestManagement() {
     setFirstName(guest.first_name);
     setEmail(guest.email);
     setInvitationType(guest.invitation_type);
+    setPartyId(guest.party_id || null);
     setIsEditDialogOpen(true);
   };
 
@@ -68,70 +81,214 @@ export default function GuestManagement() {
     }
   };
 
+  const handleGuestSelection = (guestId: string) => {
+    setSelectedGuests(prev => 
+      prev.includes(guestId) ? prev.filter(id => id !== guestId) : [...prev, guestId]
+    );
+  };
+
+  const handleCreateParty = async () => {
+    if (!newPartyName.trim()) return;
+    
+    setIsSubmitting(true);
+    const newPartyId = await createParty(newPartyName);
+    
+    if (newPartyId && selectedGuests.length > 0) {
+      await updatePartyMembers(newPartyId, selectedGuests);
+    }
+    
+    setIsSubmitting(false);
+    setIsPartyDialogOpen(false);
+    resetForm();
+  };
+
+  const handleAssignToParty = async () => {
+    if (!selectedParty || selectedGuests.length === 0) return;
+    
+    setIsSubmitting(true);
+    await updatePartyMembers(selectedParty, selectedGuests);
+    setIsSubmitting(false);
+    setIsPartyDialogOpen(false);
+    resetForm();
+  };
+
+  const getPartyName = (partyId: string | null | undefined) => {
+    if (!partyId) return "None";
+    const party = parties.find(p => p.id === partyId);
+    return party ? party.name : "Unknown";
+  };
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>Guest List</CardTitle>
-        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-          <DialogTrigger asChild>
-            <Button className="bg-anniversary-gold hover:bg-anniversary-gold/90 text-black">
-              Add Guest
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Add New Guest</DialogTitle>
-              <DialogDescription>
-                Enter the details of the guest you want to add.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="space-y-2">
-                <Label htmlFor="firstName">Name</Label>
-                <Input
-                  id="firstName"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  placeholder="Guest name"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="guest@example.com"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="invitationType">Invitation Type</Label>
-                <Select
-                  value={invitationType}
-                  onValueChange={(value) => setInvitationType(value as InvitationType)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="full day">Full Day</SelectItem>
-                    <SelectItem value="evening">Evening Only</SelectItem>
-                    <SelectItem value="admin">Admin</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsAddDialogOpen(false)} disabled={isSubmitting}>
-                Cancel
+        <div className="flex gap-2">
+          <Dialog open={isPartyDialogOpen} onOpenChange={setIsPartyDialogOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline">
+                <Users className="mr-2 h-4 w-4" />
+                Manage Parties
               </Button>
-              <Button onClick={handleAddGuest} disabled={isSubmitting}>
-                {isSubmitting ? "Adding..." : "Add Guest"}
+            </DialogTrigger>
+            <DialogContent className="max-w-md">
+              <DialogHeader>
+                <DialogTitle>Manage Parties</DialogTitle>
+                <DialogDescription>
+                  Create a new party or assign guests to existing parties.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="selectGuests">Select Guests</Label>
+                  <div className="border rounded-md p-2 max-h-40 overflow-y-auto">
+                    {guests.map(guest => (
+                      <div key={guest.id} className="flex items-center space-x-2 p-1">
+                        <input 
+                          type="checkbox" 
+                          id={`guest-${guest.id}`} 
+                          checked={selectedGuests.includes(guest.id)} 
+                          onChange={() => handleGuestSelection(guest.id)}
+                          className="rounded"
+                        />
+                        <label htmlFor={`guest-${guest.id}`} className="text-sm flex-1">
+                          {guest.first_name} ({guest.email})
+                        </label>
+                        {guest.party_id && (
+                          <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                            {getPartyName(guest.party_id)}
+                          </span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="border-t pt-4">
+                  <h4 className="font-medium mb-2">Create New Party</h4>
+                  <div className="flex gap-2 mb-4">
+                    <Input 
+                      value={newPartyName} 
+                      onChange={(e) => setNewPartyName(e.target.value)} 
+                      placeholder="Enter party name"
+                    />
+                    <Button 
+                      onClick={handleCreateParty} 
+                      disabled={isSubmitting || !newPartyName.trim() || selectedGuests.length === 0}
+                    >
+                      Create
+                    </Button>
+                  </div>
+                </div>
+                <div>
+                  <h4 className="font-medium mb-2">Assign to Existing Party</h4>
+                  <div className="flex gap-2">
+                    <Select
+                      value={selectedParty || ""}
+                      onValueChange={setSelectedParty}
+                    >
+                      <SelectTrigger className="flex-1">
+                        <SelectValue placeholder="Select a party" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {parties.map(party => (
+                          <SelectItem key={party.id} value={party.id}>
+                            {party.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Button 
+                      onClick={handleAssignToParty}
+                      disabled={isSubmitting || !selectedParty || selectedGuests.length === 0}
+                    >
+                      Assign
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+          
+          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="bg-anniversary-gold hover:bg-anniversary-gold/90 text-black">
+                <PlusCircle className="mr-2 h-4 w-4" />
+                Add Guest
               </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Add New Guest</DialogTitle>
+                <DialogDescription>
+                  Enter the details of the guest you want to add.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="firstName">Name</Label>
+                  <Input
+                    id="firstName"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    placeholder="Guest name"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="guest@example.com"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="invitationType">Invitation Type</Label>
+                  <Select
+                    value={invitationType}
+                    onValueChange={(value) => setInvitationType(value as InvitationType)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="full day">Full Day</SelectItem>
+                      <SelectItem value="evening">Evening Only</SelectItem>
+                      <SelectItem value="admin">Admin</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="party">Party (Optional)</Label>
+                  <Select
+                    value={partyId || ""}
+                    onValueChange={setPartyId}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select party" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">None</SelectItem>
+                      {parties.map(party => (
+                        <SelectItem key={party.id} value={party.id}>
+                          {party.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsAddDialogOpen(false)} disabled={isSubmitting}>
+                  Cancel
+                </Button>
+                <Button onClick={handleAddGuest} disabled={isSubmitting}>
+                  {isSubmitting ? "Adding..." : "Add Guest"}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
       </CardHeader>
       <CardContent>
         <Table>
@@ -141,6 +298,7 @@ export default function GuestManagement() {
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Invitation Type</TableHead>
+              <TableHead>Party</TableHead>
               <TableHead>RSVP Status</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
@@ -151,6 +309,7 @@ export default function GuestManagement() {
                 <TableCell>{guest.first_name}</TableCell>
                 <TableCell>{guest.email}</TableCell>
                 <TableCell className="capitalize">{guest.invitation_type}</TableCell>
+                <TableCell>{getPartyName(guest.party_id)}</TableCell>
                 <TableCell>{guest.rsvp ? (guest.rsvp.attending ? "Attending" : "Not Attending") : "Pending"}</TableCell>
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">
@@ -210,6 +369,25 @@ export default function GuestManagement() {
                     <SelectItem value="full day">Full Day</SelectItem>
                     <SelectItem value="evening">Evening Only</SelectItem>
                     <SelectItem value="admin">Admin</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-party">Party</Label>
+                <Select
+                  value={partyId || ""}
+                  onValueChange={setPartyId}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select party" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">None</SelectItem>
+                    {parties.map(party => (
+                      <SelectItem key={party.id} value={party.id}>
+                        {party.name}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
