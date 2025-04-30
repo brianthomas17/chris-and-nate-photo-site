@@ -182,7 +182,7 @@ export default function GuestManagement() {
                   <h4 className="font-medium mb-2">Assign to Existing Party</h4>
                   <div className="flex gap-2">
                     <Select
-                      value={selectedParty || ""}
+                      value={selectedParty || undefined}
                       onValueChange={setSelectedParty}
                     >
                       <SelectTrigger className="flex-1">
@@ -261,14 +261,14 @@ export default function GuestManagement() {
                 <div className="space-y-2">
                   <Label htmlFor="party">Party (Optional)</Label>
                   <Select
-                    value={partyId || ""}
+                    value={partyId || undefined}
                     onValueChange={setPartyId}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select party" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">None</SelectItem>
+                      <SelectItem value="none">None</SelectItem>
                       {parties.map(party => (
                         <SelectItem key={party.id} value={party.id}>
                           {party.name}
@@ -375,14 +375,14 @@ export default function GuestManagement() {
               <div className="space-y-2">
                 <Label htmlFor="edit-party">Party</Label>
                 <Select
-                  value={partyId || ""}
+                  value={partyId || undefined}
                   onValueChange={setPartyId}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select party" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">None</SelectItem>
+                    <SelectItem value="none">None</SelectItem>
                     {parties.map(party => (
                       <SelectItem key={party.id} value={party.id}>
                         {party.name}
