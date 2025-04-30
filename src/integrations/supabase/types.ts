@@ -138,7 +138,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      create_test_guest: {
+        Args: {
+          p_email: string
+          p_first_name: string
+          p_invitation_type: string
+        }
+        Returns: Json
+      }
     }
     Enums: {
       invitation_type: "full day" | "evening" | "admin"
