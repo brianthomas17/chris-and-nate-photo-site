@@ -12,10 +12,10 @@ export default function RSVPOverview() {
   const attending = guests.filter(g => g.rsvp?.attending).length;
   const notAttending = guests.filter(g => g.rsvp && !g.rsvp.attending).length;
   const pendingResponses = totalGuests - responded;
-  const plusOnes = guests.filter(g => g.rsvp?.plusOne).length;
+  const plusOnes = guests.filter(g => g.rsvp?.plus_one).length;
   
-  const attendingFullDay = guests.filter(g => g.invitationType === 'full day' && g.rsvp?.attending).length;
-  const attendingEvening = guests.filter(g => g.invitationType === 'evening' && g.rsvp?.attending).length;
+  const attendingFullDay = guests.filter(g => g.invitation_type === 'full day' && g.rsvp?.attending).length;
+  const attendingEvening = guests.filter(g => g.invitation_type === 'evening' && g.rsvp?.attending).length;
   
   const totalExpectedGuests = attending + plusOnes;
 
@@ -75,9 +75,9 @@ export default function RSVPOverview() {
             <TableBody>
               {guests.map((guest) => (
                 <TableRow key={guest.id}>
-                  <TableCell>{guest.firstName}</TableCell>
+                  <TableCell>{guest.first_name}</TableCell>
                   <TableCell className="font-mono text-xs">{guest.email}</TableCell>
-                  <TableCell className="capitalize">{guest.invitationType}</TableCell>
+                  <TableCell className="capitalize">{guest.invitation_type}</TableCell>
                   <TableCell>
                     {guest.rsvp ? (
                       guest.rsvp.attending ? (
@@ -90,10 +90,10 @@ export default function RSVPOverview() {
                     )}
                   </TableCell>
                   <TableCell>
-                    {guest.rsvp?.plusOne ? "Yes" : "No"}
+                    {guest.rsvp?.plus_one ? "Yes" : "No"}
                   </TableCell>
                   <TableCell className="max-w-[200px] truncate">
-                    {guest.rsvp?.dietaryRestrictions || "None"}
+                    {guest.rsvp?.dietary_restrictions || "None"}
                   </TableCell>
                 </TableRow>
               ))}

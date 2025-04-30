@@ -3,13 +3,15 @@ export type InvitationType = 'full day' | 'evening' | 'admin';
 
 export interface Guest {
   id: string;
-  firstName: string;
+  first_name: string;
   email: string;
-  invitationType: InvitationType;
+  invitation_type: InvitationType;
+  created_at?: string;
+  updated_at?: string;
   rsvp?: {
     attending: boolean;
-    plusOne: boolean;
-    dietaryRestrictions?: string;
+    plus_one: boolean;
+    dietary_restrictions?: string;
   };
 }
 
@@ -17,13 +19,25 @@ export interface ContentSection {
   id: string;
   title: string;
   content: string;
-  visibleTo: InvitationType[];
-  order: number;
+  visible_to: InvitationType[];
+  order_index: number;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface Photo {
   id: string;
   url: string;
-  uploadedBy: string;
-  uploadedAt: Date;
+  uploaded_by: string;
+  created_at?: string;
+}
+
+export interface RSVP {
+  id: string;
+  guest_id: string;
+  attending: boolean;
+  plus_one: boolean;
+  dietary_restrictions?: string;
+  created_at?: string;
+  updated_at?: string;
 }

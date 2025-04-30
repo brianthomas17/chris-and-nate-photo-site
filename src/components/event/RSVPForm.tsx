@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useGuests } from "@/context/GuestContext";
 import { Guest } from "@/types";
 import { Button } from "@/components/ui/button";
@@ -19,20 +19,30 @@ export default function RSVPForm({ guest }: RSVPFormProps) {
   const { toast } = useToast();
   
   const [attending, setAttending] = useState<boolean>(guest.rsvp?.attending || false);
-  const [plusOne, setPlusOne] = useState<boolean>(guest.rsvp?.plusOne || false);
+  const [plusOne, setPlusOne] = useState<boolean>(guest.rsvp?.plus_one || false);
   const [dietaryRestrictions, setDietaryRestrictions] = useState<string>(
-    guest.rsvp?.dietaryRestrictions || ""
+    guest.rsvp?.dietary_restrictions || ""
   );
+  const [submitting, setSubmitting] = useState<boolean>(false);
   const [hasResponded, setHasResponded] = useState<boolean>(!!guest.rsvp);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    updateRSVP(guest.id, attending, plusOne, dietaryRestrictions);
-    setHasResponded(true);
-    toast({
-      title: "RSVP Submitted",
-      description: "Thank you for your response!",
-    });
+    setSubmitting(true);
+    
+    try {
+      await updateRSVP(guest.id, attending, plusOne, dietaryRestrictions);
+      setHasResponded(true);
+    } catch (error) {
+      console.error("Error submitting RSVP:", error);
+      toast({
+        title: "RSVP Error",
+        description: "There was a problem submitting your RSVP. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -90,8 +100,12 @@ export default function RSVPForm({ guest }: RSVPFormProps) {
             <div className="text-sm text-muted-foreground">
               {hasResponded ? "You can update your response until the deadline." : ""}
             </div>
-            <Button type="submit" className="bg-anniversary-gold hover:bg-anniversary-gold/90 text-black">
-              {hasResponded ? "Update Response" : "Submit RSVP"}
+            <Button 
+              type="submit" 
+              className="bg-anniversary-gold hover:bg-anniversary-gold/90 text-black"
+              disabled={submitting}
+            >
+              {submitting ? "Submitting..." : (hasResponded ? "Update Response" : "Submit RSVP")}
             </Button>
           </CardFooter>
         </form>

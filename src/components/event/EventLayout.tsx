@@ -21,7 +21,7 @@ export default function EventLayout() {
     navigate('/');
   };
 
-  const isAdmin = currentGuest.invitationType === 'admin';
+  const isAdmin = currentGuest.invitation_type === 'admin';
 
   return (
     <div className="min-h-screen bg-anniversary-cream">
@@ -35,10 +35,10 @@ export default function EventLayout() {
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col sm:flex-row justify-between items-center mb-8">
           <div>
-            <h2 className="text-2xl font-playfair">Welcome, {currentGuest.firstName}!</h2>
+            <h2 className="text-2xl font-playfair">Welcome, {currentGuest.first_name}!</h2>
             <p className="text-muted-foreground">
               You're invited to our {' '}
-              {currentGuest.invitationType === 'full day' ? 'full day celebration' : 'evening gala'}
+              {currentGuest.invitation_type === 'full day' ? 'full day celebration' : 'evening gala'}
             </p>
           </div>
           <div className="flex items-center gap-4 mt-4 sm:mt-0">
@@ -60,7 +60,7 @@ export default function EventLayout() {
             <TabsTrigger value="gallery">Photo Gallery</TabsTrigger>
           </TabsList>
           <TabsContent value="details" className="animate-fade-in">
-            <ContentSections invitationType={currentGuest.invitationType} />
+            <ContentSections invitationType={currentGuest.invitation_type} />
           </TabsContent>
           <TabsContent value="rsvp" className="animate-fade-in">
             <RSVPForm guest={currentGuest} />

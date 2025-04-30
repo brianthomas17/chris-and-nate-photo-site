@@ -9,7 +9,130 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      content_sections: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          order_index: number
+          title: string
+          updated_at: string
+          visible_to: Database["public"]["Enums"]["invitation_type"][]
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          order_index: number
+          title: string
+          updated_at?: string
+          visible_to: Database["public"]["Enums"]["invitation_type"][]
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          order_index?: number
+          title?: string
+          updated_at?: string
+          visible_to?: Database["public"]["Enums"]["invitation_type"][]
+        }
+        Relationships: []
+      }
+      guests: {
+        Row: {
+          created_at: string
+          email: string
+          first_name: string
+          id: string
+          invitation_type: Database["public"]["Enums"]["invitation_type"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          first_name: string
+          id?: string
+          invitation_type: Database["public"]["Enums"]["invitation_type"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          first_name?: string
+          id?: string
+          invitation_type?: Database["public"]["Enums"]["invitation_type"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      photos: {
+        Row: {
+          created_at: string
+          id: string
+          uploaded_by: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          uploaded_by: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          uploaded_by?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "photos_uploaded_by_fkey"
+            columns: ["uploaded_by"]
+            isOneToOne: false
+            referencedRelation: "guests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rsvps: {
+        Row: {
+          attending: boolean
+          created_at: string
+          dietary_restrictions: string | null
+          guest_id: string
+          id: string
+          plus_one: boolean
+          updated_at: string
+        }
+        Insert: {
+          attending: boolean
+          created_at?: string
+          dietary_restrictions?: string | null
+          guest_id: string
+          id?: string
+          plus_one?: boolean
+          updated_at?: string
+        }
+        Update: {
+          attending?: boolean
+          created_at?: string
+          dietary_restrictions?: string | null
+          guest_id?: string
+          id?: string
+          plus_one?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rsvps_guest_id_fkey"
+            columns: ["guest_id"]
+            isOneToOne: true
+            referencedRelation: "guests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -18,7 +141,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      invitation_type: "full day" | "evening" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -133,6 +256,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      invitation_type: ["full day", "evening", "admin"],
+    },
   },
 } as const

@@ -18,6 +18,7 @@ export default function GuestManagement() {
   const [email, setEmail] = useState("");
   const [invitationType, setInvitationType] = useState<InvitationType>("evening");
   const [currentGuest, setCurrentGuest] = useState<Guest | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const resetForm = () => {
     setFirstName("");
@@ -26,40 +27,44 @@ export default function GuestManagement() {
     setCurrentGuest(null);
   };
 
-  const handleAddGuest = () => {
-    addGuest({
-      firstName,
+  const handleAddGuest = async () => {
+    setIsSubmitting(true);
+    await addGuest({
+      first_name: firstName,
       email,
-      invitationType,
+      invitation_type: invitationType,
     });
+    setIsSubmitting(false);
     setIsAddDialogOpen(false);
     resetForm();
   };
 
-  const handleUpdateGuest = () => {
+  const handleUpdateGuest = async () => {
     if (!currentGuest) return;
     
-    updateGuest({
+    setIsSubmitting(true);
+    await updateGuest({
       ...currentGuest,
-      firstName,
+      first_name: firstName,
       email,
-      invitationType,
+      invitation_type: invitationType,
     });
+    setIsSubmitting(false);
     setIsEditDialogOpen(false);
     resetForm();
   };
 
   const handleEditClick = (guest: Guest) => {
     setCurrentGuest(guest);
-    setFirstName(guest.firstName);
+    setFirstName(guest.first_name);
     setEmail(guest.email);
-    setInvitationType(guest.invitationType);
+    setInvitationType(guest.invitation_type);
     setIsEditDialogOpen(true);
   };
 
-  const handleDeleteGuest = (id: string) => {
+  const handleDeleteGuest = async (id: string) => {
     if (confirm("Are you sure you want to remove this guest?")) {
-      deleteGuest(id);
+      await deleteGuest(id);
     }
   };
 
@@ -118,10 +123,12 @@ export default function GuestManagement() {
               </div>
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
+              <Button variant="outline" onClick={() => setIsAddDialogOpen(false)} disabled={isSubmitting}>
                 Cancel
               </Button>
-              <Button onClick={handleAddGuest}>Add Guest</Button>
+              <Button onClick={handleAddGuest} disabled={isSubmitting}>
+                {isSubmitting ? "Adding..." : "Add Guest"}
+              </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -141,9 +148,9 @@ export default function GuestManagement() {
           <TableBody>
             {guests.map((guest) => (
               <TableRow key={guest.id}>
-                <TableCell>{guest.firstName}</TableCell>
+                <TableCell>{guest.first_name}</TableCell>
                 <TableCell>{guest.email}</TableCell>
-                <TableCell className="capitalize">{guest.invitationType}</TableCell>
+                <TableCell className="capitalize">{guest.invitation_type}</TableCell>
                 <TableCell>{guest.rsvp ? (guest.rsvp.attending ? "Attending" : "Not Attending") : "Pending"}</TableCell>
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">
@@ -208,10 +215,12 @@ export default function GuestManagement() {
               </div>
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+              <Button variant="outline" onClick={() => setIsEditDialogOpen(false)} disabled={isSubmitting}>
                 Cancel
               </Button>
-              <Button onClick={handleUpdateGuest}>Save Changes</Button>
+              <Button onClick={handleUpdateGuest} disabled={isSubmitting}>
+                {isSubmitting ? "Saving..." : "Save Changes"}
+              </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>

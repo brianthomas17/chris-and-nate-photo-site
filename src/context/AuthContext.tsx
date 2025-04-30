@@ -1,6 +1,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Guest } from '../types';
+import { supabase } from "@/integrations/supabase/client";
 
 interface AuthContextType {
   currentGuest: Guest | null;
@@ -19,28 +20,6 @@ export const useAuth = () => {
   return context;
 };
 
-// Mock guest list - in a real app, this would come from a database
-const MOCK_GUESTS: Guest[] = [
-  {
-    id: '1',
-    firstName: 'John',
-    email: 'john@example.com',
-    invitationType: 'full day',
-  },
-  {
-    id: '2',
-    firstName: 'Jane',
-    email: 'jane@example.com',
-    invitationType: 'evening',
-  },
-  {
-    id: '3',
-    firstName: 'Admin',
-    email: 'admin@example.com',
-    invitationType: 'admin',
-  },
-];
-
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentGuest, setCurrentGuest] = useState<Guest | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -57,21 +36,53 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (email: string): Promise<boolean> => {
     setIsLoading(true);
     
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Find guest by email (case insensitive)
-    const guest = MOCK_GUESTS.find(g => g.email.toLowerCase() === email.toLowerCase());
-    
-    if (guest) {
+    try {
+      // Find guest by email (case insensitive)
+      const { data: guests, error } = await supabase
+        .from('guests')
+        .select(`
+          id, 
+          first_name, 
+          email, 
+          invitation_type,
+          rsvps(*)
+        `)
+        .ilike('email', email)
+        .limit(1)
+        .single();
+      
+      if (error || !guests) {
+        console.error('Error finding guest:', error);
+        setIsLoading(false);
+        return false;
+      }
+      
+      // Transform the data to match our Guest interface
+      const guest: Guest = {
+        id: guests.id,
+        first_name: guests.first_name,
+        email: guests.email,
+        invitation_type: guests.invitation_type,
+      };
+      
+      // Add RSVP data if it exists
+      if (guests.rsvps) {
+        guest.rsvp = {
+          attending: guests.rsvps.attending,
+          plus_one: guests.rsvps.plus_one,
+          dietary_restrictions: guests.rsvps.dietary_restrictions
+        };
+      }
+      
       setCurrentGuest(guest);
       localStorage.setItem('currentGuest', JSON.stringify(guest));
       setIsLoading(false);
       return true;
+    } catch (error) {
+      console.error('Login error:', error);
+      setIsLoading(false);
+      return false;
     }
-    
-    setIsLoading(false);
-    return false;
   };
 
   const logout = () => {

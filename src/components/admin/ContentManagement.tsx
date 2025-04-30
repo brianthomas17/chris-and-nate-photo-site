@@ -22,9 +22,10 @@ export default function ContentManagement() {
   const [visibleToFullDay, setVisibleToFullDay] = useState(true);
   const [visibleToEvening, setVisibleToEvening] = useState(true);
   const [visibleToAdmin, setVisibleToAdmin] = useState(true);
-  const [order, setOrder] = useState(0);
+  const [orderIndex, setOrderIndex] = useState(0);
   
   const [currentSection, setCurrentSection] = useState<ContentSection | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const resetForm = () => {
     setTitle("");
@@ -32,43 +33,47 @@ export default function ContentManagement() {
     setVisibleToFullDay(true);
     setVisibleToEvening(true);
     setVisibleToAdmin(true);
-    setOrder(0);
+    setOrderIndex(0);
     setCurrentSection(null);
   };
 
-  const handleAddContent = () => {
+  const handleAddContent = async () => {
+    setIsSubmitting(true);
     const visibleTo: InvitationType[] = [];
     if (visibleToFullDay) visibleTo.push("full day");
     if (visibleToEvening) visibleTo.push("evening");
     if (visibleToAdmin) visibleTo.push("admin");
 
-    addContentSection({
+    await addContentSection({
       title,
       content,
-      visibleTo,
-      order: order || contentSections.length + 1,
+      visible_to: visibleTo,
+      order_index: orderIndex || contentSections.length + 1,
     });
     
+    setIsSubmitting(false);
     setIsAddDialogOpen(false);
     resetForm();
   };
 
-  const handleUpdateContent = () => {
+  const handleUpdateContent = async () => {
     if (!currentSection) return;
-
+    
+    setIsSubmitting(true);
     const visibleTo: InvitationType[] = [];
     if (visibleToFullDay) visibleTo.push("full day");
     if (visibleToEvening) visibleTo.push("evening");
     if (visibleToAdmin) visibleTo.push("admin");
 
-    updateContentSection({
+    await updateContentSection({
       ...currentSection,
       title,
       content,
-      visibleTo,
-      order: order || currentSection.order,
+      visible_to: visibleTo,
+      order_index: orderIndex || currentSection.order_index,
     });
     
+    setIsSubmitting(false);
     setIsEditDialogOpen(false);
     resetForm();
   };
@@ -77,16 +82,16 @@ export default function ContentManagement() {
     setCurrentSection(section);
     setTitle(section.title);
     setContent(section.content);
-    setVisibleToFullDay(section.visibleTo.includes("full day"));
-    setVisibleToEvening(section.visibleTo.includes("evening"));
-    setVisibleToAdmin(section.visibleTo.includes("admin"));
-    setOrder(section.order);
+    setVisibleToFullDay(section.visible_to.includes("full day"));
+    setVisibleToEvening(section.visible_to.includes("evening"));
+    setVisibleToAdmin(section.visible_to.includes("admin"));
+    setOrderIndex(section.order_index);
     setIsEditDialogOpen(true);
   };
 
-  const handleDeleteContent = (id: string) => {
+  const handleDeleteContent = async (id: string) => {
     if (confirm("Are you sure you want to delete this content section?")) {
-      deleteContentSection(id);
+      await deleteContentSection(id);
     }
   };
 
@@ -128,12 +133,12 @@ export default function ContentManagement() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="order">Display Order</Label>
+                <Label htmlFor="order_index">Display Order</Label>
                 <Input
-                  id="order"
+                  id="order_index"
                   type="number"
-                  value={order}
-                  onChange={(e) => setOrder(parseInt(e.target.value))}
+                  value={orderIndex}
+                  onChange={(e) => setOrderIndex(parseInt(e.target.value))}
                   placeholder="1"
                 />
               </div>
@@ -174,10 +179,12 @@ export default function ContentManagement() {
               </div>
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
+              <Button variant="outline" onClick={() => setIsAddDialogOpen(false)} disabled={isSubmitting}>
                 Cancel
               </Button>
-              <Button onClick={handleAddContent}>Add Section</Button>
+              <Button onClick={handleAddContent} disabled={isSubmitting}>
+                {isSubmitting ? "Adding..." : "Add Section"}
+              </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -194,11 +201,11 @@ export default function ContentManagement() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {contentSections.sort((a, b) => a.order - b.order).map((section) => (
+            {contentSections.sort((a, b) => a.order_index - b.order_index).map((section) => (
               <TableRow key={section.id}>
-                <TableCell>{section.order}</TableCell>
+                <TableCell>{section.order_index}</TableCell>
                 <TableCell>{section.title}</TableCell>
-                <TableCell>{section.visibleTo.join(", ")}</TableCell>
+                <TableCell>{section.visible_to.join(", ")}</TableCell>
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">
                     <Button variant="outline" size="sm" onClick={() => handleEditClick(section)}>
@@ -245,12 +252,12 @@ export default function ContentManagement() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="edit-order">Display Order</Label>
+                <Label htmlFor="edit-order_index">Display Order</Label>
                 <Input
-                  id="edit-order"
+                  id="edit-order_index"
                   type="number"
-                  value={order}
-                  onChange={(e) => setOrder(parseInt(e.target.value))}
+                  value={orderIndex}
+                  onChange={(e) => setOrderIndex(parseInt(e.target.value))}
                 />
               </div>
               <div className="space-y-2">
@@ -290,10 +297,12 @@ export default function ContentManagement() {
               </div>
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+              <Button variant="outline" onClick={() => setIsEditDialogOpen(false)} disabled={isSubmitting}>
                 Cancel
               </Button>
-              <Button onClick={handleUpdateContent}>Save Changes</Button>
+              <Button onClick={handleUpdateContent} disabled={isSubmitting}>
+                {isSubmitting ? "Saving..." : "Save Changes"}
+              </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>

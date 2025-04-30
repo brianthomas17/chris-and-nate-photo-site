@@ -1,12 +1,13 @@
 
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { ContentSection, InvitationType } from '../types';
+import { supabase } from "@/integrations/supabase/client";
 
 interface ContentContextType {
   contentSections: ContentSection[];
-  addContentSection: (section: Omit<ContentSection, 'id'>) => void;
-  updateContentSection: (section: ContentSection) => void;
-  deleteContentSection: (id: string) => void;
+  addContentSection: (section: Omit<ContentSection, 'id'>) => Promise<void>;
+  updateContentSection: (section: ContentSection) => Promise<void>;
+  deleteContentSection: (id: string) => Promise<void>;
   getVisibleSections: (invitationType: InvitationType) => ContentSection[];
 }
 
@@ -20,56 +21,108 @@ export const useContent = () => {
   return context;
 };
 
-// Mock content - in a real app, this would come from a database
-const INITIAL_CONTENT: ContentSection[] = [
-  {
-    id: '1',
-    title: 'Welcome',
-    content: '<h1>Welcome to Our 10-Year Anniversary Celebration!</h1><p>We are thrilled to have you join us for this special occasion.</p>',
-    visibleTo: ['full day', 'evening', 'admin'],
-    order: 1
-  },
-  {
-    id: '2',
-    title: 'Day Event Schedule',
-    content: '<h2>Day Event</h2><p>Join us from 10:00 AM for a day of fun activities including:</p><ul><li>Brunch at 11:00 AM</li><li>Group activities at 1:00 PM</li><li>Afternoon tea at 3:00 PM</li></ul>',
-    visibleTo: ['full day', 'admin'],
-    order: 2
-  },
-  {
-    id: '3',
-    title: 'Evening Event Schedule',
-    content: '<h2>Evening Gala</h2><p>The evening celebration begins at 6:00 PM with:</p><ul><li>Cocktail reception</li><li>Dinner at 7:30 PM</li><li>Dancing from 9:00 PM</li></ul>',
-    visibleTo: ['full day', 'evening', 'admin'],
-    order: 3
-  }
-];
-
 export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [contentSections, setContentSections] = useState<ContentSection[]>(INITIAL_CONTENT);
+  const [contentSections, setContentSections] = useState<ContentSection[]>([]);
 
-  const addContentSection = (section: Omit<ContentSection, 'id'>) => {
-    const newSection = {
-      ...section,
-      id: Date.now().toString()
-    };
-    setContentSections(prev => [...prev, newSection]);
+  useEffect(() => {
+    fetchContentSections();
+  }, []);
+
+  const fetchContentSections = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('content_sections')
+        .select('*');
+
+      if (error) {
+        console.error('Error fetching content sections:', error);
+        return;
+      }
+
+      const transformedSections: ContentSection[] = data.map((section: any) => ({
+        id: section.id,
+        title: section.title,
+        content: section.content,
+        visible_to: section.visible_to,
+        order_index: section.order_index,
+        created_at: section.created_at,
+        updated_at: section.updated_at
+      }));
+
+      setContentSections(transformedSections);
+    } catch (error) {
+      console.error('Error fetching content sections:', error);
+    }
   };
 
-  const updateContentSection = (section: ContentSection) => {
-    setContentSections(prev => 
-      prev.map(s => s.id === section.id ? section : s)
-    );
+  const addContentSection = async (section: Omit<ContentSection, 'id'>) => {
+    try {
+      const { error } = await supabase
+        .from('content_sections')
+        .insert({
+          title: section.title,
+          content: section.content,
+          visible_to: section.visible_to,
+          order_index: section.order_index
+        });
+
+      if (error) {
+        console.error('Error adding content section:', error);
+        return;
+      }
+
+      await fetchContentSections();
+    } catch (error) {
+      console.error('Error adding content section:', error);
+    }
   };
 
-  const deleteContentSection = (id: string) => {
-    setContentSections(prev => prev.filter(s => s.id !== id));
+  const updateContentSection = async (section: ContentSection) => {
+    try {
+      const { error } = await supabase
+        .from('content_sections')
+        .update({
+          title: section.title,
+          content: section.content,
+          visible_to: section.visible_to,
+          order_index: section.order_index,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', section.id);
+
+      if (error) {
+        console.error('Error updating content section:', error);
+        return;
+      }
+
+      await fetchContentSections();
+    } catch (error) {
+      console.error('Error updating content section:', error);
+    }
+  };
+
+  const deleteContentSection = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('content_sections')
+        .delete()
+        .eq('id', id);
+
+      if (error) {
+        console.error('Error deleting content section:', error);
+        return;
+      }
+
+      await fetchContentSections();
+    } catch (error) {
+      console.error('Error deleting content section:', error);
+    }
   };
 
   const getVisibleSections = (invitationType: InvitationType) => {
     return contentSections
-      .filter(section => section.visibleTo.includes(invitationType))
-      .sort((a, b) => a.order - b.order);
+      .filter(section => section.visible_to.includes(invitationType))
+      .sort((a, b) => a.order_index - b.order_index);
   };
 
   return (

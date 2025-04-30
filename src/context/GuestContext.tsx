@@ -1,15 +1,16 @@
 
-import React, { createContext, useContext, useState } from 'react';
-import { Guest, InvitationType } from '../types';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { Guest, InvitationType, RSVP } from '../types';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from "@/integrations/supabase/client";
 
 interface GuestContextType {
   guests: Guest[];
-  addGuest: (guest: Omit<Guest, 'id'>) => void;
-  updateGuest: (guest: Guest) => void;
-  deleteGuest: (id: string) => void;
-  updateRSVP: (guestId: string, attending: boolean, plusOne: boolean, dietaryRestrictions?: string) => void;
-  getGuestByEmail: (email: string) => Guest | undefined;
+  addGuest: (guest: Omit<Guest, 'id'>) => Promise<void>;
+  updateGuest: (guest: Guest) => Promise<void>;
+  deleteGuest: (id: string) => Promise<void>;
+  updateRSVP: (guestId: string, attending: boolean, plusOne: boolean, dietaryRestrictions?: string) => Promise<void>;
+  getGuestByEmail: (email: string) => Promise<Guest | undefined>;
 }
 
 const GuestContext = createContext<GuestContextType | undefined>(undefined);
@@ -22,93 +23,277 @@ export const useGuests = () => {
   return context;
 };
 
-// Mock guest data - in a real app, this would come from a database
-const INITIAL_GUESTS: Guest[] = [
-  {
-    id: '1',
-    firstName: 'John',
-    email: 'john@example.com',
-    invitationType: 'full day',
-    rsvp: {
-      attending: true,
-      plusOne: false,
-      dietaryRestrictions: 'None'
-    }
-  },
-  {
-    id: '2',
-    firstName: 'Jane',
-    email: 'jane@example.com',
-    invitationType: 'evening',
-  },
-  {
-    id: '3',
-    firstName: 'Admin',
-    email: 'admin@example.com',
-    invitationType: 'admin',
-  },
-];
-
 export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [guests, setGuests] = useState<Guest[]>(INITIAL_GUESTS);
+  const [guests, setGuests] = useState<Guest[]>([]);
   const { toast } = useToast();
 
-  const addGuest = (guest: Omit<Guest, 'id'>) => {
-    const newGuest = {
-      ...guest,
-      id: Date.now().toString()
-    };
-    setGuests(prev => [...prev, newGuest]);
-    toast({
-      title: "Guest Added",
-      description: `${guest.firstName} has been added to the guest list.`,
-    });
-  };
+  useEffect(() => {
+    fetchGuests();
+  }, []);
 
-  const updateGuest = (guest: Guest) => {
-    setGuests(prev => 
-      prev.map(g => g.id === guest.id ? guest : g)
-    );
-    toast({
-      title: "Guest Updated",
-      description: `${guest.firstName}'s information has been updated.`,
-    });
-  };
+  const fetchGuests = async () => {
+    try {
+      // Fetch all guests and their RSVPs
+      const { data, error } = await supabase
+        .from('guests')
+        .select(`
+          id, 
+          first_name, 
+          email, 
+          invitation_type,
+          rsvps(*)
+        `);
 
-  const deleteGuest = (id: string) => {
-    const guestToDelete = guests.find(g => g.id === id);
-    setGuests(prev => prev.filter(g => g.id !== id));
-    if (guestToDelete) {
-      toast({
-        title: "Guest Removed",
-        description: `${guestToDelete.firstName} has been removed from the guest list.`,
-      });
-    }
-  };
+      if (error) {
+        console.error('Error fetching guests:', error);
+        return;
+      }
 
-  const updateRSVP = (guestId: string, attending: boolean, plusOne: boolean, dietaryRestrictions?: string) => {
-    setGuests(prev => 
-      prev.map(g => g.id === guestId ? {
-        ...g,
-        rsvp: {
-          attending,
-          plusOne,
-          dietaryRestrictions
+      // Transform the data to match our Guest interface
+      const transformedGuests: Guest[] = data.map((g: any) => {
+        const guest: Guest = {
+          id: g.id,
+          first_name: g.first_name,
+          email: g.email,
+          invitation_type: g.invitation_type,
+        };
+        
+        // Add RSVP data if it exists
+        if (g.rsvps && g.rsvps.length > 0) {
+          guest.rsvp = {
+            attending: g.rsvps[0].attending,
+            plus_one: g.rsvps[0].plus_one,
+            dietary_restrictions: g.rsvps[0].dietary_restrictions
+          };
         }
-      } : g)
-    );
-    
-    const guest = guests.find(g => g.id === guestId);
-    if (guest) {
+        
+        return guest;
+      });
+
+      setGuests(transformedGuests);
+    } catch (error) {
+      console.error('Error fetching guests:', error);
+    }
+  };
+
+  const addGuest = async (guest: Omit<Guest, 'id'>) => {
+    try {
+      // Insert the new guest
+      const { data, error } = await supabase
+        .from('guests')
+        .insert({
+          first_name: guest.first_name,
+          email: guest.email,
+          invitation_type: guest.invitation_type
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error adding guest:', error);
+        toast({
+          title: "Error",
+          description: `Could not add guest: ${error.message}`,
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Update the local state
+      await fetchGuests();
+      
       toast({
-        title: "RSVP Updated",
-        description: `Thank you, ${guest.firstName}! Your RSVP has been recorded.`,
+        title: "Guest Added",
+        description: `${guest.first_name} has been added to the guest list.`,
+      });
+    } catch (error) {
+      console.error('Error adding guest:', error);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred",
+        variant: "destructive"
       });
     }
   };
 
-  const getGuestByEmail = (email: string) => {
-    return guests.find(g => g.email.toLowerCase() === email.toLowerCase());
+  const updateGuest = async (guest: Guest) => {
+    try {
+      // Update the guest
+      const { error } = await supabase
+        .from('guests')
+        .update({
+          first_name: guest.first_name,
+          email: guest.email,
+          invitation_type: guest.invitation_type
+        })
+        .eq('id', guest.id);
+
+      if (error) {
+        console.error('Error updating guest:', error);
+        toast({
+          title: "Error",
+          description: `Could not update guest: ${error.message}`,
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Update the local state
+      await fetchGuests();
+      
+      toast({
+        title: "Guest Updated",
+        description: `${guest.first_name}'s information has been updated.`,
+      });
+    } catch (error) {
+      console.error('Error updating guest:', error);
+    }
+  };
+
+  const deleteGuest = async (id: string) => {
+    try {
+      // Find the guest to delete (for the toast message)
+      const guestToDelete = guests.find(g => g.id === id);
+      
+      // Delete the guest
+      const { error } = await supabase
+        .from('guests')
+        .delete()
+        .eq('id', id);
+
+      if (error) {
+        console.error('Error deleting guest:', error);
+        toast({
+          title: "Error",
+          description: `Could not delete guest: ${error.message}`,
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Update the local state
+      await fetchGuests();
+      
+      if (guestToDelete) {
+        toast({
+          title: "Guest Removed",
+          description: `${guestToDelete.first_name} has been removed from the guest list.`,
+        });
+      }
+    } catch (error) {
+      console.error('Error deleting guest:', error);
+    }
+  };
+
+  const updateRSVP = async (guestId: string, attending: boolean, plusOne: boolean, dietaryRestrictions?: string) => {
+    try {
+      // Check if RSVP already exists
+      const { data: existingRsvp, error: checkError } = await supabase
+        .from('rsvps')
+        .select()
+        .eq('guest_id', guestId)
+        .maybeSingle();
+
+      if (checkError) {
+        console.error('Error checking RSVP:', checkError);
+        return;
+      }
+
+      let error;
+      if (existingRsvp) {
+        // Update existing RSVP
+        const { error: updateError } = await supabase
+          .from('rsvps')
+          .update({
+            attending,
+            plus_one: plusOne,
+            dietary_restrictions: dietaryRestrictions,
+            updated_at: new Date().toISOString()
+          })
+          .eq('guest_id', guestId);
+        
+        error = updateError;
+      } else {
+        // Insert new RSVP
+        const { error: insertError } = await supabase
+          .from('rsvps')
+          .insert({
+            guest_id: guestId,
+            attending,
+            plus_one: plusOne,
+            dietary_restrictions: dietaryRestrictions
+          });
+        
+        error = insertError;
+      }
+
+      if (error) {
+        console.error('Error updating RSVP:', error);
+        toast({
+          title: "Error",
+          description: `Could not update RSVP: ${error.message}`,
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Update the local state
+      await fetchGuests();
+      
+      const guest = guests.find(g => g.id === guestId);
+      if (guest) {
+        toast({
+          title: "RSVP Updated",
+          description: `Thank you, ${guest.first_name}! Your RSVP has been recorded.`,
+        });
+      }
+    } catch (error) {
+      console.error('Error updating RSVP:', error);
+    }
+  };
+
+  const getGuestByEmail = async (email: string): Promise<Guest | undefined> => {
+    try {
+      const { data, error } = await supabase
+        .from('guests')
+        .select(`
+          id, 
+          first_name, 
+          email, 
+          invitation_type,
+          rsvps(*)
+        `)
+        .ilike('email', email)
+        .limit(1)
+        .single();
+
+      if (error || !data) {
+        console.error('Error fetching guest by email:', error);
+        return undefined;
+      }
+
+      // Transform the data to match our Guest interface
+      const guest: Guest = {
+        id: data.id,
+        first_name: data.first_name,
+        email: data.email,
+        invitation_type: data.invitation_type,
+      };
+      
+      // Add RSVP data if it exists
+      if (data.rsvps && data.rsvps.length > 0) {
+        guest.rsvp = {
+          attending: data.rsvps[0].attending,
+          plus_one: data.rsvps[0].plus_one,
+          dietary_restrictions: data.rsvps[0].dietary_restrictions
+        };
+      }
+      
+      return guest;
+    } catch (error) {
+      console.error('Error fetching guest by email:', error);
+      return undefined;
+    }
   };
 
   return (
