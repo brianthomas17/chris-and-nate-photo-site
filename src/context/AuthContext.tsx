@@ -35,9 +35,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (email: string): Promise<boolean> => {
     setIsLoading(true);
+    console.log("Attempting to login with email:", email);
     
     try {
-      // Find guest by email (case insensitive)
+      // Find guest by email (case insensitive and trim whitespace)
+      const cleanEmail = email.trim().toLowerCase();
       const { data: guests, error } = await supabase
         .from('guests')
         .select(`
@@ -47,16 +49,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           invitation_type,
           rsvps(*)
         `)
-        .ilike('email', email);
+        .ilike('email', cleanEmail);
       
-      if (error || !guests || guests.length === 0) {
-        console.error('Error finding guest:', error || 'No guest found');
+      console.log("Login query result:", { guests, error });
+      
+      if (error) {
+        console.error('Error finding guest:', error);
+        setIsLoading(false);
+        return false;
+      }
+      
+      if (!guests || guests.length === 0) {
+        console.error('No guest found with email:', cleanEmail);
         setIsLoading(false);
         return false;
       }
       
       // Get the first guest match
       const guestData = guests[0];
+      console.log("Found guest:", guestData);
       
       // Transform the data to match our Guest interface
       const guest: Guest = {
@@ -67,7 +78,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       };
       
       // Add RSVP data if it exists
-      if (guestData.rsvps && guestData.rsvps[0]) {
+      if (guestData.rsvps && guestData.rsvps.length > 0) {
         guest.rsvp = {
           attending: guestData.rsvps[0].attending,
           plus_one: guestData.rsvps[0].plus_one,
@@ -77,6 +88,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       setCurrentGuest(guest);
       localStorage.setItem('currentGuest', JSON.stringify(guest));
+      console.log("Successfully logged in as:", guest.first_name);
       setIsLoading(false);
       return true;
     } catch (error) {
@@ -89,6 +101,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = () => {
     setCurrentGuest(null);
     localStorage.removeItem('currentGuest');
+    console.log("User logged out");
   };
 
   return (

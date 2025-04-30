@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Loader2 } from "lucide-react";
 
 export default function AuthForm() {
   const [email, setEmail] = useState('');
@@ -27,6 +27,7 @@ export default function AuthForm() {
     }
 
     try {
+      console.log("Submitting login form with email:", email);
       const success = await login(email);
       
       if (!success) {
@@ -35,6 +36,11 @@ export default function AuthForm() {
           title: "Access Denied",
           description: "Sorry, we couldn't find your email on our guest list.",
           variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Welcome!",
+          description: "You've successfully logged in.",
         });
       }
     } catch (error) {
@@ -85,7 +91,11 @@ export default function AuthForm() {
                   className="w-full bg-anniversary-gold hover:bg-anniversary-gold/90 text-black"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? "Checking..." : "Continue"}
+                  {isSubmitting ? (
+                    <span className="flex items-center">
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Checking...
+                    </span>
+                  ) : "Continue"}
                 </Button>
               </div>
             </form>
