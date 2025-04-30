@@ -33,7 +33,7 @@ export const seedTestAccounts = async () => {
           const { data, error } = await supabase.rpc('create_test_guest', {
             p_email: account.email.trim().toLowerCase(),
             p_first_name: account.first_name,
-            p_invitation_type: account.invitation_type as string
+            p_invitation_type: account.invitation_type
           });
           
           if (error) {
