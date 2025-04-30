@@ -12,7 +12,7 @@ export default function AdminLayout() {
   const navigate = useNavigate();
 
   // Redirect if not admin
-  if (!currentGuest || currentGuest.invitationType !== 'admin') {
+  if (!currentGuest || currentGuest.invitation_type !== 'admin') {
     return <Navigate to="/" replace />;
   }
 
@@ -27,7 +27,7 @@ export default function AdminLayout() {
         <div className="container mx-auto flex justify-between items-center">
           <h1 className="text-2xl font-playfair">Anniversary Admin Console</h1>
           <div className="flex items-center gap-4">
-            <span>Welcome, {currentGuest.firstName}</span>
+            <span>Welcome, {currentGuest.first_name}</span>
             <Button 
               variant="outline" 
               size="sm"

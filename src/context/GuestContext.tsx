@@ -59,7 +59,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         };
         
         // Add RSVP data if it exists
-        if (g.rsvps && g.rsvps.length > 0) {
+        if (g.rsvps && g.rsvps[0]) {
           guest.rsvp = {
             attending: g.rsvps[0].attending,
             plus_one: g.rsvps[0].plus_one,
@@ -281,7 +281,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       };
       
       // Add RSVP data if it exists
-      if (data.rsvps && data.rsvps.length > 0) {
+      if (data.rsvps && data.rsvps[0]) {
         guest.rsvp = {
           attending: data.rsvps[0].attending,
           plus_one: data.rsvps[0].plus_one,

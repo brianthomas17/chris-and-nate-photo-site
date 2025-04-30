@@ -28,7 +28,7 @@ export default function PhotoGallery() {
     }
   };
 
-  const isAdmin = currentGuest?.invitationType === 'admin';
+  const isAdmin = currentGuest?.invitation_type === 'admin';
 
   return (
     <div className="space-y-6">
@@ -83,19 +83,19 @@ export default function PhotoGallery() {
               <div className="aspect-square overflow-hidden bg-gray-100">
                 <img 
                   src={photo.url} 
-                  alt={`Photo by ${photo.uploadedBy}`} 
+                  alt={`Photo by ${photo.uploaded_by}`} 
                   className="object-cover w-full h-full transition-transform hover:scale-105"
                 />
               </div>
               <CardContent className="p-4">
                 <div className="flex justify-between items-center">
                   <div>
-                    <p className="text-sm">Uploaded by {photo.uploadedBy}</p>
+                    <p className="text-sm">Uploaded by {photo.uploaded_by}</p>
                     <p className="text-xs text-muted-foreground">
-                      {new Date(photo.uploadedAt).toLocaleDateString()}
+                      {new Date(photo.created_at || '').toLocaleDateString()}
                     </p>
                   </div>
-                  {(isAdmin || currentGuest?.firstName === photo.uploadedBy) && (
+                  {(isAdmin || currentGuest?.first_name === photo.uploaded_by) && (
                     <Button 
                       variant="ghost" 
                       size="sm" 
