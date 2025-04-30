@@ -28,48 +28,85 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Check if user is already logged in from localStorage
     const storedGuest = localStorage.getItem('currentGuest');
     if (storedGuest) {
-      setCurrentGuest(JSON.parse(storedGuest));
+      try {
+        setCurrentGuest(JSON.parse(storedGuest));
+      } catch (error) {
+        console.error("Error parsing stored guest:", error);
+        localStorage.removeItem('currentGuest');
+      }
     }
     setIsLoading(false);
   }, []);
 
   const login = async (email: string): Promise<boolean> => {
     setIsLoading(true);
-    console.log("Attempting to login with email:", email);
     
     try {
-      // Find guest by email (case insensitive and trim whitespace)
+      if (!email) {
+        console.error("No email provided for login");
+        setIsLoading(false);
+        return false;
+      }
+      
+      // Clean and normalize email for searching
       const cleanEmail = email.trim().toLowerCase();
-      const { data: guests, error } = await supabase
+      console.log("Attempting login with normalized email:", cleanEmail);
+      
+      // First approach: Try direct query
+      console.log("Attempting direct email query...");
+      let { data: guestData, error: guestError } = await supabase
         .from('guests')
         .select(`
           id, 
           first_name, 
           email, 
-          invitation_type,
-          rsvps(*)
+          invitation_type
         `)
-        .ilike('email', cleanEmail);
+        .eq('email', cleanEmail)
+        .single();
       
-      console.log("Login query result:", { guests, error });
-      
-      if (error) {
-        console.error('Error finding guest:', error);
-        setIsLoading(false);
-        return false;
+      // If direct query fails, try case-insensitive search
+      if (guestError || !guestData) {
+        console.log("Direct query failed, trying case-insensitive search...");
+        const { data: guests, error } = await supabase
+          .from('guests')
+          .select(`
+            id, 
+            first_name, 
+            email, 
+            invitation_type
+          `)
+          .ilike('email', cleanEmail);
+        
+        console.log("Case-insensitive search result:", { guests, error });
+        
+        if (error) {
+          console.error('Error finding guest:', error);
+          setIsLoading(false);
+          return false;
+        }
+        
+        if (!guests || guests.length === 0) {
+          console.error('No guest found with email:', cleanEmail);
+          setIsLoading(false);
+          return false;
+        }
+        
+        guestData = guests[0];
       }
       
-      if (!guests || guests.length === 0) {
-        console.error('No guest found with email:', cleanEmail);
-        setIsLoading(false);
-        return false;
-      }
+      console.log("Found guest data:", guestData);
       
-      // Get the first guest match
-      const guestData = guests[0];
-      console.log("Found guest:", guestData);
+      // Get RSVP data in a separate query
+      const { data: rsvpData, error: rsvpError } = await supabase
+        .from('rsvps')
+        .select('*')
+        .eq('guest_id', guestData.id)
+        .maybeSingle();
       
-      // Transform the data to match our Guest interface
+      console.log("RSVP query result:", { rsvpData, rsvpError });
+      
+      // Construct the guest object
       const guest: Guest = {
         id: guestData.id,
         first_name: guestData.first_name,
@@ -77,23 +114,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         invitation_type: guestData.invitation_type,
       };
       
-      // Add RSVP data if it exists
-      // Fix: Check if rsvps is an array and has items before accessing by index
-      if (guestData.rsvps && Array.isArray(guestData.rsvps) && guestData.rsvps.length > 0) {
+      // Add RSVP data if available
+      if (rsvpData) {
         guest.rsvp = {
-          attending: guestData.rsvps[0].attending,
-          plus_one: guestData.rsvps[0].plus_one,
-          dietary_restrictions: guestData.rsvps[0].dietary_restrictions
+          attending: rsvpData.attending,
+          plus_one: rsvpData.plus_one,
+          dietary_restrictions: rsvpData.dietary_restrictions
         };
       }
       
+      console.log("Successfully constructed guest object:", guest);
+      
       setCurrentGuest(guest);
       localStorage.setItem('currentGuest', JSON.stringify(guest));
-      console.log("Successfully logged in as:", guest.first_name);
       setIsLoading(false);
       return true;
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('Unexpected error during login:', error);
       setIsLoading(false);
       return false;
     }

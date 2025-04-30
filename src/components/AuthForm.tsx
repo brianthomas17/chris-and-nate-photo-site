@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,13 +7,35 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { AlertCircle, Loader2 } from "lucide-react";
+import { seedTestAccounts } from "@/utils/seedTestAccounts";
 
 export default function AuthForm() {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState('');
+  const [seedStatus, setSeedStatus] = useState<'idle' | 'seeding' | 'seeded' | 'error'>('idle');
   const { login } = useAuth();
   const { toast } = useToast();
+
+  const handleSeedTestAccounts = async () => {
+    setSeedStatus('seeding');
+    try {
+      await seedTestAccounts();
+      setSeedStatus('seeded');
+      toast({
+        title: "Test Accounts Ready",
+        description: "Test accounts have been created. Try logging in with admin@example.com",
+      });
+    } catch (error) {
+      console.error("Error seeding test accounts:", error);
+      setSeedStatus('error');
+      toast({
+        title: "Error",
+        description: "Could not create test accounts. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -105,6 +127,22 @@ export default function AuthForm() {
             <div className="mt-4 text-xs text-gray-400">
               <p>Test accounts: john@example.com, jane@example.com, admin@example.com</p>
             </div>
+            <Button
+              variant="outline"
+              size="sm"
+              className="mt-4 text-xs"
+              onClick={handleSeedTestAccounts}
+              disabled={seedStatus === 'seeding'}
+            >
+              {seedStatus === 'seeding' ? (
+                <span className="flex items-center">
+                  <Loader2 className="mr-2 h-3 w-3 animate-spin" /> Creating Accounts...
+                </span>
+              ) : seedStatus === 'seeded' ? (
+                "Accounts Ready!"
+              ) : "Create Test Accounts Now"
+              }
+            </Button>
           </CardFooter>
         </Card>
       </div>

@@ -4,9 +4,14 @@ import AuthForm from "@/components/AuthForm";
 import EventLayout from "@/components/event/EventLayout";
 import { seedTestAccounts } from "@/utils/seedTestAccounts";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
   const { currentGuest, isLoading } = useAuth();
+  const [seedingStatus, setSeedingStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const { toast } = useToast();
 
   if (isLoading) {
     return (
@@ -21,8 +26,23 @@ const Index = () => {
 
   // Helper function to seed test accounts (only visible in development)
   const handleSeedTestAccounts = async () => {
-    await seedTestAccounts();
-    alert("Test accounts have been seeded! Try logging in with john@example.com, jane@example.com, or admin@example.com");
+    setSeedingStatus('loading');
+    try {
+      await seedTestAccounts();
+      setSeedingStatus('success');
+      toast({
+        title: "Test Accounts Created",
+        description: "Test accounts have been seeded! Try logging in with john@example.com, jane@example.com, or admin@example.com",
+      });
+    } catch (error) {
+      console.error("Error seeding test accounts:", error);
+      setSeedingStatus('error');
+      toast({
+        title: "Error",
+        description: "Failed to create test accounts. Check console for details.",
+        variant: "destructive"
+      });
+    }
   };
 
   // Show seed button only in development mode
@@ -37,10 +57,19 @@ const Index = () => {
           <Button 
             variant="outline" 
             size="sm"
-            className="text-xs opacity-50 hover:opacity-100"
+            className="text-xs bg-white/80 hover:bg-white"
             onClick={handleSeedTestAccounts}
+            disabled={seedingStatus === 'loading'}
           >
-            Seed Test Accounts
+            {seedingStatus === 'loading' ? (
+              <span className="flex items-center">
+                <Loader2 className="mr-2 h-3 w-3 animate-spin" /> Creating Accounts...
+              </span>
+            ) : seedingStatus === 'success' ? (
+              "Accounts Created!"
+            ) : (
+              "Seed Test Accounts"
+            )}
           </Button>
         </div>
       )}

@@ -13,36 +13,47 @@ export const seedTestAccounts = async () => {
     { email: 'admin@example.com', first_name: 'Admin', invitation_type: 'admin' as InvitationType }
   ];
 
-  console.log("Checking for test accounts...");
+  console.log("Starting to seed test accounts...");
   
-  for (const account of testAccounts) {
-    // Check if account exists
-    const { data: existingGuests } = await supabase
-      .from('guests')
-      .select('id, email')
-      .ilike('email', account.email);
-      
-    if (!existingGuests || existingGuests.length === 0) {
-      console.log(`Creating test account: ${account.email}`);
-      
-      // Insert the account if it doesn't exist
-      const { data, error } = await supabase
+  try {
+    for (const account of testAccounts) {
+      // Check if account exists
+      console.log(`Checking if ${account.email} exists...`);
+      const { data: existingGuests, error: findError } = await supabase
         .from('guests')
-        .insert(account)
-        .select();
+        .select('id, email')
+        .ilike('email', account.email.trim().toLowerCase());
         
-      if (error) {
-        console.error(`Error creating test account ${account.email}:`, error);
-      } else {
-        console.log(`Created test account: ${account.email}`);
+      if (findError) {
+        console.error(`Error checking if ${account.email} exists:`, findError);
+        continue;
       }
-    } else {
-      console.log(`Test account ${account.email} already exists`);
+      
+      if (!existingGuests || existingGuests.length === 0) {
+        console.log(`Creating test account: ${account.email}`);
+        
+        // Insert the account if it doesn't exist
+        const { data, error } = await supabase
+          .from('guests')
+          .insert(account)
+          .select();
+          
+        if (error) {
+          console.error(`Error creating test account ${account.email}:`, error);
+        } else {
+          console.log(`Successfully created test account: ${account.email}`, data);
+        }
+      } else {
+        console.log(`Test account ${account.email} already exists`);
+      }
     }
+    
+    console.log("Test account seeding complete");
+    return true;
+  } catch (error) {
+    console.error("Error seeding test accounts:", error);
+    return false;
   }
-  
-  console.log("Test account check complete");
-  return true;
 };
 
 // Add this to the window object so it can be called from the console
