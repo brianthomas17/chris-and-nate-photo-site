@@ -48,11 +48,6 @@ export default function EventLayout() {
             </p>
           </div>
           <div className="flex items-center gap-4 mt-4 sm:mt-0">
-            {isAdmin && (
-              <Button onClick={() => navigate('/admin')} className="bg-anniversary-gold hover:bg-anniversary-lightgold text-anniversary-purple">
-                Admin Console
-              </Button>
-            )}
             <Button variant="outline" onClick={handleLogout} className="border-anniversary-gold text-anniversary-gold hover:bg-anniversary-gold/20">
               Logout
             </Button>
