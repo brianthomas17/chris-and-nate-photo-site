@@ -25,33 +25,36 @@ export default function AdminLayout() {
 
   return (
     <div className="min-h-screen bg-anniversary-purple">
-      <header className="bg-anniversary-purple text-anniversary-gold p-4 border-b border-anniversary-gold/30 circuit-pattern">
-        <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-3xl font-din uppercase tracking-wide">Anniversary Admin</h1>
-          <div className="flex items-center gap-4">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button 
-                  variant="ghost" 
-                  className="flex items-center gap-1 text-anniversary-gold hover:text-anniversary-lightgold hover:bg-anniversary-gold/20"
-                >
-                  {currentGuest?.first_name}
-                  <ChevronDown size={16} />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent 
-                align="end" 
-                className="bg-anniversary-purple border border-anniversary-gold/30 text-anniversary-gold"
+      <div className="bg-anniversary-purple py-2 px-4 border-b border-anniversary-gold/10">
+        <div className="container mx-auto flex justify-end">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button 
+                variant="ghost" 
+                className="flex items-center gap-1 text-anniversary-gold hover:text-anniversary-lightgold hover:bg-anniversary-gold/20"
               >
-                <DropdownMenuItem 
-                  onClick={handleLogout} 
-                  className="cursor-pointer hover:bg-anniversary-gold/20 hover:text-anniversary-lightgold"
-                >
-                  Logout
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+                {currentGuest?.first_name}
+                <ChevronDown size={16} />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent 
+              align="end" 
+              className="bg-anniversary-purple border border-anniversary-gold/30 text-anniversary-gold"
+            >
+              <DropdownMenuItem 
+                onClick={handleLogout} 
+                className="cursor-pointer hover:bg-anniversary-gold/20 hover:text-anniversary-lightgold"
+              >
+                Logout
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
+      
+      <header className="bg-anniversary-purple text-anniversary-gold p-4 border-b border-anniversary-gold/30 circuit-pattern">
+        <div className="container mx-auto">
+          <h1 className="text-3xl font-din uppercase tracking-wide">Anniversary Admin</h1>
         </div>
       </header>
 

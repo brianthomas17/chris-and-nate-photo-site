@@ -34,6 +34,30 @@ export default function EventLayout() {
 
   return (
     <div className="min-h-screen bg-anniversary-purple">
+      <div className="bg-anniversary-purple py-2 px-4 border-b border-anniversary-gold/10">
+        <div className="container mx-auto flex justify-end">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="flex items-center gap-1 text-anniversary-gold hover:text-anniversary-lightgold hover:bg-anniversary-gold/20">
+                {currentGuest.first_name}
+                <ChevronDown size={16} />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent 
+              align="end" 
+              className="bg-anniversary-purple border border-anniversary-gold/30 text-anniversary-gold"
+            >
+              <DropdownMenuItem 
+                onClick={handleLogout} 
+                className="cursor-pointer hover:bg-anniversary-gold/20 hover:text-anniversary-lightgold"
+              >
+                Logout
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
+      
       <header className="bg-anniversary-purple text-anniversary-lightgold py-12 px-4 relative overflow-hidden circuit-pattern">
         <div className="container mx-auto text-center relative z-10">
           <h1 className="text-5xl md:text-6xl font-din tracking-wide mb-4 uppercase">
@@ -42,28 +66,6 @@ export default function EventLayout() {
           <p className="text-xl text-anniversary-lightgold font-bicyclette">
             THIS ONE'S DIFFERENT...
           </p>
-          
-          <div className="absolute right-4 top-4">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex items-center gap-1 text-anniversary-gold hover:text-anniversary-lightgold hover:bg-anniversary-gold/20">
-                  {currentGuest.first_name}
-                  <ChevronDown size={16} />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent 
-                align="end" 
-                className="bg-anniversary-purple border border-anniversary-gold/30 text-anniversary-gold"
-              >
-                <DropdownMenuItem 
-                  onClick={handleLogout} 
-                  className="cursor-pointer hover:bg-anniversary-gold/20 hover:text-anniversary-lightgold"
-                >
-                  Logout
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
         </div>
       </header>
 
