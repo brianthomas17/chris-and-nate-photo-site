@@ -44,3 +44,37 @@
 .read-the-docs {
   color: rgba(212, 175, 55, 0.7);
 }
+
+/* Font utility classes */
+.font-din {
+  font-family: 'DIN Condensed Bold', sans-serif;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.font-bicyclette {
+  font-family: 'Bicyclette-Light', sans-serif;
+}
+
+/* Add some enhanced typography styles */
+.heading-xl {
+  font-family: 'DIN Condensed Bold', sans-serif;
+  font-size: 4rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #D4AF37;
+  line-height: 1.1;
+}
+
+.heading-lg {
+  font-family: 'DIN Condensed Bold', sans-serif;
+  font-size: 3rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #D4AF37;
+}
+
+.body-text {
+  font-family: 'Bicyclette-Light', sans-serif;
+  line-height: 1.6;
+}
