@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -67,7 +66,9 @@ export default {
 					gold: '#D4AF37',
 					navy: '#1A2238',
 					cream: '#F5F5DC',
-					burgundy: '#800020'
+					burgundy: '#800020',
+					purple: '#564077', // Added deep purple from the design
+					lightgold: '#d9c172' // Added lighter gold from the design
 				}
 			},
 			borderRadius: {
@@ -108,7 +109,9 @@ export default {
 			},
 			fontFamily: {
 				playfair: ['Playfair Display', 'serif'],
-				montserrat: ['Montserrat', 'sans-serif']
+				montserrat: ['Montserrat', 'sans-serif'],
+				din: ['DIN Condensed Bold', 'sans-serif'],
+				bicyclette: ['Bicyclette-Light', 'sans-serif']
 			}
 		}
 	},

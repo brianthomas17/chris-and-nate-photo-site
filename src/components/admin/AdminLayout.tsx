@@ -22,17 +22,17 @@ export default function AdminLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-anniversary-cream">
-      <header className="bg-anniversary-navy text-white p-4">
+    <div className="min-h-screen bg-anniversary-purple">
+      <header className="bg-anniversary-purple text-anniversary-gold p-4 border-b border-anniversary-gold/30 circuit-pattern">
         <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-playfair">Anniversary Admin Console</h1>
+          <h1 className="text-3xl font-din uppercase tracking-wide">Anniversary Admin</h1>
           <div className="flex items-center gap-4">
-            <span>Welcome, {currentGuest.first_name}</span>
+            <span className="text-anniversary-lightgold">Welcome, {currentGuest.first_name}</span>
             <Button 
               variant="outline" 
               size="sm"
               onClick={handleLogout}
-              className="text-white border-white hover:bg-anniversary-navy/90 hover:text-white"
+              className="text-anniversary-gold border-anniversary-gold hover:bg-anniversary-gold/20"
             >
               Logout
             </Button>
@@ -42,10 +42,25 @@ export default function AdminLayout() {
 
       <main className="container mx-auto py-8 px-4">
         <Tabs defaultValue="guests" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-8">
-            <TabsTrigger value="guests">Guest Management</TabsTrigger>
-            <TabsTrigger value="content">Content Management</TabsTrigger>
-            <TabsTrigger value="rsvp">RSVP Overview</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-3 mb-8 bg-anniversary-purple border border-anniversary-gold/30">
+            <TabsTrigger 
+              value="guests" 
+              className="data-[state=active]:bg-anniversary-gold data-[state=active]:text-anniversary-purple"
+            >
+              Guest Management
+            </TabsTrigger>
+            <TabsTrigger 
+              value="content" 
+              className="data-[state=active]:bg-anniversary-gold data-[state=active]:text-anniversary-purple"
+            >
+              Content Management
+            </TabsTrigger>
+            <TabsTrigger 
+              value="rsvp" 
+              className="data-[state=active]:bg-anniversary-gold data-[state=active]:text-anniversary-purple"
+            >
+              RSVP Overview
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="guests">
             <GuestManagement />
