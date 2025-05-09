@@ -31,6 +31,8 @@ export default function EventLayout() {
 
   const isAdmin = currentGuest.invitation_type === 'admin';
   const hasParty = !!currentGuest.party_id;
+  const isAttending = currentGuest.rsvp?.attending;
+  const hasResponded = !!currentGuest.rsvp;
 
   return (
     <div className="min-h-screen bg-anniversary-purple">
@@ -58,14 +60,69 @@ export default function EventLayout() {
         </div>
       </div>
       
-      <header className="bg-anniversary-purple text-anniversary-lightgold py-12 px-4 relative overflow-hidden circuit-pattern">
-        <div className="container mx-auto text-center relative z-10">
-          <h1 className="text-5xl md:text-6xl font-din tracking-wide mb-4 uppercase">
-            A Decade of Celebration
-          </h1>
-          <p className="text-xl text-anniversary-lightgold font-bicyclette">
-            THIS ONE'S DIFFERENT...
-          </p>
+      {/* Dynamic Hero Section based on RSVP status */}
+      <header className="bg-anniversary-purple text-anniversary-lightgold relative overflow-hidden circuit-pattern" style={{ height: "80vh" }}>
+        <div className="container mx-auto text-center relative z-10 flex flex-col justify-center items-center h-full px-4">
+          {isAttending ? (
+            <>
+              <h3 className="text-xl md:text-2xl font-bicyclette mb-2 text-anniversary-gold">
+                {currentGuest.first_name}, Chris & Nate are so excited you are joining them for
+              </h3>
+              <h1 className="text-4xl md:text-6xl font-din tracking-wide mb-4 uppercase">
+                A Decade of Determination, Disruption & Dinner Dilemmas
+              </h1>
+              <p className="text-xl text-anniversary-lightgold font-bicyclette mb-8">
+                THIS ONE'S DIFFERENT...
+              </p>
+              <h2 className="text-3xl md:text-5xl font-din mb-6">
+                8.16.25
+              </h2>
+              <p className="text-xl md:text-2xl font-bicyclette mb-8">
+                MORE THAN AN EVENT — IT'S A MOMENT
+              </p>
+              <div className="text-anniversary-gold">
+                <p className="font-bicyclette">SAINT JOSEPH'S ARTS SOCIETY</p>
+                <p className="font-bicyclette">1401 HOWARD STREET, SAN FRANCISCO</p>
+              </div>
+            </>
+          ) : hasResponded && !isAttending ? (
+            <>
+              <h3 className="text-xl md:text-2xl font-bicyclette mb-2 text-anniversary-gold">
+                {currentGuest.first_name}, Have your plans changed? Chris & Nate would still love you to join them for
+              </h3>
+              <h1 className="text-4xl md:text-6xl font-din tracking-wide mb-4 uppercase">
+                A Decade of Determination, Disruption & Dinner Dilemmas
+              </h1>
+              <p className="text-xl text-anniversary-lightgold font-bicyclette mb-8">
+                THIS ONE'S DIFFERENT...
+              </p>
+              <h2 className="text-3xl md:text-5xl font-din mb-6">
+                8.16.25 • 4 PM
+              </h2>
+              <p className="text-xl md:text-2xl font-bicyclette mb-8">
+                MORE THAN AN EVENT — IT'S A MOMENT
+              </p>
+              <div className="text-anniversary-gold">
+                <p className="font-bicyclette">SAINT JOSEPH'S ARTS SOCIETY</p>
+                <p className="font-bicyclette">1401 HOWARD STREET, SAN FRANCISCO</p>
+              </div>
+            </>
+          ) : (
+            <>
+              <h1 className="text-5xl md:text-6xl font-din tracking-wide mb-4 uppercase">
+                A Decade of Celebration
+              </h1>
+              <p className="text-xl text-anniversary-lightgold font-bicyclette mb-8">
+                THIS ONE'S DIFFERENT...
+              </p>
+              <h2 className="text-3xl md:text-5xl font-din mb-6">
+                8.16.25
+              </h2>
+              <p className="text-xl md:text-2xl font-bicyclette mb-8">
+                PLEASE RSVP BELOW
+              </p>
+            </>
+          )}
         </div>
       </header>
 
