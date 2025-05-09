@@ -110,7 +110,7 @@ export default function EventLayout() {
           ) : (
             <>
               <h1 className="text-5xl md:text-6xl font-din tracking-wide mb-4 uppercase">
-                A Decade of Celebration
+                A Decade of Determination, Disruption & Dinner Dilemmas
               </h1>
               <p className="text-xl text-anniversary-lightgold font-bicyclette mb-8">
                 THIS ONE'S DIFFERENT...
