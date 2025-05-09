@@ -5,15 +5,21 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import GuestManagement from "./GuestManagement";
 import ContentManagement from "./ContentManagement";
 import RSVPOverview from "./RSVPOverview";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function AdminLayout() {
   const { currentGuest, logout } = useAuth();
   const navigate = useNavigate();
 
-  // Redirect if not admin
-  if (!currentGuest || currentGuest.invitation_type !== 'admin') {
-    return <Navigate to="/" replace />;
+  // Redirect if not admin or not logged in
+  if (!currentGuest) {
+    navigate('/', { replace: true });
+    return null;
+  }
+
+  if (currentGuest.invitation_type !== 'admin') {
+    navigate('/rsvp', { replace: true });
+    return null;
   }
 
   const handleLogout = () => {
