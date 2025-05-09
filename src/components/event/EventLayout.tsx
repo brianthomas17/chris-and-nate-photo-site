@@ -31,8 +31,8 @@ export default function EventLayout() {
 
   const isAdmin = currentGuest.invitation_type === 'admin';
   const hasParty = !!currentGuest.party_id;
-  const isAttending = currentGuest.rsvp?.attending;
-  const hasResponded = !!currentGuest.rsvp;
+  const isAttending = currentGuest.rsvp?.attending === true;
+  const hasResponded = currentGuest.rsvp !== undefined;
 
   return (
     <div className="min-h-screen bg-anniversary-purple">
