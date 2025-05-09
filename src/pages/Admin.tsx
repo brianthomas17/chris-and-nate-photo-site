@@ -2,25 +2,43 @@
 import AdminLayout from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { seedTestAccounts } from "@/utils/seedTestAccounts";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/context/AuthContext";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const Admin = () => {
   const [isSeeding, setIsSeeding] = useState(false);
   const { toast } = useToast();
-  const { currentGuest } = useAuth();
+  const { currentGuest, isLoading } = useAuth();
+  const navigate = useNavigate();
+  
+  // Use useEffect for navigation to prevent issues with multiple renders
+  useEffect(() => {
+    // Make sure auth is loaded before checking
+    if (!isLoading) {
+      // Redirect if not logged in
+      if (!currentGuest) {
+        navigate('/', { replace: true });
+        return;
+      }
+      
+      // Redirect if not admin
+      if (currentGuest.invitation_type !== 'admin') {
+        navigate('/', { replace: true });
+        return;
+      }
+    }
+  }, [currentGuest, isLoading, navigate]);
 
-  // Check if user is logged in and has admin privileges
-  // If not, redirect to the main page
-  if (!currentGuest) {
-    return <Navigate to="/" replace />;
+  // If still loading auth, show nothing
+  if (isLoading) {
+    return null;
   }
   
-  // Check if user has admin privileges
-  if (currentGuest.invitation_type !== 'admin') {
-    return <Navigate to="/rsvp" replace />;
+  // If not admin or not logged in (before redirect happens), don't render
+  if (!currentGuest || currentGuest.invitation_type !== 'admin') {
+    return null;
   }
 
   const handleSeedTestAccounts = async () => {

@@ -11,17 +11,6 @@ export default function AdminLayout() {
   const { currentGuest, logout } = useAuth();
   const navigate = useNavigate();
 
-  // Redirect if not admin or not logged in
-  if (!currentGuest) {
-    navigate('/', { replace: true });
-    return null;
-  }
-
-  if (currentGuest.invitation_type !== 'admin') {
-    navigate('/rsvp', { replace: true });
-    return null;
-  }
-
   const handleLogout = () => {
     logout();
     navigate('/');
@@ -33,7 +22,7 @@ export default function AdminLayout() {
         <div className="container mx-auto flex justify-between items-center">
           <h1 className="text-3xl font-din uppercase tracking-wide">Anniversary Admin</h1>
           <div className="flex items-center gap-4">
-            <span className="text-anniversary-lightgold">Welcome, {currentGuest.first_name}</span>
+            <span className="text-anniversary-lightgold">Welcome, {currentGuest?.first_name}</span>
             <Button 
               variant="outline" 
               size="sm"
