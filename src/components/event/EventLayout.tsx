@@ -7,6 +7,13 @@ import RSVPForm from "./RSVPForm";
 import PhotoGallery from "./PhotoGallery";
 import PartyView from "./PartyView";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { 
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem
+} from "@/components/ui/dropdown-menu";
+import { ChevronDown } from "lucide-react";
 
 export default function EventLayout() {
   const { currentGuest, logout } = useAuth();
@@ -35,6 +42,28 @@ export default function EventLayout() {
           <p className="text-xl text-anniversary-lightgold font-bicyclette">
             THIS ONE'S DIFFERENT...
           </p>
+          
+          <div className="absolute right-4 top-4">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="flex items-center gap-1 text-anniversary-gold hover:text-anniversary-lightgold hover:bg-anniversary-gold/20">
+                  {currentGuest.first_name}
+                  <ChevronDown size={16} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent 
+                align="end" 
+                className="bg-anniversary-purple border border-anniversary-gold/30 text-anniversary-gold"
+              >
+                <DropdownMenuItem 
+                  onClick={handleLogout} 
+                  className="cursor-pointer hover:bg-anniversary-gold/20 hover:text-anniversary-lightgold"
+                >
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </header>
 
@@ -46,11 +75,6 @@ export default function EventLayout() {
               You're invited to our {' '}
               {currentGuest.invitation_type === 'full day' ? 'full day celebration' : 'evening gala'}
             </p>
-          </div>
-          <div className="flex items-center gap-4 mt-4 sm:mt-0">
-            <Button variant="outline" onClick={handleLogout} className="border-anniversary-gold text-anniversary-gold hover:bg-anniversary-gold/20">
-              Logout
-            </Button>
           </div>
         </div>
 

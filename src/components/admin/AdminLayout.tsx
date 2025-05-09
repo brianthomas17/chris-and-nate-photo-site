@@ -6,6 +6,13 @@ import GuestManagement from "./GuestManagement";
 import ContentManagement from "./ContentManagement";
 import RSVPOverview from "./RSVPOverview";
 import { useNavigate } from "react-router-dom";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
+import { ChevronDown } from "lucide-react";
 
 export default function AdminLayout() {
   const { currentGuest, logout } = useAuth();
@@ -22,15 +29,28 @@ export default function AdminLayout() {
         <div className="container mx-auto flex justify-between items-center">
           <h1 className="text-3xl font-din uppercase tracking-wide">Anniversary Admin</h1>
           <div className="flex items-center gap-4">
-            <span className="text-anniversary-lightgold">Welcome, {currentGuest?.first_name}</span>
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={handleLogout}
-              className="text-anniversary-gold border-anniversary-gold hover:bg-anniversary-gold/20"
-            >
-              Logout
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  className="flex items-center gap-1 text-anniversary-gold hover:text-anniversary-lightgold hover:bg-anniversary-gold/20"
+                >
+                  {currentGuest?.first_name}
+                  <ChevronDown size={16} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent 
+                align="end" 
+                className="bg-anniversary-purple border border-anniversary-gold/30 text-anniversary-gold"
+              >
+                <DropdownMenuItem 
+                  onClick={handleLogout} 
+                  className="cursor-pointer hover:bg-anniversary-gold/20 hover:text-anniversary-lightgold"
+                >
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </header>
