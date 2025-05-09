@@ -10,9 +10,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { PlusCircle, User, Users } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 
 export default function GuestManagement() {
-  const { guests, parties, addGuest, updateGuest, deleteGuest, createParty, updatePartyMembers } = useGuests();
+  const { guests, parties, addGuest, updateGuest, deleteGuest, createParty, updatePartyMembers, updateRSVP } = useGuests();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isPartyDialogOpen, setIsPartyDialogOpen] = useState(false);
@@ -25,6 +28,11 @@ export default function GuestManagement() {
   const [newPartyName, setNewPartyName] = useState("");
   const [selectedGuests, setSelectedGuests] = useState<string[]>([]);
   const [selectedParty, setSelectedParty] = useState<string | null>(null);
+  
+  // New state for RSVP data
+  const [rsvpAttending, setRsvpAttending] = useState<boolean | null>(null);
+  const [rsvpPlusOne, setRsvpPlusOne] = useState<boolean>(false);
+  const [rsvpDietaryRestrictions, setRsvpDietaryRestrictions] = useState<string>("");
 
   const resetForm = () => {
     setFirstName("");
@@ -35,6 +43,9 @@ export default function GuestManagement() {
     setNewPartyName("");
     setSelectedGuests([]);
     setSelectedParty(null);
+    setRsvpAttending(null);
+    setRsvpPlusOne(false);
+    setRsvpDietaryRestrictions("");
   };
 
   const handleAddGuest = async () => {
@@ -54,6 +65,8 @@ export default function GuestManagement() {
     if (!currentGuest) return;
     
     setIsSubmitting(true);
+    
+    // Update guest basic info
     await updateGuest({
       ...currentGuest,
       first_name: firstName,
@@ -61,6 +74,17 @@ export default function GuestManagement() {
       invitation_type: invitationType,
       party_id: partyId,
     });
+    
+    // Update RSVP if attending status is set (not null)
+    if (rsvpAttending !== null) {
+      await updateRSVP(
+        currentGuest.id,
+        rsvpAttending,
+        rsvpPlusOne,
+        rsvpDietaryRestrictions
+      );
+    }
+    
     setIsSubmitting(false);
     setIsEditDialogOpen(false);
     resetForm();
@@ -72,6 +96,18 @@ export default function GuestManagement() {
     setEmail(guest.email);
     setInvitationType(guest.invitation_type);
     setPartyId(guest.party_id || null);
+    
+    // Set RSVP data if available
+    if (guest.rsvp) {
+      setRsvpAttending(guest.rsvp.attending);
+      setRsvpPlusOne(guest.rsvp.plus_one);
+      setRsvpDietaryRestrictions(guest.rsvp.dietary_restrictions || "");
+    } else {
+      setRsvpAttending(null);
+      setRsvpPlusOne(false);
+      setRsvpDietaryRestrictions("");
+    }
+    
     setIsEditDialogOpen(true);
   };
 
@@ -310,7 +346,17 @@ export default function GuestManagement() {
                 <TableCell>{guest.email}</TableCell>
                 <TableCell className="capitalize">{guest.invitation_type}</TableCell>
                 <TableCell>{getPartyName(guest.party_id)}</TableCell>
-                <TableCell>{guest.rsvp ? (guest.rsvp.attending ? "Attending" : "Not Attending") : "Pending"}</TableCell>
+                <TableCell>
+                  {guest.rsvp ? (
+                    guest.rsvp.attending ? (
+                      <Badge className="bg-green-500">Attending</Badge>
+                    ) : (
+                      <Badge variant="destructive">Not Attending</Badge>
+                    )
+                  ) : (
+                    <Badge variant="outline">Pending</Badge>
+                  )}
+                </TableCell>
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">
                     <Button variant="outline" size="sm" onClick={() => handleEditClick(guest)}>
@@ -390,6 +436,60 @@ export default function GuestManagement() {
                     ))}
                   </SelectContent>
                 </Select>
+              </div>
+              
+              {/* RSVP Section */}
+              <div className="border-t pt-4 mt-2">
+                <h3 className="font-medium mb-3">RSVP Details</h3>
+                
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="rsvp-status">RSVP Status</Label>
+                    <Select
+                      value={rsvpAttending === null ? 'pending' : rsvpAttending ? 'attending' : 'not-attending'}
+                      onValueChange={(value) => {
+                        if (value === 'pending') {
+                          setRsvpAttending(null);
+                        } else {
+                          setRsvpAttending(value === 'attending');
+                        }
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="pending">Pending</SelectItem>
+                        <SelectItem value="attending">Attending</SelectItem>
+                        <SelectItem value="not-attending">Not Attending</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  {rsvpAttending && (
+                    <>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox 
+                          id="rsvp-plus-one" 
+                          checked={rsvpPlusOne}
+                          onCheckedChange={(checked) => setRsvpPlusOne(checked === true)}
+                        />
+                        <Label htmlFor="rsvp-plus-one">Plus One</Label>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="rsvp-dietary">Dietary Restrictions</Label>
+                        <Textarea
+                          id="rsvp-dietary"
+                          value={rsvpDietaryRestrictions}
+                          onChange={(e) => setRsvpDietaryRestrictions(e.target.value)}
+                          placeholder="Any dietary requirements or allergies"
+                          className="h-20"
+                        />
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
             <DialogFooter>
