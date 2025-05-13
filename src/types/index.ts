@@ -1,5 +1,4 @@
 
-
 export type InvitationType = 'full day' | 'evening' | 'admin';
 
 export interface Guest {

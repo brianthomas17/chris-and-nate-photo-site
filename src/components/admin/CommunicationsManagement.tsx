@@ -43,7 +43,16 @@ const CommunicationsManagement = () => {
         .order("send_date", { ascending: true });
       
       if (error) throw error;
-      setCommunications(data || []);
+      
+      // Cast the invitation_type from string[] to InvitationType[]
+      const typedData = data?.map(item => ({
+        ...item,
+        invitation_type: item.invitation_type.filter((type): type is InvitationType => 
+          type === 'full day' || type === 'evening' || type === 'admin'
+        )
+      })) as Communication[];
+      
+      setCommunications(typedData || []);
     } catch (error) {
       console.error("Error fetching communications:", error);
       toast({
