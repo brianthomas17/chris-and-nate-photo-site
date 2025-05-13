@@ -14,22 +14,20 @@ export default function ContentSections({ invitationType }: ContentSectionsProps
   if (visibleSections.length === 0) {
     return (
       <div className="text-center p-8">
-        <p className="text-muted-foreground">No content sections available yet.</p>
+        <p className="text-white">No content sections available yet.</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-12">
       {visibleSections.map((section) => (
-        <Card key={section.id} className="overflow-hidden border-anniversary-gold/30">
-          <CardContent className="p-6">
-            <div
-              className="prose max-w-none"
-              dangerouslySetInnerHTML={{ __html: section.content }}
-            />
-          </CardContent>
-        </Card>
+        <div key={section.id} className="text-center">
+          <div
+            className="prose prose-headings:text-anniversary-gold prose-p:text-white prose-li:text-white max-w-none"
+            dangerouslySetInnerHTML={{ __html: section.content }}
+          />
+        </div>
       ))}
     </div>
   );
