@@ -45,6 +45,25 @@
   color: rgba(212, 175, 55, 0.7);
 }
 
+/* Fonts */
+@font-face {
+  font-family: 'DIN Condensed Bold';
+  src: url('/fonts/DIN Condensed Bold.woff2') format('woff2'),
+       url('/fonts/DIN Condensed Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap !important;
+}
+
+@font-face {
+  font-family: 'Bicyclette-Light';
+  src: url('/fonts/Bicyclette Light.woff2') format('woff2'),
+       url('/fonts/Bicyclette Light.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap !important;
+}
+
 /* Font utility classes with stronger enforcement */
 .font-din {
   font-family: 'DIN Condensed Bold', Arial, sans-serif !important;

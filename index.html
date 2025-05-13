@@ -17,11 +17,11 @@
     <meta name="twitter:site" content="@lovable_dev" />
     <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
     
-    <!-- Critical font preloading -->
+    <!-- Critical font preloading - ABSOLUTE paths to ensure they work in all environments -->
     <link rel="preload" href="/fonts/DIN Condensed Bold.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
     <link rel="preload" href="/fonts/Bicyclette Light.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
     
-    <!-- Force font files to be downloaded early -->
+    <!-- Force font files to be downloaded early with absolute paths -->
     <link rel="prefetch" href="/fonts/DIN Condensed Bold.woff" as="font" type="font/woff" crossorigin="anonymous" />
     <link rel="prefetch" href="/fonts/Bicyclette Light.woff" as="font" type="font/woff" crossorigin="anonymous" />
     
@@ -31,13 +31,32 @@
 
     <!-- Inline critical font styles to avoid FOUT -->
     <style>
-      /* Critical font face declarations */
+      /* Critical font face declarations with absolute paths */
       @font-face {
         font-family: 'DIN Condensed Bold';
-        src: url('/fonts/DIN Condensed Bold.woff2') format('woff2');
+        src: url('/fonts/DIN Condensed Bold.woff2') format('woff2'),
+             url('/fonts/DIN Condensed Bold.woff') format('woff');
         font-weight: bold;
         font-style: normal;
         font-display: swap;
+      }
+      
+      @font-face {
+        font-family: 'Bicyclette-Light';
+        src: url('/fonts/Bicyclette Light.woff2') format('woff2'),
+             url('/fonts/Bicyclette Light.woff') format('woff');
+        font-weight: 300;
+        font-style: normal;
+        font-display: swap;
+      }
+      
+      /* Apply fonts to elements immediately */
+      h1, h2, h3, h4, h5, h6 {
+        font-family: 'DIN Condensed Bold', Arial, sans-serif !important;
+      }
+      
+      body {
+        font-family: 'Bicyclette-Light', sans-serif;
       }
     </style>
   </head>

@@ -1,7 +1,8 @@
 
+/* Import Google fonts */
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap');
 
-/* Define the custom fonts with proper paths and formats */
+/* Define font faces with multiple formats and explicit paths */
 @font-face {
   font-family: 'DIN Condensed Bold';
   src: url('/fonts/DIN Condensed Bold.woff2') format('woff2'),
@@ -9,7 +10,6 @@
   font-weight: bold;
   font-style: normal;
   font-display: swap;
-  font-variant: normal;
 }
 
 @font-face {
