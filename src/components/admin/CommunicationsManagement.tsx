@@ -177,7 +177,7 @@ const CommunicationsManagement = () => {
               <TableRow className="hover:bg-transparent border-b border-[#C9A95B]/30">
                 <TableHead className="text-[#C9A95B] font-din uppercase">Title</TableHead>
                 <TableHead className="text-[#C9A95B] font-din uppercase">Trigger</TableHead>
-                <TableHead className="text-[#C9A95B] font-din uppercase">Send Date</TableHead>
+                <TableHead className="text-[#C9A95B] font-din uppercase">SEND AFTER</TableHead>
                 <TableHead className="text-[#C9A95B] font-din uppercase text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
