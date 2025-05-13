@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -7,35 +6,27 @@ import RSVPForm from "./RSVPForm";
 import PhotoGallery from "./PhotoGallery";
 import PartyView from "./PartyView";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
-
 export default function EventLayout() {
-  const { currentGuest, logout } = useAuth();
+  const {
+    currentGuest,
+    logout
+  } = useAuth();
   const navigate = useNavigate();
-  
   if (!currentGuest) {
     navigate('/');
     return null;
   }
-
   const handleLogout = () => {
     logout();
     navigate('/');
   };
-
   const isAdmin = currentGuest.invitation_type === 'admin';
   const hasParty = !!currentGuest.party_id;
   const isAttending = currentGuest.rsvp?.attending === true;
   const hasResponded = currentGuest.rsvp !== undefined;
-
-  return (
-    <div className="min-h-screen bg-anniversary-purple">
+  return <div className="min-h-screen bg-anniversary-purple">
       <div className="bg-anniversary-purple py-2 px-4 border-b border-anniversary-gold/10">
         <div className="container mx-auto flex justify-end">
           <DropdownMenu>
@@ -45,14 +36,8 @@ export default function EventLayout() {
                 <ChevronDown size={16} />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent 
-              align="end" 
-              className="bg-anniversary-purple border border-anniversary-gold/30 text-anniversary-gold"
-            >
-              <DropdownMenuItem 
-                onClick={handleLogout} 
-                className="cursor-pointer hover:bg-anniversary-gold/20 hover:text-anniversary-lightgold"
-              >
+            <DropdownMenuContent align="end" className="bg-anniversary-purple border border-anniversary-gold/30 text-anniversary-gold">
+              <DropdownMenuItem onClick={handleLogout} className="cursor-pointer hover:bg-anniversary-gold/20 hover:text-anniversary-lightgold">
                 Logout
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -61,10 +46,11 @@ export default function EventLayout() {
       </div>
       
       {/* Dynamic Hero Section based on RSVP status */}
-      <header className="bg-anniversary-purple text-anniversary-lightgold relative overflow-hidden circuit-pattern" style={{ height: "80vh" }}>
+      <header className="bg-anniversary-purple text-anniversary-lightgold relative overflow-hidden circuit-pattern" style={{
+      height: "80vh"
+    }}>
         <div className="container mx-auto text-center relative z-10 flex flex-col justify-center items-center h-full px-4">
-          {isAttending ? (
-            <>
+          {isAttending ? <>
               <h3 className="text-xl md:text-2xl font-bicyclette mb-2 text-anniversary-gold">
                 {currentGuest.first_name}, Chris & Nate are so excited you are joining them for
               </h3>
@@ -84,9 +70,7 @@ export default function EventLayout() {
                 <p className="font-bicyclette">SAINT JOSEPH'S ARTS SOCIETY</p>
                 <p className="font-bicyclette">1401 HOWARD STREET, SAN FRANCISCO</p>
               </div>
-            </>
-          ) : hasResponded && !isAttending ? (
-            <>
+            </> : hasResponded && !isAttending ? <>
               <h3 className="text-xl md:text-2xl font-bicyclette mb-2 text-anniversary-gold">
                 {currentGuest.first_name}, Have your plans changed? Chris & Nate would still love you to join them for
               </h3>
@@ -106,9 +90,7 @@ export default function EventLayout() {
                 <p className="font-bicyclette">SAINT JOSEPH'S ARTS SOCIETY</p>
                 <p className="font-bicyclette">1401 HOWARD STREET, SAN FRANCISCO</p>
               </div>
-            </>
-          ) : (
-            <>
+            </> : <>
               <h1 className="text-5xl md:text-6xl font-din tracking-wide mb-4 uppercase">
                 A Decade of Determination, Disruption & Dinner Dilemmas
               </h1>
@@ -121,21 +103,12 @@ export default function EventLayout() {
               <p className="text-xl md:text-2xl font-bicyclette mb-8">
                 PLEASE RSVP BELOW
               </p>
-            </>
-          )}
+            </>}
         </div>
       </header>
 
       <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col sm:flex-row justify-between items-center mb-8 bg-anniversary-purple/90 p-6 rounded-lg backdrop-blur-sm border border-anniversary-gold/20">
-          <div>
-            <h2 className="text-2xl font-din text-anniversary-gold uppercase">Welcome, {currentGuest.first_name}!</h2>
-            <p className="text-anniversary-lightgold">
-              You're invited to our {' '}
-              {currentGuest.invitation_type === 'full day' ? 'full day celebration' : 'evening gala'}
-            </p>
-          </div>
-        </div>
+        
 
         <Tabs defaultValue="details" className="w-full">
           <TabsList className="grid w-full grid-cols-4 mb-8 bg-anniversary-purple border border-anniversary-gold/30">
@@ -153,13 +126,10 @@ export default function EventLayout() {
           <TabsContent value="gallery" className="animate-fade-in">
             <PhotoGallery />
           </TabsContent>
-          {hasParty && (
-            <TabsContent value="party" className="animate-fade-in">
+          {hasParty && <TabsContent value="party" className="animate-fade-in">
               <PartyView guestId={currentGuest.id} partyId={currentGuest.party_id} />
-            </TabsContent>
-          )}
+            </TabsContent>}
         </Tabs>
       </div>
-    </div>
-  );
+    </div>;
 }
