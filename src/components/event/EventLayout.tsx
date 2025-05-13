@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -25,7 +24,6 @@ export default function EventLayout() {
   };
   const isAdmin = currentGuest.invitation_type === 'admin';
   const hasParty = !!currentGuest.party_id;
-  
   return <div className="min-h-screen bg-anniversary-purple">
       <div className="bg-anniversary-purple py-2 px-4 border-b border-anniversary-gold/10">
         <div className="container mx-auto flex justify-end">
