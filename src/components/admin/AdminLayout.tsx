@@ -71,26 +71,28 @@ export default function AdminLayout() {
 
       <main className="container mx-auto py-8 px-4">
         <Tabs defaultValue="guests" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-8 bg-transparent">
-            <TabsTrigger 
-              value="guests" 
-              className="data-[state=active]:bg-[#C9A95B] data-[state=active]:text-anniversary-purple"
-            >
-              Guest Management
-            </TabsTrigger>
-            <TabsTrigger 
-              value="content" 
-              className="data-[state=active]:bg-[#C9A95B] data-[state=active]:text-anniversary-purple"
-            >
-              Content Management
-            </TabsTrigger>
-            <TabsTrigger 
-              value="rsvp" 
-              className="data-[state=active]:bg-[#C9A95B] data-[state=active]:text-anniversary-purple"
-            >
-              RSVP Overview
-            </TabsTrigger>
-          </TabsList>
+          <div className="flex justify-center w-full">
+            <TabsList className="mb-8 bg-transparent">
+              <TabsTrigger 
+                value="guests" 
+                className="data-[state=active]:bg-[#C9A95B] data-[state=active]:text-anniversary-purple"
+              >
+                Guest Management
+              </TabsTrigger>
+              <TabsTrigger 
+                value="content" 
+                className="data-[state=active]:bg-[#C9A95B] data-[state=active]:text-anniversary-purple"
+              >
+                Content Management
+              </TabsTrigger>
+              <TabsTrigger 
+                value="rsvp" 
+                className="data-[state=active]:bg-[#C9A95B] data-[state=active]:text-anniversary-purple"
+              >
+                RSVP Overview
+              </TabsTrigger>
+            </TabsList>
+          </div>
           <TabsContent value="guests">
             <GuestManagement />
           </TabsContent>

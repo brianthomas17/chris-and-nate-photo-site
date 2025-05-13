@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -91,12 +90,14 @@ export default function EventLayout() {
 
       <div className="container mx-auto px-4 py-8">
         <Tabs defaultValue="details" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-8 bg-transparent">
-            <TabsTrigger value="details">Event Details</TabsTrigger>
-            <TabsTrigger value="rsvp">RSVP</TabsTrigger>
-            <TabsTrigger value="gallery">Photo Gallery</TabsTrigger>
-            {hasParty && <TabsTrigger value="party">Your Party</TabsTrigger>}
-          </TabsList>
+          <div className="flex justify-center w-full">
+            <TabsList className="mb-8 bg-transparent">
+              <TabsTrigger value="details">Event Details</TabsTrigger>
+              <TabsTrigger value="rsvp">RSVP</TabsTrigger>
+              <TabsTrigger value="gallery">Photo Gallery</TabsTrigger>
+              {hasParty && <TabsTrigger value="party">Your Party</TabsTrigger>}
+            </TabsList>
+          </div>
           <TabsContent value="details" className="animate-fade-in">
             <ContentSections invitationType={currentGuest.invitation_type} />
           </TabsContent>
