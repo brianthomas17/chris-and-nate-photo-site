@@ -1,7 +1,6 @@
 
 import { useContent } from "@/context/ContentContext";
 import { InvitationType } from "@/types";
-import { Card, CardContent } from "@/components/ui/card";
 
 interface ContentSectionsProps {
   invitationType: InvitationType;
@@ -24,7 +23,7 @@ export default function ContentSections({ invitationType }: ContentSectionsProps
       {visibleSections.map((section) => (
         <div key={section.id} className="text-center">
           <div
-            className="prose prose-headings:text-anniversary-gold prose-p:text-white prose-li:text-white max-w-none"
+            className="prose prose-headings:text-anniversary-gold prose-p:text-white prose-li:text-white prose-strong:text-white max-w-none text-white"
             dangerouslySetInnerHTML={{ __html: section.content }}
           />
         </div>
