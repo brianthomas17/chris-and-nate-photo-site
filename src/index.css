@@ -1,6 +1,7 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap');
 
+/* Define the custom fonts with proper paths and formats */
 @font-face {
   font-family: 'DIN Condensed Bold';
   src: url('/fonts/DIN Condensed Bold.woff2') format('woff2'),
@@ -8,6 +9,7 @@
   font-weight: bold;
   font-style: normal;
   font-display: swap;
+  font-variant: normal;
 }
 
 @font-face {
@@ -72,11 +74,15 @@
   }
 
   body {
-    @apply bg-anniversary-purple text-foreground font-bicyclette;
+    @apply bg-anniversary-purple text-foreground;
+    font-family: 'Bicyclette-Light', sans-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-din text-anniversary-gold;
+    font-family: 'DIN Condensed Bold', Arial, sans-serif !important;
+    color: #D4AF37;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
   }
   
   /* Circuit pattern for background - used in various components */
@@ -104,7 +110,7 @@
 
 /* Explicit font classes with !important to ensure they override any other styles */
 .font-din {
-  font-family: 'DIN Condensed Bold', sans-serif !important;
+  font-family: 'DIN Condensed Bold', Arial, sans-serif !important;
   letter-spacing: 0.03em;
   text-transform: uppercase;
 }
@@ -115,7 +121,7 @@
 
 /* Add some enhanced typography styles with explicit font family */
 .heading-xl {
-  font-family: 'DIN Condensed Bold', sans-serif !important;
+  font-family: 'DIN Condensed Bold', Arial, sans-serif !important;
   font-size: 4rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -124,7 +130,7 @@
 }
 
 .heading-lg {
-  font-family: 'DIN Condensed Bold', sans-serif !important;
+  font-family: 'DIN Condensed Bold', Arial, sans-serif !important;
   font-size: 3rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
