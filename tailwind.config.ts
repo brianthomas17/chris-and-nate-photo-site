@@ -67,8 +67,8 @@ export default {
 					navy: '#1A2238',
 					cream: '#F5F5DC',
 					burgundy: '#800020',
-					purple: '#564077', // Added deep purple from the design
-					lightgold: '#d9c172' // Added lighter gold from the design
+					purple: '#543A64', // Updated purple color
+					lightgold: '#d9c172'
 				}
 			},
 			borderRadius: {
