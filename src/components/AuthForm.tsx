@@ -112,13 +112,13 @@ export default function AuthForm() {
             ? "animate-[fade-in_1.5s_ease-out_forwards]" 
             : ""
         }`}>
-          <Card className="border-anniversary-gold border-2 bg-anniversary-purple/90 backdrop-blur-md">
+          <Card className="bg-anniversary-purple/90 backdrop-blur-md shadow-[0_8px_20px_rgba(0,0,0,0.3)]">
             <CardContent className="pt-6">
               <form onSubmit={handleSubmit}>
                 <div className="grid w-full items-center gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="email" className="text-anniversary-gold">Enter Your Email For Access</Label>
-                    <Input id="email" type="email" placeholder="your.email@example.com" value={email} onChange={e => setEmail(e.target.value)} className={`border-anniversary-gold/50 bg-anniversary-purple/50 text-white placeholder:text-anniversary-gold/50 ${formError ? 'border-red-500' : ''}`} />
+                    <Input id="email" type="email" placeholder="your.email@example.com" value={email} onChange={e => setEmail(e.target.value)} className={`bg-anniversary-purple/50 text-white placeholder:text-anniversary-gold/50 ${formError ? 'border-red-500' : ''}`} />
                     {formError && <div className="flex items-center gap-2 text-sm text-red-500 mt-1">
                         <AlertCircle size={16} />
                         <span>{formError}</span>
