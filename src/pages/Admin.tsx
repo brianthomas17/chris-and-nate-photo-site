@@ -1,54 +1,80 @@
 
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useAuth } from "@/context/AuthContext";
 import AdminLayout from "@/components/admin/AdminLayout";
-import GuestManagement from "@/components/admin/GuestManagement";
-import RSVPOverview from "@/components/admin/RSVPOverview";
-import ContentManagement from "@/components/admin/ContentManagement";
-import CommunicationsManagement from "@/components/admin/CommunicationsManagement";
+import { Button } from "@/components/ui/button";
+import { seedTestAccounts } from "@/utils/seedTestAccounts";
+import { useState, useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/context/AuthContext";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const Admin = () => {
-  const [activeTab, setActiveTab] = useState<string>("guests");
+  const [isSeeding, setIsSeeding] = useState(false);
+  const { toast } = useToast();
+  const { currentGuest, isLoading } = useAuth();
   const navigate = useNavigate();
-  const { currentGuest } = useAuth();
   
+  // Use useEffect for navigation to prevent issues with multiple renders
   useEffect(() => {
-    if (!currentGuest) {
-      navigate("/login");
+    // Make sure auth is loaded before checking
+    if (!isLoading) {
+      // Redirect if not logged in
+      if (!currentGuest) {
+        navigate('/', { replace: true });
+        return;
+      }
+      
+      // Redirect if not admin
+      if (currentGuest.invitation_type !== 'admin') {
+        navigate('/', { replace: true });
+        return;
+      }
     }
-  }, [currentGuest, navigate]);
+  }, [currentGuest, isLoading, navigate]);
+
+  // If still loading auth, show nothing
+  if (isLoading) {
+    return null;
+  }
+  
+  // If not admin or not logged in (before redirect happens), don't render
+  if (!currentGuest || currentGuest.invitation_type !== 'admin') {
+    return null;
+  }
+
+  const handleSeedTestAccounts = async () => {
+    setIsSeeding(true);
+    try {
+      await seedTestAccounts();
+      toast({
+        title: "Success",
+        description: "Test accounts have been seeded successfully.",
+      });
+    } catch (error) {
+      console.error("Error seeding test accounts:", error);
+      toast({
+        title: "Error",
+        description: "Failed to seed test accounts.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSeeding(false);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-anniversary-purple">
-      <div className="flex flex-col flex-1 overflow-hidden">
-        <Tabs
-          value={activeTab}
-          onValueChange={setActiveTab}
-          className="w-full"
+    <>
+      <AdminLayout />
+      <div className="fixed bottom-4 right-4">
+        <Button 
+          onClick={handleSeedTestAccounts}
+          disabled={isSeeding}
+          variant="outline"
+          className="bg-white/80 hover:bg-white"
         >
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="guests">Guests</TabsTrigger>
-            <TabsTrigger value="rsvps">RSVPs</TabsTrigger>
-            <TabsTrigger value="content">Content</TabsTrigger>
-            <TabsTrigger value="communications">Communications</TabsTrigger>
-          </TabsList>
-          <TabsContent value="guests">
-            <GuestManagement />
-          </TabsContent>
-          <TabsContent value="rsvps">
-            <RSVPOverview />
-          </TabsContent>
-          <TabsContent value="content">
-            <ContentManagement />
-          </TabsContent>
-          <TabsContent value="communications">
-            <CommunicationsManagement />
-          </TabsContent>
-        </Tabs>
+          {isSeeding ? "Seeding..." : "Seed Test Accounts"}
+        </Button>
       </div>
-    </div>
+    </>
   );
 };
 
