@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,8 +14,18 @@ export default function AuthForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState('');
   const [seedStatus, setSeedStatus] = useState<'idle' | 'seeding' | 'seeded' | 'error'>('idle');
+  const [showLoginForm, setShowLoginForm] = useState(false);
   const { login } = useAuth();
   const { toast } = useToast();
+
+  // Show login form after logo animation completes
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowLoginForm(true);
+    }, 800); // Wait for logo animation to almost complete
+    
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleSeedTestAccounts = async () => {
     setSeedStatus('seeding');
@@ -85,41 +96,46 @@ export default function AuthForm() {
       backgroundImage: "url('/lovable-uploads/12cc45f0-9dd0-4cdf-aebd-ad9001c74e51.png')"
     }}></div>
       
-      <div className="w-full max-w-md animate-fade-in relative z-10 px-4">
-        <div className="text-center mb-8">
-          {/* Add the uploaded logo image above the login form */}
+      <div className="w-full max-w-md relative z-10 px-4 flex flex-col items-center">
+        {/* Logo with an entry animation */}
+        <div className="text-center mb-8 animate-[scale-in_0.8s_ease-out]">
           <img 
             src="/lovable-uploads/0bd6c2ac-82dc-4943-b35c-d640385e3fff.png" 
             alt="Circuit Board Logo" 
-            className="w-48 h-48 mx-auto mb-6"
+            className="w-64 h-64 mx-auto mb-6" // Increased size from w-48 h-48 to w-64 h-64
           />
         </div>
         
-        <Card className="border-anniversary-gold border-2 bg-anniversary-purple/90 backdrop-blur-md">
-          
-          <CardContent className="pt-6">
-            <form onSubmit={handleSubmit}>
-              <div className="grid w-full items-center gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="text-anniversary-gold">Enter Your Email For Access</Label>
-                  <Input id="email" type="email" placeholder="your.email@example.com" value={email} onChange={e => setEmail(e.target.value)} className={`border-anniversary-gold/50 bg-anniversary-purple/50 text-white placeholder:text-anniversary-gold/50 ${formError ? 'border-red-500' : ''}`} />
-                  {formError && <div className="flex items-center gap-2 text-sm text-red-500 mt-1">
-                      <AlertCircle size={16} />
-                      <span>{formError}</span>
-                    </div>}
+        {/* Login form with animation that triggers after logo animation */}
+        <div className={`w-full transform transition-all duration-500 ${
+          showLoginForm 
+            ? "opacity-100 translate-y-0" 
+            : "opacity-0 translate-y-10"
+        }`}>
+          <Card className="border-anniversary-gold border-2 bg-anniversary-purple/90 backdrop-blur-md">
+            <CardContent className="pt-6">
+              <form onSubmit={handleSubmit}>
+                <div className="grid w-full items-center gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="email" className="text-anniversary-gold">Enter Your Email For Access</Label>
+                    <Input id="email" type="email" placeholder="your.email@example.com" value={email} onChange={e => setEmail(e.target.value)} className={`border-anniversary-gold/50 bg-anniversary-purple/50 text-white placeholder:text-anniversary-gold/50 ${formError ? 'border-red-500' : ''}`} />
+                    {formError && <div className="flex items-center gap-2 text-sm text-red-500 mt-1">
+                        <AlertCircle size={16} />
+                        <span>{formError}</span>
+                      </div>}
+                  </div>
                 </div>
-              </div>
-              <div className="mt-6">
-                <Button type="submit" className="w-full bg-anniversary-gold hover:bg-anniversary-gold/90 text-black" disabled={isSubmitting}>
-                  {isSubmitting ? <span className="flex items-center">
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Checking...
-                    </span> : "Continue"}
-                </Button>
-              </div>
-            </form>
-          </CardContent>
-          
-        </Card>
+                <div className="mt-6">
+                  <Button type="submit" className="w-full bg-anniversary-gold hover:bg-anniversary-gold/90 text-black" disabled={isSubmitting}>
+                    {isSubmitting ? <span className="flex items-center">
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Checking...
+                      </span> : "Continue"}
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>;
 }
