@@ -3,7 +3,6 @@ import { useState } from "react";
 import { useGuests } from "@/context/GuestContext";
 import { Guest } from "@/types";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
@@ -46,26 +45,27 @@ export default function RSVPForm({ guest }: RSVPFormProps) {
   };
 
   return (
-    <div className="max-w-xl mx-auto">
-      <Card className="shadow-lg border-anniversary-gold/30">
-        <CardHeader className="bg-anniversary-navy text-white">
-          <CardTitle className="text-2xl">RSVP</CardTitle>
-          <CardDescription className="text-white/80">
+    <div className="max-w-xl mx-auto text-center">
+      <div className="bg-transparent text-white">
+        <div className="text-center mb-6">
+          <h2 className="text-2xl font-din text-anniversary-gold">RSVP</h2>
+          <p className="text-white/80">
             {hasResponded ? "Update your response" : "Let us know if you can make it"}
-          </CardDescription>
-        </CardHeader>
-        <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-6 pt-6">
+          </p>
+        </div>
+        
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-6 pt-4">
             <div className="space-y-2">
-              <Label>Will you be attending?</Label>
-              <RadioGroup value={attending ? "yes" : "no"} onValueChange={(v) => setAttending(v === "yes")}>
+              <Label className="text-white">Will you be attending?</Label>
+              <RadioGroup value={attending ? "yes" : "no"} onValueChange={(v) => setAttending(v === "yes")} className="flex flex-col items-center space-y-2">
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="yes" id="attending-yes" />
-                  <Label htmlFor="attending-yes">Yes, I'll be there!</Label>
+                  <Label htmlFor="attending-yes" className="text-white">Yes, I'll be there!</Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="no" id="attending-no" />
-                  <Label htmlFor="attending-no">No, I can't make it</Label>
+                  <Label htmlFor="attending-no" className="text-white">No, I can't make it</Label>
                 </div>
               </RadioGroup>
             </div>
@@ -73,8 +73,8 @@ export default function RSVPForm({ guest }: RSVPFormProps) {
             {attending && (
               <>
                 <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="plus-one">Will you bring a plus one?</Label>
+                  <div className="flex items-center justify-center space-x-4">
+                    <Label htmlFor="plus-one" className="text-white">Will you bring a plus one?</Label>
                     <Switch
                       id="plus-one"
                       checked={plusOne}
@@ -84,32 +84,35 @@ export default function RSVPForm({ guest }: RSVPFormProps) {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="dietary">Dietary Restrictions or Special Requirements</Label>
+                  <Label htmlFor="dietary" className="text-white">Dietary Restrictions or Special Requirements</Label>
                   <Textarea
                     id="dietary"
                     placeholder="Please let us know if you have any dietary restrictions or special requirements"
                     value={dietaryRestrictions}
                     onChange={(e) => setDietaryRestrictions(e.target.value)}
-                    className="min-h-[100px]"
+                    className="min-h-[100px] bg-white/10 text-white placeholder:text-white/50"
                   />
                 </div>
               </>
             )}
-          </CardContent>
-          <CardFooter className="bg-gray-50 flex justify-between">
-            <div className="text-sm text-muted-foreground">
-              {hasResponded ? "You can update your response until the deadline." : ""}
+          </div>
+          
+          <div className="flex justify-center pt-4">
+            <div className="flex flex-col items-center space-y-4">
+              <div className="text-sm text-white/70">
+                {hasResponded ? "You can update your response until the deadline." : ""}
+              </div>
+              <Button 
+                type="submit" 
+                className="bg-anniversary-gold hover:bg-anniversary-gold/90 text-black"
+                disabled={submitting}
+              >
+                {submitting ? "Submitting..." : (hasResponded ? "Update Response" : "Submit RSVP")}
+              </Button>
             </div>
-            <Button 
-              type="submit" 
-              className="bg-anniversary-gold hover:bg-anniversary-gold/90 text-black"
-              disabled={submitting}
-            >
-              {submitting ? "Submitting..." : (hasResponded ? "Update Response" : "Submit RSVP")}
-            </Button>
-          </CardFooter>
+          </div>
         </form>
-      </Card>
+      </div>
     </div>
   );
 }
