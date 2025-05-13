@@ -50,3 +50,15 @@ export interface RSVP {
   created_at?: string;
   updated_at?: string;
 }
+
+export interface Communication {
+  id: string;
+  title: string;
+  trigger: string;
+  send_date: string;
+  prompt?: string;
+  copy?: string;
+  code?: string;
+  created_at?: string;
+  updated_at?: string;
+}
