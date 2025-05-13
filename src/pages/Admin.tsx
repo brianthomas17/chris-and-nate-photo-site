@@ -21,7 +21,7 @@ const Admin = () => {
   }, [currentGuest, navigate]);
 
   return (
-    <AdminLayout>
+    <div className="min-h-screen bg-anniversary-purple">
       <div className="flex flex-col flex-1 overflow-hidden">
         <Tabs
           value={activeTab}
@@ -48,7 +48,7 @@ const Admin = () => {
           </TabsContent>
         </Tabs>
       </div>
-    </AdminLayout>
+    </div>
   );
 };
 
