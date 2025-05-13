@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -49,7 +48,7 @@ export default function EventLayout() {
       height: "80vh"
     }}>
         <div className="container mx-auto text-center relative z-10 flex flex-col justify-center items-center h-full px-4">
-          <h3 className="text-xl md:text-2xl font-bicyclette mb-6 text-[#C9A95B]">
+          <h3 className="text-xl md:text-3xl font-bicyclette mb-10 text-[#C9A95B]">
             CHRIS & NATE INVITE YOU TO
           </h3>
           <h1 className="text-4xl md:text-6xl font-din tracking-wide mb-4 uppercase text-[#C9A95B]">
