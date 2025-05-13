@@ -53,14 +53,14 @@ export default function EventLayout() {
       <header className="bg-anniversary-purple text-[#C9A95B] relative overflow-hidden" style={{
         height: "80vh"
       }}>
-        {/* Top circuit frame */}
+        {/* Top circuit frame - swapped image */}
         <div className="absolute top-0 left-0 right-0 w-full h-[100px] bg-no-repeat bg-contain bg-center" 
-            style={{ backgroundImage: "url('/lovable-uploads/12cc45f0-9dd0-4cdf-aebd-ad9001c74e51.png')" }}>
+            style={{ backgroundImage: "url('/lovable-uploads/f1b5eb4b-16d9-413b-9947-8c73368a63d0.png')" }}>
         </div>
         
-        {/* Bottom circuit frame */}
+        {/* Bottom circuit frame - swapped image */}
         <div className="absolute bottom-0 left-0 right-0 w-full h-[100px] bg-no-repeat bg-contain bg-center" 
-            style={{ backgroundImage: "url('/lovable-uploads/f1b5eb4b-16d9-413b-9947-8c73368a63d0.png')" }}>
+            style={{ backgroundImage: "url('/lovable-uploads/12cc45f0-9dd0-4cdf-aebd-ad9001c74e51.png')" }}>
         </div>
         
         <div className="container mx-auto text-center relative z-10 flex flex-col justify-center items-center h-full px-4">
