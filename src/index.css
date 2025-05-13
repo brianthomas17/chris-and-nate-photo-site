@@ -92,6 +92,41 @@
     background-position: center;
     background-size: contain;
   }
+  
+  /* Circuit frame classes */
+  .circuit-frame-left {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 64px;
+    background-image: url('/lovable-uploads/8d430a04-011a-4890-9e75-5a6d49405fa7.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+  
+  .circuit-frame-right {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 64px;
+    background-image: url('/lovable-uploads/dc6a3320-6b94-4c17-b4cf-59f769c02005.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+  
+  @media (min-width: 768px) {
+    .circuit-frame-left, .circuit-frame-right {
+      width: 96px;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .circuit-frame-left, .circuit-frame-right {
+      width: 128px;
+    }
+  }
 }
 
 /* Animations */

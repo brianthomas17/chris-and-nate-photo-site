@@ -1,3 +1,4 @@
+
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -43,10 +44,20 @@ export default function EventLayout() {
         </div>
       </div>
       
-      {/* Hero Section with fixed invite text */}
-      <header className="bg-anniversary-purple text-[#C9A95B] relative overflow-hidden circuit-pattern" style={{
+      {/* Hero Section with circuit pattern frames */}
+      <header className="bg-anniversary-purple text-[#C9A95B] relative overflow-hidden" style={{
       height: "80vh"
     }}>
+        {/* Left circuit frame */}
+        <div className="absolute top-0 left-0 h-full w-24 md:w-36 lg:w-48 xl:w-64 bg-no-repeat bg-cover" 
+            style={{ backgroundImage: "url('/lovable-uploads/8d430a04-011a-4890-9e75-5a6d49405fa7.png')" }}>
+        </div>
+        
+        {/* Right circuit frame */}
+        <div className="absolute top-0 right-0 h-full w-24 md:w-36 lg:w-48 xl:w-64 bg-no-repeat bg-cover" 
+            style={{ backgroundImage: "url('/lovable-uploads/dc6a3320-6b94-4c17-b4cf-59f769c02005.png')" }}>
+        </div>
+        
         <div className="container mx-auto text-center relative z-10 flex flex-col justify-center items-center h-full px-4">
           <h3 className="text-xl md:text-3xl font-bicyclette mb-10 text-[#C9A95B]">
             CHRIS & NATE INVITE YOU TO

@@ -52,8 +52,18 @@ export default function AdminLayout() {
         </div>
       </div>
       
-      <header className="bg-anniversary-purple text-[#C9A95B] p-4 border-b border-[#C9A95B]/30 circuit-pattern">
-        <div className="container mx-auto">
+      <header className="bg-anniversary-purple text-[#C9A95B] p-4 border-b border-[#C9A95B]/30 relative overflow-hidden">
+        {/* Left circuit frame */}
+        <div className="absolute top-0 left-0 h-full w-24 md:w-36 bg-no-repeat bg-cover" 
+            style={{ backgroundImage: "url('/lovable-uploads/8d430a04-011a-4890-9e75-5a6d49405fa7.png')" }}>
+        </div>
+        
+        {/* Right circuit frame */}
+        <div className="absolute top-0 right-0 h-full w-24 md:w-36 bg-no-repeat bg-cover" 
+            style={{ backgroundImage: "url('/lovable-uploads/dc6a3320-6b94-4c17-b4cf-59f769c02005.png')" }}>
+        </div>
+        
+        <div className="container mx-auto relative z-10">
           <h1 className="text-3xl font-din uppercase tracking-wide">Anniversary Admin</h1>
         </div>
       </header>
