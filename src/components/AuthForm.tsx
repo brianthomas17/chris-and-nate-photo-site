@@ -97,20 +97,20 @@ export default function AuthForm() {
     }}></div>
       
       <div className="w-full max-w-md relative z-10 px-4 flex flex-col items-center">
-        {/* Logo with an entry animation */}
-        <div className="text-center mb-8 animate-[scale-in_0.8s_ease-out]">
+        {/* Logo with a fade-in animation */}
+        <div className="text-center mb-8 opacity-0 animate-[fade-in_1.2s_ease-out_forwards]">
           <img 
             src="/lovable-uploads/0bd6c2ac-82dc-4943-b35c-d640385e3fff.png" 
             alt="Circuit Board Logo" 
-            className="w-64 h-64 mx-auto mb-6" // Increased size from w-48 h-48 to w-64 h-64
+            className="w-64 h-64 mx-auto mb-6"
           />
         </div>
         
-        {/* Login form with animation that triggers after logo animation */}
-        <div className={`w-full transform transition-all duration-500 ${
+        {/* Login form with a delayed fade-in animation */}
+        <div className={`w-full opacity-0 ${
           showLoginForm 
-            ? "opacity-100 translate-y-0" 
-            : "opacity-0 translate-y-10"
+            ? "animate-[fade-in_1.5s_ease-out_forwards]" 
+            : ""
         }`}>
           <Card className="border-anniversary-gold border-2 bg-anniversary-purple/90 backdrop-blur-md">
             <CardContent className="pt-6">
