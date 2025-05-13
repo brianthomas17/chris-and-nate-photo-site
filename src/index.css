@@ -93,39 +93,31 @@
     background-size: contain;
   }
   
-  /* Circuit frame classes - updated with correct image URLs */
-  .circuit-frame-left {
+  /* Circuit frame classes - top and bottom */
+  .circuit-frame-top {
     position: absolute;
     top: 0;
     left: 0;
-    height: 100%;
-    width: 64px;
-    background-image: url('/lovable-uploads/dc6a3320-6b94-4c17-b4cf-59f769c02005.png');
-    background-size: cover;
-    background-repeat: no-repeat;
-  }
-  
-  .circuit-frame-right {
-    position: absolute;
-    top: 0;
     right: 0;
-    height: 100%;
-    width: 64px;
-    background-image: url('/lovable-uploads/8d430a04-011a-4890-9e75-5a6d49405fa7.png');
-    background-size: cover;
+    width: 100%;
+    height: 100px;
+    background-image: url('/lovable-uploads/12cc45f0-9dd0-4cdf-aebd-ad9001c74e51.png');
+    background-size: contain;
+    background-position: center;
     background-repeat: no-repeat;
   }
   
-  @media (min-width: 768px) {
-    .circuit-frame-left, .circuit-frame-right {
-      width: 96px;
-    }
-  }
-  
-  @media (min-width: 1024px) {
-    .circuit-frame-left, .circuit-frame-right {
-      width: 128px;
-    }
+  .circuit-frame-bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100px;
+    background-image: url('/lovable-uploads/f1b5eb4b-16d9-413b-9947-8c73368a63d0.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
   }
 }
 
