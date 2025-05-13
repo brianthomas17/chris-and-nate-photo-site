@@ -54,12 +54,12 @@ export default function EventLayout() {
         height: "80vh"
       }}>
         {/* Top circuit frame - swapped image */}
-        <div className="absolute top-0 left-0 right-0 w-full h-[100px] bg-no-repeat bg-contain bg-center" 
+        <div className="absolute top-0 left-0 right-0 w-full h-[150px] bg-no-repeat bg-contain bg-center" 
             style={{ backgroundImage: "url('/lovable-uploads/f1b5eb4b-16d9-413b-9947-8c73368a63d0.png')" }}>
         </div>
         
         {/* Bottom circuit frame - swapped image */}
-        <div className="absolute bottom-0 left-0 right-0 w-full h-[100px] bg-no-repeat bg-contain bg-center" 
+        <div className="absolute bottom-0 left-0 right-0 w-full h-[150px] bg-no-repeat bg-contain bg-center" 
             style={{ backgroundImage: "url('/lovable-uploads/12cc45f0-9dd0-4cdf-aebd-ad9001c74e51.png')" }}>
         </div>
         
