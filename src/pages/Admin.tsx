@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -7,18 +8,17 @@ import GuestManagement from "@/components/admin/GuestManagement";
 import RSVPOverview from "@/components/admin/RSVPOverview";
 import ContentManagement from "@/components/admin/ContentManagement";
 import CommunicationsManagement from "@/components/admin/CommunicationsManagement";
-import SystemPromptManagement from "@/components/admin/SystemPromptManagement";
 
 const Admin = () => {
   const [activeTab, setActiveTab] = useState<string>("guests");
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { currentGuest } = useAuth();
   
   useEffect(() => {
-    if (!user) {
+    if (!currentGuest) {
       navigate("/login");
     }
-  }, [user, navigate]);
+  }, [currentGuest, navigate]);
 
   return (
     <AdminLayout>
@@ -28,12 +28,11 @@ const Admin = () => {
           onValueChange={setActiveTab}
           className="w-full"
         >
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="guests">Guests</TabsTrigger>
             <TabsTrigger value="rsvps">RSVPs</TabsTrigger>
             <TabsTrigger value="content">Content</TabsTrigger>
             <TabsTrigger value="communications">Communications</TabsTrigger>
-            <TabsTrigger value="prompts">System Prompts</TabsTrigger>
           </TabsList>
           <TabsContent value="guests">
             <GuestManagement />
@@ -46,9 +45,6 @@ const Admin = () => {
           </TabsContent>
           <TabsContent value="communications">
             <CommunicationsManagement />
-          </TabsContent>
-          <TabsContent value="prompts">
-            <SystemPromptManagement />
           </TabsContent>
         </Tabs>
       </div>
