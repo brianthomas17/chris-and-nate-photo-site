@@ -80,9 +80,7 @@ export default function EventLayout() {
               <p className="text-xl text-[#C9A95B] font-bicyclette mb-8">
                 THIS ONE'S DIFFERENT...
               </p>
-              <h2 className="text-3xl md:text-5xl font-din mb-6 text-[#C9A95B]">
-                8.16.25 • 4 PM
-              </h2>
+              <h2 className="text-3xl md:text-5xl font-din mb-6 text-[#C9A95B]">8.16.25   •   4 PM</h2>
               <p className="text-xl md:text-2xl font-bicyclette mb-8 text-[#C9A95B]">
                 MORE THAN AN EVENT — IT'S A MOMENT
               </p>
