@@ -1,3 +1,4 @@
+
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -31,13 +32,13 @@ export default function EventLayout() {
         <div className="container mx-auto flex justify-end">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="flex items-center gap-1 text-anniversary-gold hover:text-anniversary-lightgold hover:bg-anniversary-gold/20">
+              <Button variant="ghost" className="flex items-center gap-1 text-[#C9A95B] hover:text-[#C9A95B]/80 hover:bg-[#C9A95B]/20">
                 {currentGuest.first_name}
                 <ChevronDown size={16} />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="bg-anniversary-purple border border-anniversary-gold/30 text-anniversary-gold">
-              <DropdownMenuItem onClick={handleLogout} className="cursor-pointer hover:bg-anniversary-gold/20 hover:text-anniversary-lightgold">
+            <DropdownMenuContent align="end" className="bg-anniversary-purple border border-[#C9A95B]/30 text-[#C9A95B]">
+              <DropdownMenuItem onClick={handleLogout} className="cursor-pointer hover:bg-[#C9A95B]/20 hover:text-[#C9A95B]/80">
                 Logout
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -46,61 +47,61 @@ export default function EventLayout() {
       </div>
       
       {/* Dynamic Hero Section based on RSVP status */}
-      <header className="bg-anniversary-purple text-anniversary-lightgold relative overflow-hidden circuit-pattern" style={{
+      <header className="bg-anniversary-purple text-[#C9A95B] relative overflow-hidden circuit-pattern" style={{
       height: "80vh"
     }}>
         <div className="container mx-auto text-center relative z-10 flex flex-col justify-center items-center h-full px-4">
           {isAttending ? <>
-              <h3 className="text-xl md:text-2xl font-bicyclette mb-2 text-anniversary-gold">
+              <h3 className="text-xl md:text-2xl font-bicyclette mb-2 text-[#C9A95B]">
                 {currentGuest.first_name}, Chris & Nate are so excited you are joining them for
               </h3>
-              <h1 className="text-4xl md:text-6xl font-din tracking-wide mb-4 uppercase">
+              <h1 className="text-4xl md:text-6xl font-din tracking-wide mb-4 uppercase text-[#C9A95B]">
                 A Decade of Determination, Disruption & Dinner Dilemmas
               </h1>
-              <p className="text-xl text-anniversary-lightgold font-bicyclette mb-8">
+              <p className="text-xl text-[#C9A95B] font-bicyclette mb-8">
                 THIS ONE'S DIFFERENT...
               </p>
-              <h2 className="text-3xl md:text-5xl font-din mb-6">
+              <h2 className="text-3xl md:text-5xl font-din mb-6 text-[#C9A95B]">
                 8.16.25
               </h2>
-              <p className="text-xl md:text-2xl font-bicyclette mb-8">
+              <p className="text-xl md:text-2xl font-bicyclette mb-8 text-[#C9A95B]">
                 MORE THAN AN EVENT — IT'S A MOMENT
               </p>
-              <div className="text-anniversary-gold">
+              <div className="text-[#C9A95B]">
                 <p className="font-bicyclette">SAINT JOSEPH'S ARTS SOCIETY</p>
                 <p className="font-bicyclette">1401 HOWARD STREET, SAN FRANCISCO</p>
               </div>
             </> : hasResponded && !isAttending ? <>
-              <h3 className="text-xl md:text-2xl font-bicyclette mb-2 text-anniversary-gold">
+              <h3 className="text-xl md:text-2xl font-bicyclette mb-2 text-[#C9A95B]">
                 {currentGuest.first_name}, Have your plans changed? Chris & Nate would still love you to join them for
               </h3>
-              <h1 className="text-4xl md:text-6xl font-din tracking-wide mb-4 uppercase">
+              <h1 className="text-4xl md:text-6xl font-din tracking-wide mb-4 uppercase text-[#C9A95B]">
                 A Decade of Determination, Disruption & Dinner Dilemmas
               </h1>
-              <p className="text-xl text-anniversary-lightgold font-bicyclette mb-8">
+              <p className="text-xl text-[#C9A95B] font-bicyclette mb-8">
                 THIS ONE'S DIFFERENT...
               </p>
-              <h2 className="text-3xl md:text-5xl font-din mb-6">
+              <h2 className="text-3xl md:text-5xl font-din mb-6 text-[#C9A95B]">
                 8.16.25 • 4 PM
               </h2>
-              <p className="text-xl md:text-2xl font-bicyclette mb-8">
+              <p className="text-xl md:text-2xl font-bicyclette mb-8 text-[#C9A95B]">
                 MORE THAN AN EVENT — IT'S A MOMENT
               </p>
-              <div className="text-anniversary-gold">
+              <div className="text-[#C9A95B]">
                 <p className="font-bicyclette">SAINT JOSEPH'S ARTS SOCIETY</p>
                 <p className="font-bicyclette">1401 HOWARD STREET, SAN FRANCISCO</p>
               </div>
             </> : <>
-              <h1 className="text-5xl md:text-6xl font-din tracking-wide mb-4 uppercase">
+              <h1 className="text-5xl md:text-6xl font-din tracking-wide mb-4 uppercase text-[#C9A95B]">
                 A Decade of Determination, Disruption & Dinner Dilemmas
               </h1>
-              <p className="text-xl text-anniversary-lightgold font-bicyclette mb-8">
+              <p className="text-xl text-[#C9A95B] font-bicyclette mb-8">
                 THIS ONE'S DIFFERENT...
               </p>
-              <h2 className="text-3xl md:text-5xl font-din mb-6">
+              <h2 className="text-3xl md:text-5xl font-din mb-6 text-[#C9A95B]">
                 8.16.25
               </h2>
-              <p className="text-xl md:text-2xl font-bicyclette mb-8">
+              <p className="text-xl md:text-2xl font-bicyclette mb-8 text-[#C9A95B]">
                 PLEASE RSVP BELOW
               </p>
             </>}
