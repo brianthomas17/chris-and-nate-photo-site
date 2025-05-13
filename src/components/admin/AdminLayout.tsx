@@ -27,28 +27,30 @@ export default function AdminLayout() {
     <div className="min-h-screen bg-anniversary-purple">
       <div className="bg-anniversary-purple py-2 px-4 border-b border-[#C9A95B]/10">
         <div className="container mx-auto flex justify-end">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button 
-                variant="ghost" 
-                className="flex items-center gap-1 text-[#C9A95B] hover:text-[#C9A95B]/80 hover:bg-[#C9A95B]/20"
+          <div className="ml-auto">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  className="flex items-center gap-1 text-[#C9A95B] hover:text-[#C9A95B]/80 hover:bg-[#C9A95B]/20"
+                >
+                  {currentGuest?.first_name}
+                  <ChevronDown size={16} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent 
+                align="end" 
+                className="bg-anniversary-purple border border-[#C9A95B]/30 text-[#C9A95B]"
               >
-                {currentGuest?.first_name}
-                <ChevronDown size={16} />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent 
-              align="end" 
-              className="bg-anniversary-purple border border-[#C9A95B]/30 text-[#C9A95B]"
-            >
-              <DropdownMenuItem 
-                onClick={handleLogout} 
-                className="cursor-pointer hover:bg-[#C9A95B]/20 hover:text-[#C9A95B]/80"
-              >
-                Logout
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                <DropdownMenuItem 
+                  onClick={handleLogout} 
+                  className="cursor-pointer hover:bg-[#C9A95B]/20 hover:text-[#C9A95B]/80"
+                >
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </div>
       
