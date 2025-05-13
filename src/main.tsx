@@ -3,8 +3,10 @@ import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
 
-// Load fonts immediately with improved robustness
-const fontLoader = async () => {
+// Load fonts and initialize app with improved error handling
+const initializeApp = async () => {
+  console.log("Starting app initialization");
+  
   try {
     // Create test elements for each font to verify loading
     const testDin = document.createElement('span');
@@ -20,38 +22,43 @@ const fontLoader = async () => {
     testBicyclette.style.visibility = 'hidden';
     testBicyclette.textContent = 'Font Test';
     document.body.appendChild(testBicyclette);
-
-    // Force font loading with a timeout
-    const fontPromise = document.fonts.ready.then(() => {
-      console.log("Fonts loaded successfully through document.fonts.ready");
-      document.body.removeChild(testDin);
-      document.body.removeChild(testBicyclette);
-      return true;
+    
+    // Force browser to load fonts
+    document.fonts.ready.then(() => {
+      console.log("All fonts loaded successfully via document.fonts.ready");
+      cleanupTestElements();
+    }).catch(err => {
+      console.warn("Font ready promise rejected:", err);
     });
     
-    // Fallback timeout in case fonts.ready never resolves
-    const timeoutPromise = new Promise(resolve => {
-      setTimeout(() => {
-        console.log("Font loading timed out, continuing with rendering");
-        if (document.body.contains(testDin)) {
-          document.body.removeChild(testDin);
-        }
-        if (document.body.contains(testBicyclette)) {
-          document.body.removeChild(testBicyclette);
-        }
-        resolve(false);
-      }, 2000); // 2 second timeout
-    });
+    // Cleanup function for test elements
+    const cleanupTestElements = () => {
+      if (document.body.contains(testDin)) {
+        document.body.removeChild(testDin);
+      }
+      if (document.body.contains(testBicyclette)) {
+        document.body.removeChild(testBicyclette);
+      }
+    };
     
-    // Race between font loading and timeout
-    await Promise.race([fontPromise, timeoutPromise]);
+    // Start rendering regardless of font state after a short delay
+    // This ensures the app shows up even if fonts are still loading
+    setTimeout(() => {
+      console.log("Initializing React application");
+      createRoot(document.getElementById("root")!).render(<App />);
+    }, 100);
+    
+    // Set a timeout to clean up test elements if fonts.ready never resolves
+    setTimeout(() => {
+      cleanupTestElements();
+    }, 3000);
+    
   } catch (err) {
-    console.error("Font loading issue:", err);
+    console.error("Error during initialization:", err);
+    // Ensure the app renders even if there's an error in font loading
+    createRoot(document.getElementById("root")!).render(<App />);
   }
-  
-  // Always render the app, even if fonts fail
-  createRoot(document.getElementById("root")!).render(<App />);
 };
 
-// Start loading fonts
-fontLoader();
+// Start initialization
+initializeApp();
