@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -72,7 +71,7 @@ export default function AdminLayout() {
 
       <main className="container mx-auto py-8 px-4">
         <Tabs defaultValue="guests" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-8 bg-anniversary-purple border border-[#C9A95B]/30">
+          <TabsList className="grid w-full grid-cols-3 mb-8 bg-transparent">
             <TabsTrigger 
               value="guests" 
               className="data-[state=active]:bg-[#C9A95B] data-[state=active]:text-anniversary-purple"

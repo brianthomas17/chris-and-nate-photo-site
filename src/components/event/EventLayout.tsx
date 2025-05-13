@@ -1,3 +1,4 @@
+
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -8,23 +9,29 @@ import PartyView from "./PartyView";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
+
 export default function EventLayout() {
   const {
     currentGuest,
     logout
   } = useAuth();
   const navigate = useNavigate();
+  
   if (!currentGuest) {
     navigate('/');
     return null;
   }
+  
   const handleLogout = () => {
     logout();
     navigate('/');
   };
+  
   const isAdmin = currentGuest.invitation_type === 'admin';
   const hasParty = !!currentGuest.party_id;
-  return <div className="min-h-screen bg-anniversary-purple">
+  
+  return (
+    <div className="min-h-screen bg-anniversary-purple">
       <div className="bg-anniversary-purple py-2 px-4 border-b border-anniversary-gold/10">
         <div className="container mx-auto flex justify-end">
           <div className="ml-auto">
@@ -84,11 +91,11 @@ export default function EventLayout() {
 
       <div className="container mx-auto px-4 py-8">
         <Tabs defaultValue="details" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-8 bg-anniversary-purple border border-anniversary-gold/30">
-            <TabsTrigger value="details" className="data-[state=active]:bg-anniversary-gold data-[state=active]:text-anniversary-purple">Event Details</TabsTrigger>
-            <TabsTrigger value="rsvp" className="data-[state=active]:bg-anniversary-gold data-[state=active]:text-anniversary-purple">RSVP</TabsTrigger>
-            <TabsTrigger value="gallery" className="data-[state=active]:bg-anniversary-gold data-[state=active]:text-anniversary-purple">Photo Gallery</TabsTrigger>
-            {hasParty && <TabsTrigger value="party" className="data-[state=active]:bg-anniversary-gold data-[state=active]:text-anniversary-purple">Your Party</TabsTrigger>}
+          <TabsList className="grid w-full grid-cols-4 mb-8 bg-transparent">
+            <TabsTrigger value="details">Event Details</TabsTrigger>
+            <TabsTrigger value="rsvp">RSVP</TabsTrigger>
+            <TabsTrigger value="gallery">Photo Gallery</TabsTrigger>
+            {hasParty && <TabsTrigger value="party">Your Party</TabsTrigger>}
           </TabsList>
           <TabsContent value="details" className="animate-fade-in">
             <ContentSections invitationType={currentGuest.invitation_type} />
@@ -104,5 +111,6 @@ export default function EventLayout() {
             </TabsContent>}
         </Tabs>
       </div>
-    </div>;
+    </div>
+  );
 }
