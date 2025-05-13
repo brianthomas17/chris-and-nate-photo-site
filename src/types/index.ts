@@ -1,4 +1,5 @@
 
+
 export type InvitationType = 'full day' | 'evening' | 'admin';
 
 export interface Guest {
@@ -56,6 +57,7 @@ export interface Communication {
   title: string;
   trigger: string;
   send_date: string;
+  invitation_type: InvitationType[];
   prompt?: string;
   copy?: string;
   code?: string;

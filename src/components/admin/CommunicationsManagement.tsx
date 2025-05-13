@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -9,15 +10,16 @@ import { useToast } from "@/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { PlusCircle, Pencil, Trash2 } from "lucide-react";
 import { format } from "date-fns";
-import { Communication } from "@/types";
+import { Communication, InvitationType } from "@/types";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+
 const CommunicationsManagement = () => {
   const [communications, setCommunications] = useState<Communication[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentCommunication, setCurrentCommunication] = useState<Communication | null>(null);
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
 
   // Form state
   const [title, setTitle] = useState("");
@@ -26,18 +28,20 @@ const CommunicationsManagement = () => {
   const [prompt, setPrompt] = useState("");
   const [copy, setCopy] = useState("");
   const [code, setCode] = useState("");
+  const [invitationTypes, setInvitationTypes] = useState<InvitationType[]>([]);
+
   useEffect(() => {
     fetchCommunications();
   }, []);
+
   const fetchCommunications = async () => {
     try {
       setIsLoading(true);
-      const {
-        data,
-        error
-      } = await supabase.from("communications").select("*").order("send_date", {
-        ascending: true
-      });
+      const { data, error } = await supabase
+        .from("communications")
+        .select("*")
+        .order("send_date", { ascending: true });
+      
       if (error) throw error;
       setCommunications(data || []);
     } catch (error) {
@@ -51,6 +55,7 @@ const CommunicationsManagement = () => {
       setIsLoading(false);
     }
   };
+
   const resetForm = () => {
     setTitle("");
     setTrigger("");
@@ -58,12 +63,15 @@ const CommunicationsManagement = () => {
     setPrompt("");
     setCopy("");
     setCode("");
+    setInvitationTypes([]);
     setCurrentCommunication(null);
   };
+
   const openCreateDialog = () => {
     resetForm();
     setIsDialogOpen(true);
   };
+
   const openEditDialog = (communication: Communication) => {
     setCurrentCommunication(communication);
     setTitle(communication.title);
@@ -72,30 +80,36 @@ const CommunicationsManagement = () => {
     setPrompt(communication.prompt || "");
     setCopy(communication.copy || "");
     setCode(communication.code || "");
+    setInvitationTypes(communication.invitation_type || []);
     setIsDialogOpen(true);
   };
+
   const handleSubmit = async () => {
     try {
-      if (!title || !trigger || !sendDate) {
+      if (!title || !trigger || !sendDate || invitationTypes.length === 0) {
         toast({
           title: "Missing fields",
-          description: "Please fill in all required fields",
+          description: "Please fill in all required fields including at least one invitation type",
           variant: "destructive"
         });
         return;
       }
+
       if (currentCommunication) {
         // Update existing communication
-        const {
-          error
-        } = await supabase.from("communications").update({
-          title,
-          trigger,
-          send_date: sendDate,
-          prompt,
-          copy,
-          code
-        }).eq("id", currentCommunication.id);
+        const { error } = await supabase
+          .from("communications")
+          .update({
+            title,
+            trigger,
+            send_date: sendDate,
+            prompt,
+            copy,
+            code,
+            invitation_type: invitationTypes
+          })
+          .eq("id", currentCommunication.id);
+
         if (error) throw error;
         toast({
           title: "Success",
@@ -103,22 +117,25 @@ const CommunicationsManagement = () => {
         });
       } else {
         // Create new communication
-        const {
-          error
-        } = await supabase.from("communications").insert({
-          title,
-          trigger,
-          send_date: sendDate,
-          prompt,
-          copy,
-          code
-        });
+        const { error } = await supabase
+          .from("communications")
+          .insert({
+            title,
+            trigger,
+            send_date: sendDate,
+            prompt,
+            copy,
+            code,
+            invitation_type: invitationTypes
+          });
+
         if (error) throw error;
         toast({
           title: "Success",
           description: "Communication created successfully"
         });
       }
+
       setIsDialogOpen(false);
       resetForm();
       fetchCommunications();
@@ -131,11 +148,14 @@ const CommunicationsManagement = () => {
       });
     }
   };
+
   const handleDelete = async (id: string) => {
     try {
-      const {
-        error
-      } = await supabase.from("communications").delete().eq("id", id);
+      const { error } = await supabase
+        .from("communications")
+        .delete()
+        .eq("id", id);
+
       if (error) throw error;
       toast({
         title: "Success",
@@ -151,6 +171,7 @@ const CommunicationsManagement = () => {
       });
     }
   };
+
   const formatDate = (dateString: string) => {
     try {
       return format(new Date(dateString), 'MMM dd, yyyy');
@@ -158,7 +179,26 @@ const CommunicationsManagement = () => {
       return dateString;
     }
   };
-  return <div className="space-y-6 text-[#C9A95B]">
+
+  const toggleInvitationType = (type: InvitationType) => {
+    setInvitationTypes(prev => {
+      if (prev.includes(type)) {
+        return prev.filter(t => t !== type);
+      } else {
+        return [...prev, type];
+      }
+    });
+  };
+
+  const formatInvitationTypes = (types: InvitationType[]) => {
+    return types.map(type => 
+      type === 'full day' ? 'Full Day' : 
+      type.charAt(0).toUpperCase() + type.slice(1)
+    ).join(', ');
+  };
+
+  return (
+    <div className="space-y-6 text-[#C9A95B]">
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-din uppercase tracking-wide">Communications Management</h2>
         <Button onClick={openCreateDialog} className="bg-[#C9A95B] text-anniversary-purple hover:bg-[#C9A95B]/90">
@@ -167,32 +207,49 @@ const CommunicationsManagement = () => {
         </Button>
       </div>
 
-      {isLoading ? <div className="flex justify-center py-8">
+      {isLoading ? (
+        <div className="flex justify-center py-8">
           <p>Loading communications...</p>
-        </div> : communications.length === 0 ? <div className="text-center py-8">
+        </div>
+      ) : communications.length === 0 ? (
+        <div className="text-center py-8">
           <p>No communications found. Create your first communication.</p>
-        </div> : <div className="rounded-md border border-[#C9A95B]/30 overflow-hidden">
+        </div>
+      ) : (
+        <div className="rounded-md border border-[#C9A95B]/30 overflow-hidden">
           <Table>
             <TableHeader className="bg-[#C9A95B]/10">
               <TableRow className="hover:bg-transparent border-b border-[#C9A95B]/30">
                 <TableHead className="text-[#C9A95B] font-din uppercase">Title</TableHead>
                 <TableHead className="text-[#C9A95B] font-din uppercase">Trigger</TableHead>
                 <TableHead className="text-[#C9A95B] font-din uppercase">SEND AFTER</TableHead>
+                <TableHead className="text-[#C9A95B] font-din uppercase">Invitation Types</TableHead>
                 <TableHead className="text-[#C9A95B] font-din uppercase text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {communications.map(communication => <TableRow key={communication.id} className="hover:bg-[#C9A95B]/5 border-b border-[#C9A95B]/20">
+              {communications.map(communication => (
+                <TableRow key={communication.id} className="hover:bg-[#C9A95B]/5 border-b border-[#C9A95B]/20">
                   <TableCell className="text-white">{communication.title}</TableCell>
                   <TableCell className="text-white">{communication.trigger}</TableCell>
                   <TableCell className="text-white">{formatDate(communication.send_date)}</TableCell>
+                  <TableCell className="text-white">{formatInvitationTypes(communication.invitation_type)}</TableCell>
                   <TableCell className="text-right space-x-2">
-                    <Button variant="ghost" size="sm" onClick={() => openEditDialog(communication)} className="text-[#C9A95B] hover:text-[#C9A95B]/80 hover:bg-[#C9A95B]/20">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => openEditDialog(communication)}
+                      className="text-[#C9A95B] hover:text-[#C9A95B]/80 hover:bg-[#C9A95B]/20"
+                    >
                       <Pencil size={16} />
                     </Button>
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
-                        <Button variant="ghost" size="sm" className="text-red-400 hover:text-red-500 hover:bg-red-500/10">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-red-400 hover:text-red-500 hover:bg-red-500/10"
+                        >
                           <Trash2 size={16} />
                         </Button>
                       </AlertDialogTrigger>
@@ -207,17 +264,22 @@ const CommunicationsManagement = () => {
                           <AlertDialogCancel className="bg-transparent text-white border border-[#C9A95B]/30 hover:bg-[#C9A95B]/10">
                             Cancel
                           </AlertDialogCancel>
-                          <AlertDialogAction onClick={() => handleDelete(communication.id)} className="bg-red-500 text-white hover:bg-red-600">
+                          <AlertDialogAction
+                            onClick={() => handleDelete(communication.id)}
+                            className="bg-red-500 text-white hover:bg-red-600"
+                          >
                             Delete
                           </AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
                   </TableCell>
-                </TableRow>)}
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
-        </div>}
+        </div>
+      )}
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="bg-anniversary-purple border border-[#C9A95B]/30 text-white max-w-3xl">
@@ -230,40 +292,119 @@ const CommunicationsManagement = () => {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label htmlFor="title" className="text-[#C9A95B]">Title*</label>
-                <Input id="title" value={title} onChange={e => setTitle(e.target.value)} placeholder="Title" className="bg-anniversary-purple/50 border border-[#C9A95B]/30 text-white" />
+                <Input
+                  id="title"
+                  value={title}
+                  onChange={e => setTitle(e.target.value)}
+                  placeholder="Title"
+                  className="bg-anniversary-purple/50 border border-[#C9A95B]/30 text-white"
+                />
               </div>
               <div className="space-y-2">
                 <label htmlFor="trigger" className="text-[#C9A95B]">Trigger*</label>
-                <Input id="trigger" value={trigger} onChange={e => setTrigger(e.target.value)} placeholder="E.g., 'One week before'" className="bg-anniversary-purple/50 border border-[#C9A95B]/30 text-white" />
+                <Input
+                  id="trigger"
+                  value={trigger}
+                  onChange={e => setTrigger(e.target.value)}
+                  placeholder="E.g., 'One week before'"
+                  className="bg-anniversary-purple/50 border border-[#C9A95B]/30 text-white"
+                />
               </div>
             </div>
             <div className="space-y-2">
               <label htmlFor="send-date" className="text-[#C9A95B]">Send After*</label>
-              <Input id="send-date" type="date" value={sendDate} onChange={e => setSendDate(e.target.value)} className="bg-anniversary-purple/50 border border-[#C9A95B]/30 text-white" />
+              <Input
+                id="send-date"
+                type="date"
+                value={sendDate}
+                onChange={e => setSendDate(e.target.value)}
+                className="bg-anniversary-purple/50 border border-[#C9A95B]/30 text-white"
+              />
             </div>
+            
+            <div className="space-y-2">
+              <p className="text-[#C9A95B]">Invitation Types*</p>
+              <div className="flex flex-wrap gap-x-6 gap-y-2">
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="full-day" 
+                    checked={invitationTypes.includes('full day')}
+                    onCheckedChange={() => toggleInvitationType('full day')}
+                    className="data-[state=checked]:bg-[#C9A95B] data-[state=checked]:border-[#C9A95B]"
+                  />
+                  <label htmlFor="full-day" className="text-white">Full Day</label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="evening" 
+                    checked={invitationTypes.includes('evening')}
+                    onCheckedChange={() => toggleInvitationType('evening')}
+                    className="data-[state=checked]:bg-[#C9A95B] data-[state=checked]:border-[#C9A95B]"
+                  />
+                  <label htmlFor="evening" className="text-white">Evening</label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="admin" 
+                    checked={invitationTypes.includes('admin')}
+                    onCheckedChange={() => toggleInvitationType('admin')}
+                    className="data-[state=checked]:bg-[#C9A95B] data-[state=checked]:border-[#C9A95B]"
+                  />
+                  <label htmlFor="admin" className="text-white">Admin</label>
+                </div>
+              </div>
+            </div>
+            
             <div className="space-y-2">
               <label htmlFor="prompt" className="text-[#C9A95B]">Prompt</label>
-              <Textarea id="prompt" value={prompt} onChange={e => setPrompt(e.target.value)} placeholder="Enter prompt for AI generation..." className="bg-anniversary-purple/50 border border-[#C9A95B]/30 text-white min-h-[100px]" />
+              <Textarea
+                id="prompt"
+                value={prompt}
+                onChange={e => setPrompt(e.target.value)}
+                placeholder="Enter prompt for AI generation..."
+                className="bg-anniversary-purple/50 border border-[#C9A95B]/30 text-white min-h-[100px]"
+              />
             </div>
             <div className="space-y-2">
               <label htmlFor="copy" className="text-[#C9A95B]">Copy</label>
-              <Textarea id="copy" value={copy} onChange={e => setCopy(e.target.value)} placeholder="Enter communication copy..." className="bg-anniversary-purple/50 border border-[#C9A95B]/30 text-white min-h-[100px]" />
+              <Textarea
+                id="copy"
+                value={copy}
+                onChange={e => setCopy(e.target.value)}
+                placeholder="Enter communication copy..."
+                className="bg-anniversary-purple/50 border border-[#C9A95B]/30 text-white min-h-[100px]"
+              />
             </div>
             <div className="space-y-2">
               <label htmlFor="code" className="text-[#C9A95B]">Code</label>
-              <Textarea id="code" value={code} onChange={e => setCode(e.target.value)} placeholder="Enter any code for this communication..." className="bg-anniversary-purple/50 border border-[#C9A95B]/30 text-white min-h-[100px] font-mono" />
+              <Textarea
+                id="code"
+                value={code}
+                onChange={e => setCode(e.target.value)}
+                placeholder="Enter any code for this communication..."
+                className="bg-anniversary-purple/50 border border-[#C9A95B]/30 text-white min-h-[100px] font-mono"
+              />
             </div>
           </div>
           <DialogFooter>
-            <Button onClick={() => setIsDialogOpen(false)} variant="outline" className="bg-transparent text-white border border-[#C9A95B]/30 hover:bg-[#C9A95B]/10">
+            <Button
+              onClick={() => setIsDialogOpen(false)}
+              variant="outline"
+              className="bg-transparent text-white border border-[#C9A95B]/30 hover:bg-[#C9A95B]/10"
+            >
               Cancel
             </Button>
-            <Button onClick={handleSubmit} className="bg-[#C9A95B] text-anniversary-purple hover:bg-[#C9A95B]/90">
+            <Button
+              onClick={handleSubmit}
+              className="bg-[#C9A95B] text-anniversary-purple hover:bg-[#C9A95B]/90"
+            >
               {currentCommunication ? "Update" : "Create"}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>;
+    </div>
+  );
 };
+
 export default CommunicationsManagement;

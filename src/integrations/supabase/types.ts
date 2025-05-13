@@ -15,6 +15,7 @@ export type Database = {
           copy: string | null
           created_at: string
           id: string
+          invitation_type: string[]
           prompt: string | null
           send_date: string
           title: string
@@ -26,6 +27,7 @@ export type Database = {
           copy?: string | null
           created_at?: string
           id?: string
+          invitation_type: string[]
           prompt?: string | null
           send_date: string
           title: string
@@ -37,6 +39,7 @@ export type Database = {
           copy?: string | null
           created_at?: string
           id?: string
+          invitation_type?: string[]
           prompt?: string | null
           send_date?: string
           title?: string
