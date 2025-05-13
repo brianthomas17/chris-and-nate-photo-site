@@ -9,22 +9,27 @@ import PartyView from "./PartyView";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
+
 export default function EventLayout() {
   const {
     currentGuest,
     logout
   } = useAuth();
   const navigate = useNavigate();
+  
   if (!currentGuest) {
     navigate('/');
     return null;
   }
+  
   const handleLogout = () => {
     logout();
     navigate('/');
   };
+  
   const isAdmin = currentGuest.invitation_type === 'admin';
   const hasParty = !!currentGuest.party_id;
+  
   return <div className="min-h-screen bg-anniversary-purple">
       <div className="bg-anniversary-purple py-2 px-4 border-b border-anniversary-gold/10">
         <div className="container mx-auto flex justify-end">
@@ -48,14 +53,14 @@ export default function EventLayout() {
       <header className="bg-anniversary-purple text-[#C9A95B] relative overflow-hidden" style={{
       height: "80vh"
     }}>
-        {/* Left circuit frame */}
+        {/* Left circuit frame - now using the correct image */}
         <div className="absolute top-0 left-0 h-full w-24 md:w-36 lg:w-48 xl:w-64 bg-no-repeat bg-cover" 
-            style={{ backgroundImage: "url('/lovable-uploads/8d430a04-011a-4890-9e75-5a6d49405fa7.png')" }}>
+            style={{ backgroundImage: "url('/lovable-uploads/dc6a3320-6b94-4c17-b4cf-59f769c02005.png')" }}>
         </div>
         
-        {/* Right circuit frame */}
+        {/* Right circuit frame - now using the correct image */}
         <div className="absolute top-0 right-0 h-full w-24 md:w-36 lg:w-48 xl:w-64 bg-no-repeat bg-cover" 
-            style={{ backgroundImage: "url('/lovable-uploads/dc6a3320-6b94-4c17-b4cf-59f769c02005.png')" }}>
+            style={{ backgroundImage: "url('/lovable-uploads/8d430a04-011a-4890-9e75-5a6d49405fa7.png')" }}>
         </div>
         
         <div className="container mx-auto text-center relative z-10 flex flex-col justify-center items-center h-full px-4">
