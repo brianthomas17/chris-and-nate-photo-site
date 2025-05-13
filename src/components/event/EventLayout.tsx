@@ -1,3 +1,4 @@
+
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -24,8 +25,7 @@ export default function EventLayout() {
   };
   const isAdmin = currentGuest.invitation_type === 'admin';
   const hasParty = !!currentGuest.party_id;
-  const isAttending = currentGuest.rsvp?.attending === true;
-  const hasResponded = currentGuest.rsvp !== undefined;
+  
   return <div className="min-h-screen bg-anniversary-purple">
       <div className="bg-anniversary-purple py-2 px-4 border-b border-anniversary-gold/10">
         <div className="container mx-auto flex justify-end">
@@ -45,69 +45,34 @@ export default function EventLayout() {
         </div>
       </div>
       
-      {/* Dynamic Hero Section based on RSVP status */}
+      {/* Hero Section with fixed invite text */}
       <header className="bg-anniversary-purple text-[#C9A95B] relative overflow-hidden circuit-pattern" style={{
       height: "80vh"
     }}>
         <div className="container mx-auto text-center relative z-10 flex flex-col justify-center items-center h-full px-4">
-          {isAttending ? <>
-              <h3 className="text-xl md:text-2xl font-bicyclette mb-2 text-[#C9A95B]">
-                {currentGuest.first_name}, Chris & Nate are so excited you are joining them for
-              </h3>
-              <h1 className="text-4xl md:text-6xl font-din tracking-wide mb-4 uppercase text-[#C9A95B]">
-                A Decade of Determination, Disruption & Dinner Dilemmas
-              </h1>
-              <p className="text-xl text-[#C9A95B] font-bicyclette mb-8">
-                THIS ONE'S DIFFERENT...
-              </p>
-              <h2 className="text-3xl md:text-5xl font-din mb-6 text-[#C9A95B]">
-                8.16.25
-              </h2>
-              <p className="text-xl md:text-2xl font-bicyclette mb-8 text-[#C9A95B]">
-                MORE THAN AN EVENT — IT'S A MOMENT
-              </p>
-              <div className="text-[#C9A95B]">
-                <p className="font-bicyclette">SAINT JOSEPH'S ARTS SOCIETY</p>
-                <p className="font-bicyclette">1401 HOWARD STREET, SAN FRANCISCO</p>
-              </div>
-            </> : hasResponded && !isAttending ? <>
-              <h3 className="text-xl md:text-2xl font-bicyclette mb-2 text-[#C9A95B]">
-                {currentGuest.first_name}, Have your plans changed? Chris & Nate would still love you to join them for
-              </h3>
-              <h1 className="text-4xl md:text-6xl font-din tracking-wide mb-4 uppercase text-[#C9A95B]">
-                A Decade of Determination, Disruption & Dinner Dilemmas
-              </h1>
-              <p className="text-xl text-[#C9A95B] font-bicyclette mb-8">
-                THIS ONE'S DIFFERENT...
-              </p>
-              <h2 className="text-3xl md:text-5xl font-din mb-6 text-[#C9A95B]">8.16.25   •   4 PM</h2>
-              <p className="text-xl md:text-2xl font-bicyclette mb-8 text-[#C9A95B]">
-                MORE THAN AN EVENT — IT'S A MOMENT
-              </p>
-              <div className="text-[#C9A95B]">
-                <p className="font-bicyclette">SAINT JOSEPH'S ARTS SOCIETY</p>
-                <p className="font-bicyclette">1401 HOWARD STREET, SAN FRANCISCO</p>
-              </div>
-            </> : <>
-              <h1 className="text-5xl md:text-6xl font-din tracking-wide mb-4 uppercase text-[#C9A95B]">
-                A Decade of Determination, Disruption & Dinner Dilemmas
-              </h1>
-              <p className="text-xl text-[#C9A95B] font-bicyclette mb-8">
-                THIS ONE'S DIFFERENT...
-              </p>
-              <h2 className="text-3xl md:text-5xl font-din mb-6 text-[#C9A95B]">
-                8.16.25
-              </h2>
-              <p className="text-xl md:text-2xl font-bicyclette mb-8 text-[#C9A95B]">
-                PLEASE RSVP BELOW
-              </p>
-            </>}
+          <h3 className="text-xl md:text-2xl font-bicyclette mb-2 text-[#C9A95B]">
+            CHRIS & NATE INVITE YOU TO
+          </h3>
+          <h1 className="text-4xl md:text-6xl font-din tracking-wide mb-4 uppercase text-[#C9A95B]">
+            A Decade of Determination, Disruption & Dinner Dilemmas
+          </h1>
+          <p className="text-xl text-[#C9A95B] font-bicyclette mb-8">
+            THIS ONE'S DIFFERENT...
+          </p>
+          <h2 className="text-3xl md:text-5xl font-din mb-6 text-[#C9A95B]">
+            8.16.25
+          </h2>
+          <p className="text-xl md:text-2xl font-bicyclette mb-8 text-[#C9A95B]">
+            MORE THAN AN EVENT — IT'S A MOMENT
+          </p>
+          <div className="text-[#C9A95B]">
+            <p className="font-bicyclette">SAINT JOSEPH'S ARTS SOCIETY</p>
+            <p className="font-bicyclette">1401 HOWARD STREET, SAN FRANCISCO</p>
+          </div>
         </div>
       </header>
 
       <div className="container mx-auto px-4 py-8">
-        
-
         <Tabs defaultValue="details" className="w-full">
           <TabsList className="grid w-full grid-cols-4 mb-8 bg-anniversary-purple border border-anniversary-gold/30">
             <TabsTrigger value="details" className="data-[state=active]:bg-anniversary-gold data-[state=active]:text-anniversary-purple">Event Details</TabsTrigger>
