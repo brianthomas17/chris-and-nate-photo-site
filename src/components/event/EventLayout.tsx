@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -9,27 +8,22 @@ import PartyView from "./PartyView";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
-
 export default function EventLayout() {
   const {
     currentGuest,
     logout
   } = useAuth();
   const navigate = useNavigate();
-  
   if (!currentGuest) {
     navigate('/');
     return null;
   }
-  
   const handleLogout = () => {
     logout();
     navigate('/');
   };
-  
   const isAdmin = currentGuest.invitation_type === 'admin';
   const hasParty = !!currentGuest.party_id;
-  
   return <div className="min-h-screen bg-anniversary-purple">
       <div className="bg-anniversary-purple py-2 px-4 border-b border-anniversary-gold/10">
         <div className="container mx-auto flex justify-end">
@@ -53,16 +47,18 @@ export default function EventLayout() {
       
       {/* Hero Section with circuit pattern frames */}
       <header className="bg-anniversary-purple text-[#C9A95B] relative overflow-hidden" style={{
-        height: "80vh"
-      }}>
+      height: "80vh"
+    }}>
         {/* Top circuit frame - swapped image */}
-        <div className="absolute top-0 left-0 right-0 w-full h-[150px] bg-no-repeat bg-contain bg-center" 
-            style={{ backgroundImage: "url('/lovable-uploads/f1b5eb4b-16d9-413b-9947-8c73368a63d0.png')" }}>
+        <div className="absolute top-0 left-0 right-0 w-full h-[150px] bg-no-repeat bg-contain bg-center" style={{
+        backgroundImage: "url('/lovable-uploads/f1b5eb4b-16d9-413b-9947-8c73368a63d0.png')"
+      }}>
         </div>
         
         {/* Bottom circuit frame - swapped image */}
-        <div className="absolute bottom-0 left-0 right-0 w-full h-[150px] bg-no-repeat bg-contain bg-center" 
-            style={{ backgroundImage: "url('/lovable-uploads/12cc45f0-9dd0-4cdf-aebd-ad9001c74e51.png')" }}>
+        <div className="absolute bottom-0 left-0 right-0 w-full h-[150px] bg-no-repeat bg-contain bg-center" style={{
+        backgroundImage: "url('/lovable-uploads/12cc45f0-9dd0-4cdf-aebd-ad9001c74e51.png')"
+      }}>
         </div>
         
         <div className="container mx-auto text-center relative z-10 flex flex-col justify-center items-center h-full px-4">
