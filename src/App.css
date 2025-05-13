@@ -45,20 +45,20 @@
   color: rgba(212, 175, 55, 0.7);
 }
 
-/* Font utility classes */
+/* Font utility classes with !important to enforce application */
 .font-din {
-  font-family: 'DIN Condensed Bold', sans-serif;
+  font-family: 'DIN Condensed Bold', sans-serif !important;
   letter-spacing: 0.03em;
   text-transform: uppercase;
 }
 
 .font-bicyclette {
-  font-family: 'Bicyclette-Light', sans-serif;
+  font-family: 'Bicyclette-Light', sans-serif !important;
 }
 
 /* Add some enhanced typography styles */
 .heading-xl {
-  font-family: 'DIN Condensed Bold', sans-serif;
+  font-family: 'DIN Condensed Bold', sans-serif !important;
   font-size: 4rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -67,7 +67,7 @@
 }
 
 .heading-lg {
-  font-family: 'DIN Condensed Bold', sans-serif;
+  font-family: 'DIN Condensed Bold', sans-serif !important;
   font-size: 3rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -75,6 +75,6 @@
 }
 
 .body-text {
-  font-family: 'Bicyclette-Light', sans-serif;
+  font-family: 'Bicyclette-Light', sans-serif !important;
   line-height: 1.6;
 }

@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap');
 
 @font-face {
@@ -99,4 +100,38 @@
 
 .gold-pulse {
   animation: gold-pulse 3s infinite;
+}
+
+/* Explicit font classes with !important to ensure they override any other styles */
+.font-din {
+  font-family: 'DIN Condensed Bold', sans-serif !important;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.font-bicyclette {
+  font-family: 'Bicyclette-Light', sans-serif !important;
+}
+
+/* Add some enhanced typography styles with explicit font family */
+.heading-xl {
+  font-family: 'DIN Condensed Bold', sans-serif !important;
+  font-size: 4rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #D4AF37;
+  line-height: 1.1;
+}
+
+.heading-lg {
+  font-family: 'DIN Condensed Bold', sans-serif !important;
+  font-size: 3rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #D4AF37;
+}
+
+.body-text {
+  font-family: 'Bicyclette-Light', sans-serif !important;
+  line-height: 1.6;
 }
