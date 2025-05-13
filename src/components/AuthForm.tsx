@@ -1,23 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { seedTestAccounts } from "@/utils/seedTestAccounts";
+
 export default function AuthForm() {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState('');
   const [seedStatus, setSeedStatus] = useState<'idle' | 'seeding' | 'seeded' | 'error'>('idle');
-  const {
-    login
-  } = useAuth();
-  const {
-    toast
-  } = useToast();
+  const { login } = useAuth();
+  const { toast } = useToast();
+
   const handleSeedTestAccounts = async () => {
     setSeedStatus('seeding');
     try {
@@ -37,6 +35,7 @@ export default function AuthForm() {
       });
     }
   };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -74,6 +73,7 @@ export default function AuthForm() {
       setIsSubmitting(false);
     }
   };
+
   return <div className="flex items-center justify-center min-h-screen bg-anniversary-purple relative overflow-hidden">
       {/* Top circuit frame */}
       <div className="absolute top-0 left-0 right-0 w-full h-[150px] bg-no-repeat bg-contain bg-center" style={{
@@ -87,8 +87,12 @@ export default function AuthForm() {
       
       <div className="w-full max-w-md animate-fade-in relative z-10 px-4">
         <div className="text-center mb-8">
-          
-          
+          {/* Add the uploaded logo image above the login form */}
+          <img 
+            src="/lovable-uploads/0bd6c2ac-82dc-4943-b35c-d640385e3fff.png" 
+            alt="Circuit Board Logo" 
+            className="w-48 h-48 mx-auto mb-6"
+          />
         </div>
         
         <Card className="border-anniversary-gold border-2 bg-anniversary-purple/90 backdrop-blur-md">
