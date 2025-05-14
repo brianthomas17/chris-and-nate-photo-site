@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -9,21 +8,17 @@ import CommunicationsManagement from "./CommunicationsManagement";
 import { useNavigate } from "react-router-dom";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
-
 export default function AdminLayout() {
   const {
     currentGuest,
     logout
   } = useAuth();
   const navigate = useNavigate();
-  
   const handleLogout = () => {
     logout();
     navigate('/');
   };
-  
   const isAdmin = currentGuest?.invitation_type === 'admin';
-  
   return <div className="min-h-screen bg-anniversary-purple">
       <div className="bg-anniversary-purple py-2 px-4 border-b border-[#C9A95B]/10">
         <div className="container mx-auto flex justify-end">
@@ -36,17 +31,12 @@ export default function AdminLayout() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="bg-anniversary-purple border border-[#C9A95B]/30 text-[#C9A95B]">
-                {isAdmin && (
-                  <>
-                    <DropdownMenuItem 
-                      onClick={() => navigate('/rsvp')} 
-                      className="cursor-pointer hover:bg-[#C9A95B]/20 hover:text-[#C9A95B]/80"
-                    >
+                {isAdmin && <>
+                    <DropdownMenuItem onClick={() => navigate('/rsvp')} className="cursor-pointer hover:bg-[#C9A95B]/20 hover:text-[#C9A95B]/80">
                       Main Event Page
                     </DropdownMenuItem>
                     <DropdownMenuSeparator className="bg-[#C9A95B]/20" />
-                  </>
-                )}
+                  </>}
                 <DropdownMenuItem onClick={handleLogout} className="cursor-pointer hover:bg-[#C9A95B]/20 hover:text-[#C9A95B]/80">
                   Logout
                 </DropdownMenuItem>
@@ -75,15 +65,11 @@ export default function AdminLayout() {
               <TabsTrigger value="guests" className="data-[state=active]:bg-[#C9A95B] data-[state=active]:text-anniversary-purple">
                 Guest Management
               </TabsTrigger>
-              <TabsTrigger value="content" className="data-[state=active]:bg-[#C9A95B] data-[state=active]:text-anniversary-purple">
-                Content Management
-              </TabsTrigger>
+              <TabsTrigger value="content" className="data-[state=active]:bg-[#C9A95B] data-[state=active]:text-anniversary-purple">Website Content</TabsTrigger>
               <TabsTrigger value="communications" className="data-[state=active]:bg-[#C9A95B] data-[state=active]:text-anniversary-purple">
                 Communications
               </TabsTrigger>
-              <TabsTrigger value="rsvp" className="data-[state=active]:bg-[#C9A95B] data-[state=active]:text-anniversary-purple">
-                RSVP Overview
-              </TabsTrigger>
+              <TabsTrigger value="rsvp" className="data-[state=active]:bg-[#C9A95B] data-[state=active]:text-anniversary-purple">Stats</TabsTrigger>
             </TabsList>
           </div>
           <TabsContent value="guests">
