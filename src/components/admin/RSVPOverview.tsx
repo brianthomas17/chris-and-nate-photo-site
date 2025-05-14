@@ -8,7 +8,8 @@ import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Check, X, Pencil } from "lucide-react";
+import { Check, X, Pencil, Trash2 } from "lucide-react";
+import { toast } from "@/components/ui/use-toast";
 import {
   Select,
   SelectContent,
@@ -16,15 +17,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export default function RSVPOverview() {
-  const { guests, updateRSVP } = useGuests();
+  const { guests, updateRSVP, deleteGuest } = useGuests();
   const [editingGuest, setEditingGuest] = useState<string | null>(null);
   const [formState, setFormState] = useState({
     attending: false,
     plusOne: false,
     dietaryRestrictions: "",
   });
+  const [guestToDelete, setGuestToDelete] = useState<string | null>(null);
   
   const totalGuests = guests.length;
   const responded = guests.filter(g => g.rsvp).length;
@@ -62,6 +74,25 @@ export default function RSVPOverview() {
       formState.dietaryRestrictions
     );
     setEditingGuest(null);
+  };
+
+  const handleDeleteClick = (guestId: string) => {
+    setGuestToDelete(guestId);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (guestToDelete) {
+      await deleteGuest(guestToDelete);
+      setGuestToDelete(null);
+      toast({
+        title: "Guest Deleted",
+        description: "The guest has been removed from the system.",
+      });
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setGuestToDelete(null);
   };
 
   const handleStatusChange = (value: string) => {
@@ -212,13 +243,23 @@ export default function RSVPOverview() {
                         {guest.rsvp?.dietary_restrictions || "None"}
                       </TableCell>
                       <TableCell className="text-right">
-                        <Button 
-                          variant="ghost" 
-                          size="sm"
-                          onClick={() => handleEdit(guest.id)}
-                        >
-                          <Pencil className="w-4 h-4" />
-                        </Button>
+                        <div className="flex justify-end gap-2">
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => handleEdit(guest.id)}
+                          >
+                            <Pencil className="w-4 h-4" />
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => handleDeleteClick(guest.id)}
+                            className="text-destructive hover:text-destructive/90"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
                       </TableCell>
                     </>
                   )}
@@ -228,6 +269,28 @@ export default function RSVPOverview() {
           </Table>
         </CardContent>
       </Card>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={!!guestToDelete} onOpenChange={(open) => !open && setGuestToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the guest 
+              and all associated RSVP information.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={handleCancelDelete}>Cancel</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleConfirmDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
