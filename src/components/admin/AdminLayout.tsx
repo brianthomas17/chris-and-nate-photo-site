@@ -66,9 +66,7 @@ export default function AdminLayout() {
                 Guest Management
               </TabsTrigger>
               <TabsTrigger value="content" className="data-[state=active]:bg-[#C9A95B] data-[state=active]:text-anniversary-purple">Website Content</TabsTrigger>
-              <TabsTrigger value="communications" className="data-[state=active]:bg-[#C9A95B] data-[state=active]:text-anniversary-purple">
-                Communications
-              </TabsTrigger>
+              <TabsTrigger value="communications" className="data-[state=active]:bg-[#C9A95B] data-[state=active]:text-anniversary-purple">Messages</TabsTrigger>
               <TabsTrigger value="rsvp" className="data-[state=active]:bg-[#C9A95B] data-[state=active]:text-anniversary-purple">Stats</TabsTrigger>
             </TabsList>
           </div>
