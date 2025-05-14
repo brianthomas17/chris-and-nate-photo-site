@@ -1,4 +1,3 @@
-
 import AdminLayout from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { seedTestAccounts } from "@/utils/seedTestAccounts";
@@ -6,26 +5,34 @@ import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/context/AuthContext";
 import { Navigate, useNavigate } from "react-router-dom";
-
 const Admin = () => {
   const [isSeeding, setIsSeeding] = useState(false);
-  const { toast } = useToast();
-  const { currentGuest, isLoading } = useAuth();
+  const {
+    toast
+  } = useToast();
+  const {
+    currentGuest,
+    isLoading
+  } = useAuth();
   const navigate = useNavigate();
-  
+
   // Use useEffect for navigation to prevent issues with multiple renders
   useEffect(() => {
     // Make sure auth is loaded before checking
     if (!isLoading) {
       // Redirect if not logged in
       if (!currentGuest) {
-        navigate('/', { replace: true });
+        navigate('/', {
+          replace: true
+        });
         return;
       }
-      
+
       // Redirect if not admin
       if (currentGuest.invitation_type !== 'admin') {
-        navigate('/', { replace: true });
+        navigate('/', {
+          replace: true
+        });
         return;
       }
     }
@@ -35,19 +42,18 @@ const Admin = () => {
   if (isLoading) {
     return null;
   }
-  
+
   // If not admin or not logged in (before redirect happens), don't render
   if (!currentGuest || currentGuest.invitation_type !== 'admin') {
     return null;
   }
-
   const handleSeedTestAccounts = async () => {
     setIsSeeding(true);
     try {
       await seedTestAccounts();
       toast({
         title: "Success",
-        description: "Test accounts have been seeded successfully.",
+        description: "Test accounts have been seeded successfully."
       });
     } catch (error) {
       console.error("Error seeding test accounts:", error);
@@ -60,22 +66,11 @@ const Admin = () => {
       setIsSeeding(false);
     }
   };
-
-  return (
-    <>
+  return <>
       <AdminLayout />
       <div className="fixed bottom-4 right-4">
-        <Button 
-          onClick={handleSeedTestAccounts}
-          disabled={isSeeding}
-          variant="outline"
-          className="bg-white/80 hover:bg-white"
-        >
-          {isSeeding ? "Seeding..." : "Seed Test Accounts"}
-        </Button>
+        
       </div>
-    </>
-  );
+    </>;
 };
-
 export default Admin;
