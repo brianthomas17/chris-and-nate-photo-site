@@ -7,7 +7,7 @@ import RSVPForm from "./RSVPForm";
 import PhotoGallery from "./PhotoGallery";
 import PartyView from "./PartyView";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
 
 export default function EventLayout() {
@@ -43,6 +43,17 @@ export default function EventLayout() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="bg-anniversary-purple border border-[#C9A95B]/30 text-[#C9A95B]">
+                {isAdmin && (
+                  <>
+                    <DropdownMenuItem 
+                      onClick={() => navigate('/admin')} 
+                      className="cursor-pointer hover:bg-[#C9A95B]/20 hover:text-[#C9A95B]/80"
+                    >
+                      Admin Console
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator className="bg-[#C9A95B]/20" />
+                  </>
+                )}
                 <DropdownMenuItem onClick={handleLogout} className="cursor-pointer hover:bg-[#C9A95B]/20 hover:text-[#C9A95B]/80">
                   Logout
                 </DropdownMenuItem>
