@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { seedTestAccounts } from "@/utils/seedTestAccounts";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 export default function AuthForm() {
   const [email, setEmail] = useState('');
@@ -16,13 +16,12 @@ export default function AuthForm() {
   const [seedStatus, setSeedStatus] = useState<'idle' | 'seeding' | 'seeded' | 'error'>('idle');
   const [showLoginForm, setShowLoginForm] = useState(false);
   const { login } = useAuth();
-  const { toast } = useToast();
 
-  // Show login form after logo animation completes
+  // Show login form after a small delay
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowLoginForm(true);
-    }, 800); // Wait for logo animation to almost complete
+    }, 800);
     
     return () => clearTimeout(timer);
   }, []);
@@ -32,18 +31,9 @@ export default function AuthForm() {
     try {
       await seedTestAccounts();
       setSeedStatus('seeded');
-      toast({
-        title: "Test Accounts Ready",
-        description: "Test accounts have been created. Try logging in with admin@example.com"
-      });
     } catch (error) {
       console.error("Error seeding test accounts:", error);
       setSeedStatus('error');
-      toast({
-        title: "Error",
-        description: "Could not create test accounts. Please try again.",
-        variant: "destructive"
-      });
     }
   };
 
@@ -61,25 +51,10 @@ export default function AuthForm() {
       const success = await login(email);
       if (!success) {
         setFormError('Sorry, we couldn\'t find your email on our guest list.');
-        toast({
-          title: "Access Denied",
-          description: "Sorry, we couldn't find your email on our guest list.",
-          variant: "destructive"
-        });
-      } else {
-        toast({
-          title: "Welcome!",
-          description: "You've successfully logged in."
-        });
       }
     } catch (error) {
       console.error('Login error:', error);
       setFormError('An error occurred. Please try again.');
-      toast({
-        title: "Error",
-        description: "An error occurred while trying to log in. Please try again.",
-        variant: "destructive"
-      });
     } finally {
       setIsSubmitting(false);
     }
@@ -97,13 +72,15 @@ export default function AuthForm() {
     }}></div>
       
       <div className="w-full max-w-md relative z-10 px-4 flex flex-col items-center">
-        {/* Logo with a fade-in animation */}
-        <div className="text-center mb-8 opacity-0 animate-[fade-in_1.2s_ease-out_forwards]">
-          <img 
-            src="/lovable-uploads/0bd6c2ac-82dc-4943-b35c-d640385e3fff.png" 
-            alt="Circuit Board Logo" 
-            className="w-64 h-64 mx-auto mb-6"
-          />
+        {/* Logo with fixed display (no animation) */}
+        <div className="text-center mb-8 w-full max-w-[256px]">
+          <AspectRatio ratio={1/1} className="mx-auto mb-6">
+            <img 
+              src="/lovable-uploads/0bd6c2ac-82dc-4943-b35c-d640385e3fff.png" 
+              alt="Circuit Board Logo" 
+              className="w-full h-full object-contain"
+            />
+          </AspectRatio>
         </div>
         
         {/* Login form with a delayed fade-in animation */}
@@ -112,7 +89,7 @@ export default function AuthForm() {
             ? "animate-[fade-in_1.5s_ease-out_forwards]" 
             : ""
         }`}>
-          <Card className="bg-anniversary-purple/90 backdrop-blur-md shadow-[0_8px_20px_rgba(0,0,0,0.3)] border-white/10">
+          <Card className="bg-anniversary-purple/90 backdrop-blur-md shadow-[0_8px_20px_rgba(0,0,0,0.3)] border-transparent">
             <CardContent className="pt-6">
               <form onSubmit={handleSubmit}>
                 <div className="grid w-full items-center gap-4">
