@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -75,10 +74,10 @@ export default function AuthForm() {
       </div>
       
       {/* Top circuit frame */}
-      <div className="circuit-frame-top z-0"></div>
+      
       
       {/* Bottom circuit frame */}
-      <div className="circuit-frame-bottom z-0"></div>
+      
       
       <div className="w-full max-w-md relative z-10 px-4 flex flex-col items-center">
         {/* Login form with a delayed fade-in animation */}
