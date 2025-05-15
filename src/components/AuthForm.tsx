@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -8,24 +7,23 @@ import { Card, CardContent } from "@/components/ui/card";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { seedTestAccounts } from "@/utils/seedTestAccounts";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-
 export default function AuthForm() {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState('');
   const [seedStatus, setSeedStatus] = useState<'idle' | 'seeding' | 'seeded' | 'error'>('idle');
   const [showLoginForm, setShowLoginForm] = useState(false);
-  const { login } = useAuth();
+  const {
+    login
+  } = useAuth();
 
   // Show login form after a small delay
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowLoginForm(true);
     }, 800);
-    
     return () => clearTimeout(timer);
   }, []);
-
   const handleSeedTestAccounts = async () => {
     setSeedStatus('seeding');
     try {
@@ -36,7 +34,6 @@ export default function AuthForm() {
       setSeedStatus('error');
     }
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -59,36 +56,23 @@ export default function AuthForm() {
       setIsSubmitting(false);
     }
   };
-
   return <div className="flex items-center justify-center min-h-screen bg-anniversary-purple relative overflow-hidden">
       {/* Top circuit frame */}
-      <div className="absolute top-0 left-0 right-0 w-full h-[150px] bg-no-repeat bg-contain bg-center" style={{
-      backgroundImage: "url('/lovable-uploads/f1b5eb4b-16d9-413b-9947-8c73368a63d0.png')"
-    }}></div>
+      
       
       {/* Bottom circuit frame */}
-      <div className="absolute bottom-0 left-0 right-0 w-full h-[150px] bg-no-repeat bg-contain bg-center" style={{
-      backgroundImage: "url('/lovable-uploads/12cc45f0-9dd0-4cdf-aebd-ad9001c74e51.png')"
-    }}></div>
+      
       
       <div className="w-full max-w-md relative z-10 px-4 flex flex-col items-center">
         {/* Logo with fixed display (no animation) */}
         <div className="text-center mb-8 w-full max-w-[256px]">
-          <AspectRatio ratio={1/1} className="mx-auto mb-6">
-            <img 
-              src="/lovable-uploads/0bd6c2ac-82dc-4943-b35c-d640385e3fff.png" 
-              alt="Circuit Board Logo" 
-              className="w-full h-full object-contain"
-            />
+          <AspectRatio ratio={1 / 1} className="mx-auto mb-6">
+            <img src="/lovable-uploads/0bd6c2ac-82dc-4943-b35c-d640385e3fff.png" alt="Circuit Board Logo" className="w-full h-full object-contain" />
           </AspectRatio>
         </div>
         
         {/* Login form with a delayed fade-in animation */}
-        <div className={`w-full opacity-0 ${
-          showLoginForm 
-            ? "animate-[fade-in_1.5s_ease-out_forwards]" 
-            : ""
-        }`}>
+        <div className={`w-full opacity-0 ${showLoginForm ? "animate-[fade-in_1.5s_ease-out_forwards]" : ""}`}>
           <Card className="bg-anniversary-purple/90 backdrop-blur-md shadow-[0_8px_20px_rgba(0,0,0,0.3)] border-transparent">
             <CardContent className="pt-6">
               <form onSubmit={handleSubmit}>
