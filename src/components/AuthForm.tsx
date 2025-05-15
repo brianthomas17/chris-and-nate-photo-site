@@ -96,7 +96,7 @@ export default function AuthForm() {
               {email.length > 0 && (
                 <Button 
                   type="submit" 
-                  className="w-full bg-anniversary-gold hover:bg-anniversary-gold/90 text-black transition-all duration-300" 
+                  className="w-full bg-[#C9A95B] hover:bg-[#C9A95B]/90 text-black transition-all duration-300 max-w-[300px] mx-auto animate-[fade-in_0.3s_ease-out]" 
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (
