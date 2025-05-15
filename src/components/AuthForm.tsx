@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -8,7 +7,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { seedTestAccounts } from "@/utils/seedTestAccounts";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-
 export default function AuthForm() {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -26,7 +24,6 @@ export default function AuthForm() {
     }, 800);
     return () => clearTimeout(timer);
   }, []);
-
   const handleSeedTestAccounts = async () => {
     setSeedStatus('seeding');
     try {
@@ -37,7 +34,6 @@ export default function AuthForm() {
       setSeedStatus('error');
     }
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -60,18 +56,12 @@ export default function AuthForm() {
       setIsSubmitting(false);
     }
   };
-
-  return (
-    <div className="flex items-center justify-center min-h-screen bg-anniversary-purple relative overflow-hidden">
+  return <div className="flex items-center justify-center min-h-screen bg-anniversary-purple relative overflow-hidden">
       {/* Background logo image */}
       <div className="fixed inset-0 z-0 pointer-events-none flex items-center justify-center">
         <div className="w-4/5 mx-auto">
-          <AspectRatio ratio={1/1}>
-            <img 
-              src="/lovable-uploads/0bd6c2ac-82dc-4943-b35c-d640385e3fff.png" 
-              alt="Circuit Board Logo" 
-              className="w-full h-full object-contain"
-            />
+          <AspectRatio ratio={1 / 1}>
+            <img src="/lovable-uploads/0bd6c2ac-82dc-4943-b35c-d640385e3fff.png" alt="Circuit Board Logo" className="w-full h-full object-contain" />
           </AspectRatio>
         </div>
       </div>
@@ -86,11 +76,11 @@ export default function AuthForm() {
         {/* Login form with a delayed fade-in animation */}
         <div className={`w-full opacity-0 ${showLoginForm ? "animate-[fade-in_1.5s_ease-out_forwards]" : ""}`}>
           <Card className="bg-anniversary-purple/90 backdrop-blur-md shadow-[0_8px_20px_rgba(0,0,0,0.3)] border-transparent">
-            <CardContent className="pt-6">
+            <CardContent className="pt-6 py-[23px] my-0">
               <form onSubmit={handleSubmit}>
                 <div className="grid w-full items-center gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="text-anniversary-gold">Enter Your Email For Access</Label>
+                    
                     <Input id="email" type="email" placeholder="your.email@example.com" value={email} onChange={e => setEmail(e.target.value)} className={`border-anniversary-gold bg-anniversary-purple/50 text-white placeholder:text-anniversary-gold/50 ${formError ? 'border-red-500' : ''}`} />
                     {formError && <div className="flex items-center gap-2 text-sm text-red-500 mt-1">
                         <AlertCircle size={16} />
@@ -110,6 +100,5 @@ export default function AuthForm() {
           </Card>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 }
