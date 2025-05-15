@@ -71,7 +71,7 @@ export default function AuthForm() {
         </div>
       </div>
       
-      <div className="w-full max-w-md relative z-10 px-4 flex flex-col items-center" style={{ marginTop: "66vh" }}>
+      <div className="w-full max-w-md relative z-10 px-4 flex flex-col items-center" style={{ marginTop: "55vh" }}>
         {/* Login form with a delayed fade-in animation */}
         <div className={`w-full opacity-0 ${showLoginForm ? "animate-[fade-in_1.5s_ease-out_forwards]" : ""}`}>
           <Card className="bg-anniversary-purple/90 backdrop-blur-md shadow-[0_8px_20px_rgba(0,0,0,0.3)] border-transparent">
