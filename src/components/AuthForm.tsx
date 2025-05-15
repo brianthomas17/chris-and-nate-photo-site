@@ -95,7 +95,7 @@ export default function AuthForm() {
             <div className="mt-6 w-full max-w-xs">
               <Button 
                 type="submit" 
-                className={`w-full bg-anniversary-gold hover:bg-anniversary-gold/90 text-black transition-opacity duration-300 ${email.length > 0 ? 'opacity-100' : 'opacity-0'}`} 
+                className={`w-full bg-anniversary-gold hover:bg-anniversary-gold/90 text-black transition-opacity duration-300 ${email.length > 0 ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} 
                 disabled={isSubmitting || email.length === 0}
               >
                 {isSubmitting ? (
