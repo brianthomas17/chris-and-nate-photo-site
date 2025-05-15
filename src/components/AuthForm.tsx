@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { seedTestAccounts } from "@/utils/seedTestAccounts";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
@@ -74,8 +73,8 @@ export default function AuthForm() {
       <div className="w-full max-w-md relative z-10 px-4 flex flex-col items-center" style={{ marginTop: "45vh" }}>
         {/* Login form with a delayed fade-in animation */}
         <div className={`w-full opacity-0 ${showLoginForm ? "animate-[fade-in_1.5s_ease-out_forwards]" : ""}`}>
-          <form onSubmit={handleSubmit} className="w-full">
-            <div className="grid w-full items-center gap-4">
+          <form onSubmit={handleSubmit} className="w-full flex flex-col items-center">
+            <div className="grid w-full max-w-xs items-center gap-4">
               <div className="space-y-2">
                 <Input 
                   id="email" 
@@ -83,7 +82,7 @@ export default function AuthForm() {
                   placeholder="your.email@example.com" 
                   value={email} 
                   onChange={e => setEmail(e.target.value)} 
-                  className={`border-anniversary-gold bg-white text-black placeholder:text-gray-400 ${formError ? 'border-red-500' : ''}`} 
+                  className={`border-anniversary-gold bg-white/80 text-black placeholder:text-gray-400 ${formError ? 'border-red-500' : ''}`} 
                 />
                 {formError && (
                   <div className="flex items-center gap-2 text-sm text-red-500 mt-1">
@@ -93,21 +92,19 @@ export default function AuthForm() {
                 )}
               </div>
             </div>
-            {email.length > 0 && (
-              <div className="mt-6">
-                <Button 
-                  type="submit" 
-                  className="w-full bg-anniversary-gold hover:bg-anniversary-gold/90 text-black" 
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? (
-                    <span className="flex items-center">
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Checking...
-                    </span>
-                  ) : "Continue"}
-                </Button>
-              </div>
-            )}
+            <div className="mt-6 w-full max-w-xs">
+              <Button 
+                type="submit" 
+                className={`w-full bg-anniversary-gold hover:bg-anniversary-gold/90 text-black transition-opacity duration-300 ${email.length > 0 ? 'opacity-100' : 'opacity-0'}`} 
+                disabled={isSubmitting || email.length === 0}
+              >
+                {isSubmitting ? (
+                  <span className="flex items-center">
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Checking...
+                  </span>
+                ) : "Continue"}
+              </Button>
+            </div>
           </form>
         </div>
       </div>
