@@ -71,48 +71,44 @@ export default function AuthForm() {
         </div>
       </div>
       
-      <div className="w-full max-w-md relative z-10 px-4 flex flex-col items-center" style={{ marginTop: "55vh" }}>
+      <div className="w-full max-w-md relative z-10 px-4 flex flex-col items-center" style={{ marginTop: "45vh" }}>
         {/* Login form with a delayed fade-in animation */}
         <div className={`w-full opacity-0 ${showLoginForm ? "animate-[fade-in_1.5s_ease-out_forwards]" : ""}`}>
-          <Card className="bg-anniversary-purple/90 backdrop-blur-md shadow-[0_8px_20px_rgba(0,0,0,0.3)] border-transparent">
-            <CardContent className="pt-6 py-[23px] my-0">
-              <form onSubmit={handleSubmit}>
-                <div className="grid w-full items-center gap-4">
-                  <div className="space-y-2">
-                    <Input 
-                      id="email" 
-                      type="email" 
-                      placeholder="your.email@example.com" 
-                      value={email} 
-                      onChange={e => setEmail(e.target.value)} 
-                      className={`border-anniversary-gold bg-anniversary-purple/50 text-white placeholder:text-anniversary-gold/50 ${formError ? 'border-red-500' : ''}`} 
-                    />
-                    {formError && (
-                      <div className="flex items-center gap-2 text-sm text-red-500 mt-1">
-                        <AlertCircle size={16} />
-                        <span>{formError}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-                {email.length > 0 && (
-                  <div className="mt-6">
-                    <Button 
-                      type="submit" 
-                      className="w-full bg-anniversary-gold hover:bg-anniversary-gold/90 text-black" 
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting ? (
-                        <span className="flex items-center">
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Checking...
-                        </span>
-                      ) : "Continue"}
-                    </Button>
+          <form onSubmit={handleSubmit} className="w-full">
+            <div className="grid w-full items-center gap-4">
+              <div className="space-y-2">
+                <Input 
+                  id="email" 
+                  type="email" 
+                  placeholder="your.email@example.com" 
+                  value={email} 
+                  onChange={e => setEmail(e.target.value)} 
+                  className={`border-anniversary-gold bg-white text-black placeholder:text-gray-400 ${formError ? 'border-red-500' : ''}`} 
+                />
+                {formError && (
+                  <div className="flex items-center gap-2 text-sm text-red-500 mt-1">
+                    <AlertCircle size={16} />
+                    <span>{formError}</span>
                   </div>
                 )}
-              </form>
-            </CardContent>
-          </Card>
+              </div>
+            </div>
+            {email.length > 0 && (
+              <div className="mt-6">
+                <Button 
+                  type="submit" 
+                  className="w-full bg-anniversary-gold hover:bg-anniversary-gold/90 text-black" 
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <span className="flex items-center">
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Checking...
+                    </span>
+                  ) : "Continue"}
+                </Button>
+              </div>
+            )}
+          </form>
         </div>
       </div>
     </div>
