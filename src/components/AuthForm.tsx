@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { seedTestAccounts } from "@/utils/seedTestAccounts";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+
 export default function AuthForm() {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -24,6 +26,7 @@ export default function AuthForm() {
     }, 800);
     return () => clearTimeout(timer);
   }, []);
+
   const handleSeedTestAccounts = async () => {
     setSeedStatus('seeding');
     try {
@@ -34,6 +37,7 @@ export default function AuthForm() {
       setSeedStatus('error');
     }
   };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -56,21 +60,27 @@ export default function AuthForm() {
       setIsSubmitting(false);
     }
   };
-  return <div className="flex items-center justify-center min-h-screen bg-anniversary-purple relative overflow-hidden">
-      {/* Top circuit frame */}
+
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-anniversary-purple relative overflow-hidden">
+      {/* Background logo image */}
+      <div className="fixed inset-0 z-0 pointer-events-none flex items-center justify-center">
+        <div className="w-full max-w-xl opacity-20">
+          <img 
+            src="/lovable-uploads/0bd6c2ac-82dc-4943-b35c-d640385e3fff.png" 
+            alt="Circuit Board Logo" 
+            className="w-full h-full object-contain"
+          />
+        </div>
+      </div>
       
+      {/* Top circuit frame */}
+      <div className="circuit-frame-top z-0"></div>
       
       {/* Bottom circuit frame */}
-      
+      <div className="circuit-frame-bottom z-0"></div>
       
       <div className="w-full max-w-md relative z-10 px-4 flex flex-col items-center">
-        {/* Logo with fixed display (no animation) */}
-        <div className="text-center mb-8 w-full max-w-[256px]">
-          <AspectRatio ratio={1 / 1} className="mx-auto mb-6">
-            <img src="/lovable-uploads/0bd6c2ac-82dc-4943-b35c-d640385e3fff.png" alt="Circuit Board Logo" className="w-full h-full object-contain" />
-          </AspectRatio>
-        </div>
-        
         {/* Login form with a delayed fade-in animation */}
         <div className={`w-full opacity-0 ${showLoginForm ? "animate-[fade-in_1.5s_ease-out_forwards]" : ""}`}>
           <Card className="bg-anniversary-purple/90 backdrop-blur-md shadow-[0_8px_20px_rgba(0,0,0,0.3)] border-transparent">
@@ -98,5 +108,6 @@ export default function AuthForm() {
           </Card>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 }
