@@ -82,7 +82,7 @@ export default function AuthForm() {
                   placeholder="your.email@example.com" 
                   value={email} 
                   onChange={e => setEmail(e.target.value)} 
-                  className={`border-anniversary-gold bg-white/80 text-black placeholder:text-gray-400 ${formError ? 'border-red-500' : ''}`} 
+                  className={`border-anniversary-gold bg-white/80 text-black placeholder:text-gray-400 max-w-[300px] mx-auto ${formError ? 'border-red-500' : ''}`} 
                 />
                 {formError && (
                   <div className="flex items-center gap-2 text-sm text-red-500 mt-1">
