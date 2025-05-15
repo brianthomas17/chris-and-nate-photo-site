@@ -74,7 +74,7 @@ export default function AuthForm() {
         {/* Login form with a delayed fade-in animation */}
         <div className={`w-full opacity-0 ${showLoginForm ? "animate-[fade-in_1.5s_ease-out_forwards]" : ""}`}>
           <form onSubmit={handleSubmit} className="w-full flex flex-col items-center">
-            <div className="grid w-full max-w-xs items-center gap-4">
+            <div className="w-full max-w-[300px] mx-auto">
               <div className="space-y-2">
                 <Input 
                   id="email" 
@@ -82,7 +82,7 @@ export default function AuthForm() {
                   placeholder="your.email@example.com" 
                   value={email} 
                   onChange={e => setEmail(e.target.value)} 
-                  className={`border-anniversary-gold bg-white/80 text-black placeholder:text-gray-400 max-w-[300px] mx-auto ${formError ? 'border-red-500' : ''}`} 
+                  className={`w-full border-anniversary-gold bg-white/80 text-black placeholder:text-gray-400 rounded-md ${formError ? 'border-red-500' : ''}`} 
                 />
                 {formError && (
                   <div className="flex items-center gap-2 text-sm text-red-500 mt-1">
@@ -92,11 +92,11 @@ export default function AuthForm() {
                 )}
               </div>
             </div>
-            <div className="mt-6 w-full max-w-xs">
+            <div className="mt-6 w-full max-w-[300px] mx-auto">
               {email.length > 0 && (
                 <Button 
                   type="submit" 
-                  className="w-full bg-[#C9A95B] hover:bg-[#C9A95B]/90 text-black transition-all duration-300 max-w-[300px] mx-auto animate-[fade-in_0.3s_ease-out]" 
+                  className="w-full bg-[#C9A95B] hover:bg-[#C9A95B]/90 text-black transition-all duration-300 animate-[fade-in_0.3s_ease-out] rounded-md h-10" 
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (
