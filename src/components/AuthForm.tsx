@@ -93,17 +93,19 @@ export default function AuthForm() {
               </div>
             </div>
             <div className="mt-6 w-full max-w-xs">
-              <Button 
-                type="submit" 
-                className={`w-full bg-anniversary-gold hover:bg-anniversary-gold/90 text-black transition-opacity duration-300 ${email.length > 0 ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} 
-                disabled={isSubmitting || email.length === 0}
-              >
-                {isSubmitting ? (
-                  <span className="flex items-center">
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Checking...
-                  </span>
-                ) : "Continue"}
-              </Button>
+              {email.length > 0 && (
+                <Button 
+                  type="submit" 
+                  className="w-full bg-anniversary-gold hover:bg-anniversary-gold/90 text-black transition-all duration-300" 
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <span className="flex items-center">
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Checking...
+                    </span>
+                  ) : "Continue"}
+                </Button>
+              )}
             </div>
           </form>
         </div>
