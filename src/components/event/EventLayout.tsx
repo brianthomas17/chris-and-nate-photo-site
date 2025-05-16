@@ -1,3 +1,4 @@
+
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -57,14 +58,14 @@ export default function EventLayout() {
     }}>
         {/* Top circuit frame - with animation */}
         <div className="absolute top-0 left-0 right-0 w-full h-[150px] bg-no-repeat bg-contain bg-center animate-[fadeIn_1s_ease-out_forwards]" style={{
-        backgroundImage: "url('/lovable-uploads/f1b5eb4b-16d9-413b-9947-8c73368a63d0.png')",
+        backgroundImage: "url('/lovable-uploads/top.svg')",
         opacity: 0
       }}>
         </div>
         
         {/* Bottom circuit frame - with animation */}
         <div className="absolute bottom-0 left-0 right-0 w-full h-[150px] bg-no-repeat bg-contain bg-center animate-[fadeIn_1s_ease-out_forwards]" style={{
-        backgroundImage: "url('/lovable-uploads/12cc45f0-9dd0-4cdf-aebd-ad9001c74e51.png')",
+        backgroundImage: "url('/lovable-uploads/bottom.svg')",
         opacity: 0
       }}>
         </div>
