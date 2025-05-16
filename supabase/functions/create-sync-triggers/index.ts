@@ -28,33 +28,52 @@ serve(async (req) => {
     
     const supabase = createClient(supabaseUrl, supabaseServiceRole);
     
-    // Create the SQL for notification functions and triggers
-    const sql = `
+    // First enable extensions - do this separately to ensure they are enabled
+    const enableExtensionsSQL = `
+      CREATE EXTENSION IF NOT EXISTS "http" WITH SCHEMA "extensions";
+      CREATE EXTENSION IF NOT EXISTS "pg_net" WITH SCHEMA "net";
+    `;
+    
+    // Execute extension setup first
+    try {
+      const { error: extensionsError } = await supabase.rpc('supabase_functions.http_request', {
+        method: 'POST',
+        url: `${supabaseUrl}/rest/v1/sql`,
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${supabaseServiceRole}`,
+          'apikey': supabaseServiceRole
+        },
+        body: JSON.stringify({
+          query: enableExtensionsSQL
+        })
+      });
+      
+      if (extensionsError) {
+        console.error("[ERROR] Failed to enable extensions:", extensionsError);
+        throw new Error(`Failed to enable extensions: ${extensionsError.message}`);
+      }
+      
+      console.log("[INFO] Successfully enabled extensions");
+    } catch (error) {
+      console.error("[ERROR] Error enabling extensions:", error);
+      throw new Error(`Error enabling extensions: ${error instanceof Error ? error.message : String(error)}`);
+    }
+    
+    // Now create the SQL for notification functions and triggers
+    const triggerSQL = `
       -- Function for guests table
       CREATE OR REPLACE FUNCTION public.notify_guest_change()
       RETURNS trigger AS $$
-      DECLARE
-        payload JSONB;
-        sync_url TEXT;
       BEGIN
-        sync_url := '${supabaseUrl}/functions/v1/sync-to-airtable';
-        
-        payload := jsonb_build_object(
-          'type', TG_OP,
-          'table', 'guests',
-          'record', row_to_json(NEW)
+        PERFORM pg_notify(
+          'guest_changes',
+          json_build_object(
+            'type', TG_OP,
+            'table', 'guests',
+            'record', row_to_json(NEW)
+          )::text
         );
-        
-        -- Log payload for debugging
-        RAISE LOG 'Sending guest change to sync function: %', payload;
-        
-        -- Call the sync-to-airtable function via HTTP
-        PERFORM net.http_post(
-          url := sync_url,
-          body := payload::text,
-          headers := '{"Content-Type": "application/json", "Authorization": "Bearer ${supabaseServiceRole}"}'::JSONB
-        );
-        
         RETURN NEW;
       END;
       $$ LANGUAGE plpgsql SECURITY DEFINER;
@@ -62,35 +81,18 @@ serve(async (req) => {
       -- Function for rsvps table
       CREATE OR REPLACE FUNCTION public.notify_rsvp_change()
       RETURNS trigger AS $$
-      DECLARE
-        payload JSONB;
-        sync_url TEXT;
       BEGIN
-        sync_url := '${supabaseUrl}/functions/v1/sync-to-airtable';
-        
-        payload := jsonb_build_object(
-          'type', TG_OP,
-          'table', 'rsvps',
-          'record', row_to_json(NEW)
+        PERFORM pg_notify(
+          'rsvp_changes',
+          json_build_object(
+            'type', TG_OP,
+            'table', 'rsvps',
+            'record', row_to_json(NEW)
+          )::text
         );
-        
-        -- Log payload for debugging
-        RAISE LOG 'Sending rsvp change to sync function: %', payload;
-        
-        -- Call the sync-to-airtable function via HTTP
-        PERFORM net.http_post(
-          url := sync_url,
-          body := payload::text,
-          headers := '{"Content-Type": "application/json", "Authorization": "Bearer ${supabaseServiceRole}"}'::JSONB
-        );
-        
         RETURN NEW;
       END;
       $$ LANGUAGE plpgsql SECURITY DEFINER;
-      
-      -- First make sure net extension is enabled
-      CREATE EXTENSION IF NOT EXISTS "http" WITH SCHEMA "extensions";
-      CREATE EXTENSION IF NOT EXISTS "pg_net" WITH SCHEMA "net";
       
       -- First drop any existing triggers to prevent errors on recreation
       DROP TRIGGER IF EXISTS guests_sync_trigger ON public.guests;
@@ -119,39 +121,47 @@ serve(async (req) => {
       ALTER PUBLICATION supabase_realtime ADD TABLE public.rsvps;
     `;
     
-    // Execute the SQL by using direct query approach
-    const { data, error } = await supabase
-      .from('guests')
-      .select('count(*)')
-      .limit(1)
-      .then(async () => {
-        try {
-          // Create a special administrative query to run the SQL directly
-          const response = await fetch(`${supabaseUrl}/rest/v1/`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'apikey': supabaseServiceRole,
-              'Authorization': `Bearer ${supabaseServiceRole}`,
-              'Prefer': 'params=single-object',
-              'X-Custom-SQL': 'true'  // Custom header to indicate direct SQL execution
-            },
-            body: JSON.stringify({ query: sql })
-          });
-          
-          if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`Failed to execute SQL: ${response.status} - ${errorText}`);
-          }
-          
-          return { data: await response.json(), error: null };
-        } catch (err) {
-          return { data: null, error: err };
+    // Execute the trigger SQL
+    try {
+      const { error: triggerError } = await supabase.rpc('supabase_functions.http_request', {
+        method: 'POST',
+        url: `${supabaseUrl}/rest/v1/sql`,
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${supabaseServiceRole}`,
+          'apikey': supabaseServiceRole
+        },
+        body: JSON.stringify({
+          query: triggerSQL
+        })
+      });
+      
+      if (triggerError) {
+        console.error("[ERROR] Failed to create triggers:", triggerError);
+        throw new Error(`Failed to create triggers: ${triggerError.message}`);
+      }
+      
+      console.log("[INFO] Successfully created database triggers");
+    } catch (error) {
+      console.error("[ERROR] Error creating database triggers:", error);
+      throw new Error(`Error creating database triggers: ${error instanceof Error ? error.message : String(error)}`);
+    }
+    
+    // Now update the listen-to-realtime function to handle the notifications
+    // This will serve as a bridge between the database triggers and the Airtable sync function
+    try {
+      await fetch(`${supabaseUrl}/functions/v1/listen-to-realtime`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${supabaseServiceRole}`,
+          'Content-Type': 'application/json'
         }
       });
-    
-    if (error) {
-      throw error;
+      
+      console.log("[INFO] Successfully invoked listen-to-realtime function");
+    } catch (error) {
+      console.warn("[WARN] Failed to invoke listen-to-realtime function:", error);
+      // Non-fatal, continue
     }
     
     // Return a success response
