@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -62,9 +63,9 @@ export default function AuthForm() {
     <div className="flex items-center justify-center min-h-screen bg-anniversary-purple relative overflow-hidden">
       {/* Background logo image */}
       <div className="fixed inset-0 z-0 pointer-events-none flex items-center justify-center">
-        <div className="w-4/5 mx-auto">
+        <div className="w-full mx-auto" style={{ minWidth: '500px' }}>
           <AspectRatio ratio={1 / 1}>
-            <img src="/lovable-uploads/0bd6c2ac-82dc-4943-b35c-d640385e3fff.png" alt="Circuit Board Logo" className="w-full h-full object-contain" />
+            <img src="/lovable-uploads/logo.svg" alt="Anniversary Logo" className="w-full h-full object-contain opacity-80" />
           </AspectRatio>
         </div>
       </div>
@@ -81,7 +82,7 @@ export default function AuthForm() {
                   placeholder="Enter Your Email For Access" 
                   value={email} 
                   onChange={e => setEmail(e.target.value)} 
-                  className={`w-full border-anniversary-gold bg-white/80 text-black placeholder:text-gray-600 rounded-md text-center ${formError ? 'border-red-500' : ''}`} 
+                  className={`w-full text-center border-anniversary-gold bg-white/80 text-black placeholder:text-gray-600 rounded-md ${formError ? 'border-red-500' : ''}`} 
                 />
                 {formError && (
                   <div className="flex items-center gap-2 text-sm text-red-500 mt-1">
