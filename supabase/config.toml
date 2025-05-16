@@ -6,3 +6,6 @@ verify_jwt = false
 
 [functions.listen-to-realtime]
 verify_jwt = false
+
+[functions.create-sync-triggers]
+verify_jwt = false

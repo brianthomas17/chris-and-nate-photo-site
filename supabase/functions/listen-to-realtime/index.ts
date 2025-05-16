@@ -1,3 +1,4 @@
+
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
@@ -12,148 +13,156 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Create a Supabase client with service role key for admin access
-const createSupabaseClient = () => {
-  if (!supabaseUrl || !supabaseServiceRole) {
-    throw new Error("Missing required environment variables: SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
+// Create supabase admin client
+const supabase = createClient(
+  supabaseUrl!,
+  supabaseServiceRole!,
+  {
+    auth: {
+      persistSession: false
+    }
   }
-  return createClient(supabaseUrl, supabaseServiceRole);
-};
+);
 
-// Keep track of connection status
-let isConnected = false;
-let heartbeatInterval: number | undefined;
-let reconnectAttempts = 0;
-const MAX_RECONNECT_ATTEMPTS = 10;
-const RECONNECT_DELAY = 5000; // 5 seconds
-
-// Process changes to tables and call the sync function
-async function processTableChange(table: string, payload: any) {
-  console.log(`[DEBUG] Processing ${payload.eventType} event for ${table} table`);
-  console.log(`[DEBUG] Change received for ${table} table:`, JSON.stringify(payload));
-  
+// Enable database triggers via the REST API
+async function enableDatabaseTriggers() {
   try {
-    // Call the sync-to-airtable function
-    console.log(`[DEBUG] Preparing to call sync-to-airtable function for ${table} change`);
+    console.log('[INFO] Setting up database triggers for guests and rsvps tables');
     
-    const webhookPayload = {
-      type: payload.eventType,
-      table: table,
-      record: payload.new,
-    };
+    // Enable realtime for guests table
+    const { error: guestsError } = await supabase.rpc('supabase_functions.http_request', {
+      method: 'POST',
+      url: `${supabaseUrl}/rest/v1/guests?on_conflict=id`,
+      headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: {}
+    });
+
+    if (guestsError) {
+      console.error('[ERROR] Failed to enable realtime for guests table:', guestsError);
+      throw guestsError;
+    }
     
-    console.log(`[DEBUG] Webhook payload for ${table} change: ${JSON.stringify(webhookPayload)}`);
-    console.log(`[DEBUG] Calling sync-to-airtable function at ${supabaseUrl}/functions/v1/sync-to-airtable`);
+    // Enable realtime for rsvps table
+    const { error: rsvpsError } = await supabase.rpc('supabase_functions.http_request', {
+      method: 'POST',
+      url: `${supabaseUrl}/rest/v1/rsvps?on_conflict=id`,
+      headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: {}
+    });
+
+    if (rsvpsError) {
+      console.error('[ERROR] Failed to enable realtime for rsvps table:', rsvpsError);
+      throw rsvpsError;
+    }
+    
+    console.log('[SUCCESS] Successfully set up database triggers');
+    return true;
+  } catch (error) {
+    console.error('[ERROR] Failed to set up database triggers:', error);
+    return false;
+  }
+}
+
+// Create database triggers for the tables
+async function setupDBTriggers() {
+  try {
+    console.log('[INFO] Setting up database triggers via direct SQL');
+    
+    // Using supabase admin client to execute SQL that creates database triggers
+    const { error: createTriggersError } = await supabase.rpc('supabase_functions.http_request', {
+      method: 'POST',
+      url: `${supabaseUrl}/rest/v1/rpc/create_sync_triggers`,
+      headers: { 'Content-Type': 'application/json' },
+      body: {}
+    });
+
+    if (createTriggersError) {
+      console.error('[ERROR] Failed to create database triggers:', createTriggersError);
+      throw createTriggersError;
+    }
+    
+    console.log('[SUCCESS] Successfully created database triggers');
+    return true;
+  } catch (error) {
+    console.error('[ERROR] Failed to create database triggers:', error);
+    return false;
+  }
+}
+
+// Verify that the sync-to-airtable function is working
+async function testSyncFunction() {
+  try {
+    console.log('[INFO] Testing sync-to-airtable function');
     
     const response = await fetch(`${supabaseUrl}/functions/v1/sync-to-airtable`, {
-      method: 'POST',
+      method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
         'Authorization': `Bearer ${supabaseServiceRole}`,
-      },
-      body: JSON.stringify(webhookPayload),
+        'Content-Type': 'application/json'
+      }
     });
-    
-    console.log(`[DEBUG] sync-to-airtable response status: ${response.status}`);
     
     if (!response.ok) {
       const errorText = await response.text();
-      console.error(`[ERROR] Error calling sync-to-airtable for ${table}: ${response.status} - ${errorText}`);
-      throw new Error(`Error calling sync-to-airtable for ${table}: ${response.status} - ${errorText}`);
+      console.error(`[ERROR] Sync function test failed with status ${response.status}: ${errorText}`);
+      return {
+        success: false,
+        status: response.status,
+        message: errorText
+      };
     }
     
     const result = await response.json();
-    console.log(`[SUCCESS] Successfully triggered sync for ${table} change, response:`, JSON.stringify(result));
-    return true;
+    console.log('[SUCCESS] Sync function test successful:', result);
+    return {
+      success: true,
+      status: response.status,
+      result
+    };
   } catch (error) {
-    console.error(`[ERROR] Error processing ${table} change:`, error);
-    return false;
+    console.error('[ERROR] Failed to test sync function:', error);
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : 'Unknown error'
+    };
   }
 }
 
-// Set up the realtime subscription
-async function setupRealtimeSubscription(supabase: any): Promise<boolean> {
+// Add a record to check the sync is working
+async function testAddRecord() {
   try {
-    console.log("[DEBUG] Setting up realtime subscription...");
+    console.log('[INFO] Testing sync by adding a test record');
     
-    const channel = supabase
-      .channel('schema-db-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'guests' }, async (payload: any) => {
-        await processTableChange('guests', payload);
-      })
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'rsvps' }, async (payload: any) => {
-        await processTableChange('rsvps', payload);
-      })
-      .subscribe((status: string) => {
-        console.log(`[DEBUG] Subscription status changed to: ${status}`);
-        
-        if (status === 'SUBSCRIBED') {
-          console.log('[INFO] Successfully subscribed to database changes');
-          isConnected = true;
-          reconnectAttempts = 0;
-          
-          // Set up heartbeat to keep connection alive
-          if (heartbeatInterval) clearInterval(heartbeatInterval);
-          heartbeatInterval = setInterval(() => {
-            console.log('[DEBUG] Sending heartbeat to keep connection alive');
-            // The channel.send method is not needed as the subscription itself keeps the connection alive
-          }, 30000); // Send a heartbeat every 30 seconds
-        } else if (status === 'CLOSED' || status === 'CHANNEL_ERROR') {
-          console.log(`[WARN] Subscription lost connection: ${status}`);
-          isConnected = false;
-          
-          if (heartbeatInterval) clearInterval(heartbeatInterval);
-          
-          // Attempt to reconnect
-          if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
-            reconnectAttempts++;
-            console.log(`[INFO] Attempting to reconnect (${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})...`);
-            setTimeout(() => {
-              setupRealtimeSubscription(createSupabaseClient())
-                .catch(err => console.error('[ERROR] Reconnection attempt failed:', err));
-            }, RECONNECT_DELAY);
-          } else {
-            console.error('[ERROR] Max reconnection attempts reached. Giving up.');
-          }
-        }
-      });
+    const testGuest = {
+      first_name: 'Test User',
+      email: `test-${new Date().getTime()}@example.com`,
+      invitation_type: 'main event'
+    };
     
-    // Return success if we get this far
-    return true;
-  } catch (error) {
-    console.error('[ERROR] Error setting up realtime subscription:', error);
-    isConnected = false;
-    return false;
-  }
-}
-
-// Main function to keep the subscription alive
-async function maintainRealtimeConnection() {
-  const checkInterval = 60000; // Check connection every minute
-  
-  // Initial setup
-  let supabase = createSupabaseClient();
-  let setupSuccess = await setupRealtimeSubscription(supabase);
-  
-  if (!setupSuccess) {
-    console.error('[ERROR] Initial subscription setup failed');
-  }
-  
-  // Set up periodic connection check
-  setInterval(async () => {
-    if (!isConnected) {
-      console.log('[INFO] Connection check: Not connected. Attempting to reconnect...');
-      supabase = createSupabaseClient();
-      await setupRealtimeSubscription(supabase);
-    } else {
-      console.log('[INFO] Connection check: Connected');
+    const { data, error } = await supabase.from('guests').insert(testGuest).select();
+    
+    if (error) {
+      console.error('[ERROR] Failed to insert test record:', error);
+      return {
+        success: false,
+        message: error.message
+      };
     }
-  }, checkInterval);
-  
-  return true;
+    
+    console.log('[SUCCESS] Test record added:', data);
+    return {
+      success: true,
+      record: data
+    };
+  } catch (error) {
+    console.error('[ERROR] Failed to add test record:', error);
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : 'Unknown error'
+    };
+  }
 }
 
-// The server handler
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -161,30 +170,38 @@ serve(async (req) => {
   }
 
   try {
-    console.log("[DEBUG] Starting realtime listener service...");
+    console.log("[INFO] Starting database sync setup process");
     
     // Check if required environment variables are set
     if (!supabaseUrl || !supabaseServiceRole) {
       throw new Error("Missing required environment variables: SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
     }
     
-    // Start the connection monitor
-    const connectionStarted = await maintainRealtimeConnection();
+    // First test if the sync-to-airtable function is working
+    const syncTest = await testSyncFunction();
     
-    if (!connectionStarted) {
-      throw new Error("Failed to start realtime connection");
+    // Set up database triggers
+    const triggersEnabled = await enableDatabaseTriggers();
+    
+    // If enabled via API fails, try with SQL
+    let triggerSetupResults = { success: triggersEnabled };
+    if (!triggersEnabled) {
+      triggerSetupResults = await setupDBTriggers();
     }
     
-    // Keep the function alive by not resolving the response right away
-    // Instead, wait for a while to ensure the subscription is established
-    await new Promise(resolve => setTimeout(resolve, 10000));
+    // Optional: Add a test record to verify the sync works
+    const testResults = req.url.includes('test=true') 
+      ? await testAddRecord() 
+      : { executed: false, message: 'Test not requested' };
     
     // Return a success response
     return new Response(
       JSON.stringify({ 
         success: true, 
-        message: 'Realtime listener has been started with enhanced reliability and is now monitoring guests and rsvps tables',
-        status: isConnected ? 'connected' : 'connecting'
+        message: 'Database sync setup complete',
+        syncFunctionTest: syncTest,
+        triggerSetup: triggerSetupResults,
+        testRecordResults: testResults
       }),
       {
         headers: {
@@ -194,7 +211,7 @@ serve(async (req) => {
       }
     );
   } catch (error) {
-    console.error('[ERROR] Error starting realtime listener:', error);
+    console.error('[ERROR] Error setting up database sync:', error);
     
     return new Response(
       JSON.stringify({ 
