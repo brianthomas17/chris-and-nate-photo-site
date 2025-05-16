@@ -29,10 +29,16 @@ serve(async (req) => {
     const channel = supabase
       .channel('schema-db-changes')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'guests' }, async (payload) => {
-        console.log('Change received for guests table:', payload);
+        console.log('Change received for guests table:', JSON.stringify(payload));
         
         try {
           // Call the sync-to-airtable function
+          console.log(`Calling sync-to-airtable function for guest change with payload: ${JSON.stringify({
+            type: payload.eventType,
+            table: 'guests',
+            record: payload.new,
+          })}`);
+          
           const response = await fetch(`${supabaseUrl}/functions/v1/sync-to-airtable`, {
             method: 'POST',
             headers: {
@@ -51,16 +57,23 @@ serve(async (req) => {
             throw new Error(`Error calling sync-to-airtable: ${response.status} - ${errorText}`);
           }
           
-          console.log('Successfully triggered sync for guest change');
+          const result = await response.json();
+          console.log('Successfully triggered sync for guest change, response:', JSON.stringify(result));
         } catch (error) {
           console.error('Error processing guest change:', error);
         }
       })
       .on('postgres_changes', { event: '*', schema: 'public', table: 'rsvps' }, async (payload) => {
-        console.log('Change received for rsvps table:', payload);
+        console.log('Change received for rsvps table:', JSON.stringify(payload));
         
         try {
           // Call the sync-to-airtable function
+          console.log(`Calling sync-to-airtable function for rsvp change with payload: ${JSON.stringify({
+            type: payload.eventType,
+            table: 'rsvps',
+            record: payload.new,
+          })}`);
+          
           const response = await fetch(`${supabaseUrl}/functions/v1/sync-to-airtable`, {
             method: 'POST',
             headers: {
@@ -79,7 +92,8 @@ serve(async (req) => {
             throw new Error(`Error calling sync-to-airtable: ${response.status} - ${errorText}`);
           }
           
-          console.log('Successfully triggered sync for rsvp change');
+          const result = await response.json();
+          console.log('Successfully triggered sync for rsvp change, response:', JSON.stringify(result));
         } catch (error) {
           console.error('Error processing rsvp change:', error);
         }
@@ -110,7 +124,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         success: false, 
-        error: error.message 
+        error: error instanceof Error ? error.message : 'Unknown error' 
       }),
       {
         status: 500,
