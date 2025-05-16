@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -60,9 +59,9 @@ export default function AuthForm() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-anniversary-purple relative overflow-hidden circuit-pattern">
-      {/* Logo overlay centered */}
-      <div className="fixed inset-0 z-0 pointer-events-none flex items-center justify-center opacity-20">
+    <div className="flex items-center justify-center min-h-screen bg-anniversary-purple relative overflow-hidden">
+      {/* Background logo image */}
+      <div className="fixed inset-0 z-0 pointer-events-none flex items-center justify-center">
         <div className="w-4/5 mx-auto">
           <AspectRatio ratio={1 / 1}>
             <img src="/lovable-uploads/0bd6c2ac-82dc-4943-b35c-d640385e3fff.png" alt="Circuit Board Logo" className="w-full h-full object-contain" />
