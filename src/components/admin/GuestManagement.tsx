@@ -57,7 +57,7 @@ export default function GuestManagement() {
       email,
       phone_number: phoneNumber || null,
       invitation_type: invitationType,
-      party_id: partyId,
+      party_id: partyId, // This is already null when "none" is selected
     });
     setIsSubmitting(false);
     setIsAddDialogOpen(false);
@@ -76,7 +76,7 @@ export default function GuestManagement() {
       email,
       phone_number: phoneNumber || null,
       invitation_type: invitationType,
-      party_id: partyId,
+      party_id: partyId, // This is already null when "none" is selected
     });
     
     // Update RSVP if attending status is set (not null)
@@ -312,8 +312,8 @@ export default function GuestManagement() {
                 <div className="space-y-2">
                   <Label htmlFor="party">Party (Optional)</Label>
                   <Select
-                    value={partyId || undefined}
-                    onValueChange={setPartyId}
+                    value={partyId || ""}
+                    onValueChange={(value) => setPartyId(value === "none" ? null : value)}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select party" />
@@ -448,8 +448,8 @@ export default function GuestManagement() {
               <div className="space-y-2">
                 <Label htmlFor="edit-party">Party</Label>
                 <Select
-                  value={partyId || undefined}
-                  onValueChange={setPartyId}
+                  value={partyId || ""}
+                  onValueChange={(value) => setPartyId(value === "none" ? null : value)}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select party" />

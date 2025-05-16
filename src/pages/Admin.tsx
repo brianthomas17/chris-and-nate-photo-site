@@ -1,3 +1,4 @@
+
 import AdminLayout from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { seedTestAccounts } from "@/utils/seedTestAccounts";
@@ -5,15 +6,12 @@ import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/context/AuthContext";
 import { Navigate, useNavigate } from "react-router-dom";
+
 const Admin = () => {
   const [isSeeding, setIsSeeding] = useState(false);
-  const {
-    toast
-  } = useToast();
-  const {
-    currentGuest,
-    isLoading
-  } = useAuth();
+  const [isSyncing, setIsSyncing] = useState(false);
+  const { toast } = useToast();
+  const { currentGuest, isLoading } = useAuth();
   const navigate = useNavigate();
 
   // Use useEffect for navigation to prevent issues with multiple renders
@@ -47,6 +45,7 @@ const Admin = () => {
   if (!currentGuest || currentGuest.invitation_type !== 'admin') {
     return null;
   }
+
   const handleSeedTestAccounts = async () => {
     setIsSeeding(true);
     try {
@@ -66,11 +65,60 @@ const Admin = () => {
       setIsSeeding(false);
     }
   };
-  return <>
+
+  const handleTestAirtableSync = async () => {
+    setIsSyncing(true);
+    try {
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_FUNCTIONS_URL}/listen-to-realtime`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        toast({
+          title: "Success",
+          description: "Airtable sync system has been tested successfully. Check Airtable."
+        });
+      } else {
+        throw new Error(result.error || "Unknown error occurred");
+      }
+    } catch (error) {
+      console.error("Error testing Airtable sync:", error);
+      toast({
+        title: "Error",
+        description: `Failed to test Airtable sync: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        variant: "destructive"
+      });
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
+  return (
+    <>
       <AdminLayout />
-      <div className="fixed bottom-4 right-4">
-        
+      <div className="fixed bottom-4 right-4 flex flex-col gap-2">
+        <Button 
+          onClick={handleSeedTestAccounts} 
+          disabled={isSeeding} 
+          variant="outline"
+        >
+          {isSeeding ? "Seeding..." : "Seed Test Accounts"}
+        </Button>
+        <Button 
+          onClick={handleTestAirtableSync} 
+          disabled={isSyncing} 
+          className="bg-emerald-600 hover:bg-emerald-700"
+        >
+          {isSyncing ? "Testing..." : "Test Airtable Sync"}
+        </Button>
       </div>
-    </>;
+    </>
+  );
 };
+
 export default Admin;
