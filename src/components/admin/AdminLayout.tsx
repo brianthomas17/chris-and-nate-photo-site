@@ -1,3 +1,4 @@
+
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -5,6 +6,7 @@ import GuestManagement from "./GuestManagement";
 import ContentManagement from "./ContentManagement";
 import RSVPOverview from "./RSVPOverview";
 import CommunicationsManagement from "./CommunicationsManagement";
+import MessagesSent from "./MessagesSent";
 import { useNavigate } from "react-router-dom";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
@@ -67,6 +69,7 @@ export default function AdminLayout() {
               </TabsTrigger>
               <TabsTrigger value="content" className="data-[state=active]:bg-[#C9A95B] data-[state=active]:text-anniversary-purple">Website Content</TabsTrigger>
               <TabsTrigger value="communications" className="data-[state=active]:bg-[#C9A95B] data-[state=active]:text-anniversary-purple">Message Content</TabsTrigger>
+              <TabsTrigger value="messages-sent" className="data-[state=active]:bg-[#C9A95B] data-[state=active]:text-anniversary-purple">Messages Sent</TabsTrigger>
               <TabsTrigger value="rsvp" className="data-[state=active]:bg-[#C9A95B] data-[state=active]:text-anniversary-purple">Stats</TabsTrigger>
             </TabsList>
           </div>
@@ -78,6 +81,9 @@ export default function AdminLayout() {
           </TabsContent>
           <TabsContent value="communications">
             <CommunicationsManagement />
+          </TabsContent>
+          <TabsContent value="messages-sent">
+            <MessagesSent />
           </TabsContent>
           <TabsContent value="rsvp">
             <RSVPOverview />
