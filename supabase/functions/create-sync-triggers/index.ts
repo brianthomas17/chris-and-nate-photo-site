@@ -28,116 +28,128 @@ serve(async (req) => {
     
     const supabase = createClient(supabaseUrl, supabaseServiceRole);
     
-    // Create functions to notify on changes
-    const createFunctions = await supabase.rpc('supabase_functions.http_request', {
-      method: 'POST',
-      url: `${supabaseUrl}/rest/v1/rpc/exec_sql`,
-      headers: { 'Content-Type': 'application/json' },
-      body: {
-        sql: `
-          -- Function for guests table
-          CREATE OR REPLACE FUNCTION public.notify_guest_change()
-          RETURNS trigger AS $$
-          DECLARE
-            payload JSONB;
-            sync_url TEXT;
-          BEGIN
-            sync_url := '${supabaseUrl}/functions/v1/sync-to-airtable';
-            
-            payload := jsonb_build_object(
-              'type', TG_OP,
-              'table', 'guests',
-              'record', row_to_json(NEW)
-            );
-            
-            -- Log payload for debugging
-            RAISE LOG 'Sending guest change to sync function: %', payload;
-            
-            -- Call the sync-to-airtable function via HTTP
-            PERFORM net.http_post(
-              url := sync_url,
-              body := payload,
-              headers := '{"Content-Type": "application/json", "Authorization": "Bearer ${supabaseServiceRole}"}'::JSONB
-            );
-            
-            RETURN NEW;
-          END;
-          $$ LANGUAGE plpgsql SECURITY DEFINER;
-          
-          -- Function for rsvps table
-          CREATE OR REPLACE FUNCTION public.notify_rsvp_change()
-          RETURNS trigger AS $$
-          DECLARE
-            payload JSONB;
-            sync_url TEXT;
-          BEGIN
-            sync_url := '${supabaseUrl}/functions/v1/sync-to-airtable';
-            
-            payload := jsonb_build_object(
-              'type', TG_OP,
-              'table', 'rsvps',
-              'record', row_to_json(NEW)
-            );
-            
-            -- Log payload for debugging
-            RAISE LOG 'Sending rsvp change to sync function: %', payload;
-            
-            -- Call the sync-to-airtable function via HTTP
-            PERFORM net.http_post(
-              url := sync_url,
-              body := payload,
-              headers := '{"Content-Type": "application/json", "Authorization": "Bearer ${supabaseServiceRole}"}'::JSONB
-            );
-            
-            RETURN NEW;
-          END;
-          $$ LANGUAGE plpgsql SECURITY DEFINER;
-        `
-      }
-    });
+    // Create the SQL for notification functions and triggers
+    const sql = `
+      -- Function for guests table
+      CREATE OR REPLACE FUNCTION public.notify_guest_change()
+      RETURNS trigger AS $$
+      DECLARE
+        payload JSONB;
+        sync_url TEXT;
+      BEGIN
+        sync_url := '${supabaseUrl}/functions/v1/sync-to-airtable';
+        
+        payload := jsonb_build_object(
+          'type', TG_OP,
+          'table', 'guests',
+          'record', row_to_json(NEW)
+        );
+        
+        -- Log payload for debugging
+        RAISE LOG 'Sending guest change to sync function: %', payload;
+        
+        -- Call the sync-to-airtable function via HTTP
+        PERFORM net.http_post(
+          url := sync_url,
+          body := payload::text,
+          headers := '{"Content-Type": "application/json", "Authorization": "Bearer ${supabaseServiceRole}"}'::JSONB
+        );
+        
+        RETURN NEW;
+      END;
+      $$ LANGUAGE plpgsql SECURITY DEFINER;
+      
+      -- Function for rsvps table
+      CREATE OR REPLACE FUNCTION public.notify_rsvp_change()
+      RETURNS trigger AS $$
+      DECLARE
+        payload JSONB;
+        sync_url TEXT;
+      BEGIN
+        sync_url := '${supabaseUrl}/functions/v1/sync-to-airtable';
+        
+        payload := jsonb_build_object(
+          'type', TG_OP,
+          'table', 'rsvps',
+          'record', row_to_json(NEW)
+        );
+        
+        -- Log payload for debugging
+        RAISE LOG 'Sending rsvp change to sync function: %', payload;
+        
+        -- Call the sync-to-airtable function via HTTP
+        PERFORM net.http_post(
+          url := sync_url,
+          body := payload::text,
+          headers := '{"Content-Type": "application/json", "Authorization": "Bearer ${supabaseServiceRole}"}'::JSONB
+        );
+        
+        RETURN NEW;
+      END;
+      $$ LANGUAGE plpgsql SECURITY DEFINER;
+      
+      -- First make sure net extension is enabled
+      CREATE EXTENSION IF NOT EXISTS "http" WITH SCHEMA "extensions";
+      CREATE EXTENSION IF NOT EXISTS "pg_net" WITH SCHEMA "net";
+      
+      -- First drop any existing triggers to prevent errors on recreation
+      DROP TRIGGER IF EXISTS guests_sync_trigger ON public.guests;
+      DROP TRIGGER IF EXISTS rsvps_sync_trigger ON public.rsvps;
+      
+      -- Create triggers for guests table
+      CREATE TRIGGER guests_sync_trigger
+      AFTER INSERT OR UPDATE
+      ON public.guests
+      FOR EACH ROW
+      EXECUTE FUNCTION public.notify_guest_change();
+      
+      -- Create triggers for rsvps table
+      CREATE TRIGGER rsvps_sync_trigger
+      AFTER INSERT OR UPDATE
+      ON public.rsvps
+      FOR EACH ROW
+      EXECUTE FUNCTION public.notify_rsvp_change();
+      
+      -- Enable realtime for these tables
+      ALTER TABLE public.guests REPLICA IDENTITY FULL;
+      ALTER TABLE public.rsvps REPLICA IDENTITY FULL;
+      
+      -- Make sure the tables are in the publication
+      ALTER PUBLICATION supabase_realtime ADD TABLE public.guests;
+      ALTER PUBLICATION supabase_realtime ADD TABLE public.rsvps;
+    `;
     
-    if (createFunctions.error) {
-      throw new Error(`Failed to create functions: ${createFunctions.error.message}`);
-    }
+    // Execute the SQL using the Postgres REST API directly
+    const { data, error } = await supabase
+      .from('_dummy_query')
+      .select('*')
+      .limit(1)
+      .then(async () => {
+        // Use the internal connection to execute raw SQL
+        const response = await fetch(`${supabaseUrl}/rest/v1/rpc/exec`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': supabaseServiceRole,
+            'Authorization': `Bearer ${supabaseServiceRole}`
+          },
+          body: JSON.stringify({ 
+            name: 'exec_sql',
+            args: { sql: sql }
+          })
+        });
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Failed to execute SQL: ${response.status} - ${errorText}`);
+        }
+        
+        return { data: await response.json(), error: null };
+      })
+      .catch(err => ({ data: null, error: err }));
     
-    // Create triggers that will call our functions
-    const createTriggers = await supabase.rpc('supabase_functions.http_request', {
-      method: 'POST',
-      url: `${supabaseUrl}/rest/v1/rpc/exec_sql`,
-      headers: { 'Content-Type': 'application/json' },
-      body: {
-        sql: `
-          -- First drop any existing triggers to prevent errors on recreation
-          DROP TRIGGER IF EXISTS guests_sync_trigger ON public.guests;
-          DROP TRIGGER IF EXISTS rsvps_sync_trigger ON public.rsvps;
-          
-          -- Create triggers for guests table
-          CREATE TRIGGER guests_sync_trigger
-          AFTER INSERT OR UPDATE
-          ON public.guests
-          FOR EACH ROW
-          EXECUTE FUNCTION public.notify_guest_change();
-          
-          -- Create triggers for rsvps table
-          CREATE TRIGGER rsvps_sync_trigger
-          AFTER INSERT OR UPDATE
-          ON public.rsvps
-          FOR EACH ROW
-          EXECUTE FUNCTION public.notify_rsvp_change();
-          
-          -- Enable realtime for these tables
-          ALTER TABLE public.guests REPLICA IDENTITY FULL;
-          ALTER TABLE public.rsvps REPLICA IDENTITY FULL;
-          
-          -- Make sure the tables are in the publication
-          ALTER PUBLICATION supabase_realtime ADD TABLE public.guests;
-          ALTER PUBLICATION supabase_realtime ADD TABLE public.rsvps;
-        `
-      }
-    });
-    
-    if (createTriggers.error) {
-      throw new Error(`Failed to create triggers: ${createTriggers.error.message}`);
+    if (error) {
+      throw error;
     }
     
     // Return a success response
