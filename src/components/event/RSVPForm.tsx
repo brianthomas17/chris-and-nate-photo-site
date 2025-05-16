@@ -21,7 +21,9 @@ export default function RSVPForm({
   const {
     toast
   } = useToast();
-  const [attending, setAttending] = useState<boolean>(guest.rsvp?.attending || false);
+  
+  // For pending RSVPs, default to null (no selection)
+  const [attending, setAttending] = useState<boolean | null>(guest.rsvp ? guest.rsvp.attending : null);
   const [plusOne, setPlusOne] = useState<boolean>(guest.rsvp?.plus_one || false);
   const [dietaryRestrictions, setDietaryRestrictions] = useState<string>(guest.rsvp?.dietary_restrictions || "");
   const [submitting, setSubmitting] = useState<boolean>(false);
@@ -35,6 +37,17 @@ export default function RSVPForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Ensure a selection has been made before submitting
+    if (attending === null) {
+      toast({
+        title: "Selection Required",
+        description: "Please select whether you will attend or not.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     setSubmitting(true);
     
     try {
@@ -75,7 +88,11 @@ export default function RSVPForm({
             <div className="space-y-6 pt-4">
               <div className="space-y-4">
                 
-                <RadioGroup value={attending ? "yes" : "no"} onValueChange={v => setAttending(v === "yes")} className="flex flex-col items-center space-y-4">
+                <RadioGroup 
+                  value={attending === null ? undefined : attending ? "yes" : "no"} 
+                  onValueChange={v => setAttending(v === "yes")} 
+                  className="flex flex-col items-center space-y-4"
+                >
                   <div className="flex items-center space-x-3">
                     <RadioGroupItem value="yes" id="attending-yes" className="border-anniversary-gold" />
                     <Label htmlFor="attending-yes" className="text-white text-lg">Yes, I'll be there!</Label>
