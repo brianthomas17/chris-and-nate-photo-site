@@ -79,36 +79,38 @@ export default function EventLayout() {
         </div>
         
         <div className="container mx-auto text-center relative z-0 px-4 py-[200px]">
-          <h3 className="text-xl md:text-3xl font-bicyclette mb-10 text-[#C9A95B] animate-[fadeIn_1.2s_ease-out_0.8s_forwards]" style={{
-            opacity: 0
-          }}>
-            CHRIS & NATE INVITE YOU TO
-          </h3>
-          <h1 className="text-4xl md:text-6xl font-din tracking-wide mb-4 uppercase text-[#C9A95B] animate-[fadeIn_1.2s_ease-out_1s_forwards]" style={{
-            opacity: 0
-          }}>
-            A Decade of Determination, Disruption & Dinner Dilemmas
-          </h1>
-          <p className="text-xl text-[#C9A95B] font-bicyclette mb-8 animate-[fadeIn_1.2s_ease-out_1.2s_forwards]" style={{
-            opacity: 0
-          }}>
-            THIS ONE'S DIFFERENT...
-          </p>
-          <h2 className="text-3xl md:text-5xl font-din mb-6 text-[#C9A95B] animate-[fadeIn_1.2s_ease-out_1.4s_forwards]" style={{
-            opacity: 0
-          }}>
-            8.16.25
-          </h2>
-          <p className="text-xl md:text-2xl font-bicyclette mb-8 text-[#C9A95B] animate-[fadeIn_1.2s_ease-out_1.6s_forwards]" style={{
-            opacity: 0
-          }}>
-            MORE THAN AN EVENT — IT'S A MOMENT
-          </p>
-          <div className="text-[#C9A95B] animate-[fadeIn_1.2s_ease-out_1.8s_forwards]" style={{
-            opacity: 0
-          }}>
-            <p className="font-bicyclette">SAINT JOSEPH'S ARTS SOCIETY</p>
-            <p className="font-bicyclette">1401 HOWARD STREET, SAN FRANCISCO</p>
+          <div className="max-w-[800px] mx-auto">
+            <h3 className="text-xl md:text-3xl font-bicyclette mb-10 text-[#C9A95B] animate-[fadeIn_1.2s_ease-out_0.8s_forwards]" style={{
+              opacity: 0
+            }}>
+              CHRIS & NATE INVITE YOU TO
+            </h3>
+            <h1 className="text-4xl md:text-6xl font-din tracking-wide mb-4 uppercase text-[#C9A95B] animate-[fadeIn_1.2s_ease-out_1s_forwards]" style={{
+              opacity: 0
+            }}>
+              A Decade of Determination, Disruption & Dinner Dilemmas
+            </h1>
+            <p className="text-xl text-[#C9A95B] font-bicyclette mb-8 animate-[fadeIn_1.2s_ease-out_1.2s_forwards]" style={{
+              opacity: 0
+            }}>
+              THIS ONE'S DIFFERENT...
+            </p>
+            <h2 className="text-3xl md:text-5xl font-din mb-6 text-[#C9A95B] animate-[fadeIn_1.2s_ease-out_1.4s_forwards]" style={{
+              opacity: 0
+            }}>
+              8.16.25
+            </h2>
+            <p className="text-xl md:text-2xl font-bicyclette mb-8 text-[#C9A95B] animate-[fadeIn_1.2s_ease-out_1.6s_forwards]" style={{
+              opacity: 0
+            }}>
+              MORE THAN AN EVENT — IT'S A MOMENT
+            </p>
+            <div className="text-[#C9A95B] animate-[fadeIn_1.2s_ease-out_1.8s_forwards]" style={{
+              opacity: 0
+            }}>
+              <p className="font-bicyclette">SAINT JOSEPH'S ARTS SOCIETY</p>
+              <p className="font-bicyclette">1401 HOWARD STREET, SAN FRANCISCO</p>
+            </div>
           </div>
         </div>
       </header>
