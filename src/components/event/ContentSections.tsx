@@ -13,7 +13,7 @@ export default function ContentSections({ invitationType }: ContentSectionsProps
   if (visibleSections.length === 0) {
     return (
       <div className="text-center p-8">
-        <p className="text-white text-lg">No content sections available yet.</p>
+        <p className="text-white text-xl">No content sections available yet.</p>
       </div>
     );
   }
