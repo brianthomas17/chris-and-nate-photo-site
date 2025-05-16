@@ -13,7 +13,7 @@ export default function ContentSections({ invitationType }: ContentSectionsProps
   if (visibleSections.length === 0) {
     return (
       <div className="text-center p-8">
-        <p className="text-white">No content sections available yet.</p>
+        <p className="text-white text-lg">No content sections available yet.</p>
       </div>
     );
   }
@@ -23,7 +23,7 @@ export default function ContentSections({ invitationType }: ContentSectionsProps
       {visibleSections.map((section) => (
         <div key={section.id} className="text-center">
           <div
-            className="prose prose-headings:text-anniversary-gold prose-p:text-white prose-li:text-white prose-strong:text-white prose-p:text-lg prose-li:text-lg max-w-none text-white"
+            className="prose prose-headings:text-anniversary-gold prose-headings:text-2xl prose-p:text-white prose-li:text-white prose-strong:text-white prose-p:text-xl prose-li:text-xl max-w-none text-white"
             dangerouslySetInnerHTML={{ __html: section.content }}
           />
         </div>
