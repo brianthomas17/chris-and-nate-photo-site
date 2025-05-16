@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -67,7 +66,7 @@ export default function AdminLayout() {
                 Guest Management
               </TabsTrigger>
               <TabsTrigger value="content" className="data-[state=active]:bg-[#C9A95B] data-[state=active]:text-anniversary-purple">Website Content</TabsTrigger>
-              <TabsTrigger value="communications" className="data-[state=active]:bg-[#C9A95B] data-[state=active]:text-anniversary-purple">Messages</TabsTrigger>
+              <TabsTrigger value="communications" className="data-[state=active]:bg-[#C9A95B] data-[state=active]:text-anniversary-purple">Message Content</TabsTrigger>
               <TabsTrigger value="rsvp" className="data-[state=active]:bg-[#C9A95B] data-[state=active]:text-anniversary-purple">Stats</TabsTrigger>
             </TabsList>
           </div>
