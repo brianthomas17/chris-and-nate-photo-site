@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -47,10 +46,7 @@ export default function AuthForm() {
     }
     try {
       console.log("Submitting login form with email:", email);
-      const success = await login(email);
-      if (!success) {
-        setFormError('Sorry, we couldn\'t find your email on our guest list.');
-      }
+      await login(email); // Don't test the return value
     } catch (error) {
       console.error('Login error:', error);
       setFormError('An error occurred. Please try again.');

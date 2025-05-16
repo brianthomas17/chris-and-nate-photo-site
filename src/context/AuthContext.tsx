@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Guest } from '@/types';
 import { supabase } from '@/integrations/supabase/client';
@@ -5,7 +6,9 @@ import { useToast } from '@/hooks/use-toast';
 
 interface AuthContextType {
   user: Guest | null;
+  currentGuest: Guest | null; // Added alias for compatibility
   loading: boolean;
+  isLoading: boolean; // Added alias for compatibility
   error: string | null;
   login: (email: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -194,7 +197,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, error, login, logout, checkAuth }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      currentGuest: user, // Add alias for compatibility
+      loading, 
+      isLoading: loading, // Add alias for compatibility
+      error, 
+      login, 
+      logout, 
+      checkAuth 
+    }}>
       {children}
     </AuthContext.Provider>
   );

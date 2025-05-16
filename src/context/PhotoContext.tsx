@@ -24,7 +24,7 @@ export const usePhotos = () => {
 export const PhotoProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const { toast } = useToast();
-  const { currentGuest } = useAuth();
+  const { currentGuest } = useAuth(); // This should now work with our updated AuthContext
 
   useEffect(() => {
     fetchPhotos();
