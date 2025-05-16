@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -64,9 +63,7 @@ export default function AdminLayout() {
         <Tabs defaultValue="guests" className="w-full">
           <div className="flex justify-center w-full">
             <TabsList className="mb-8 bg-transparent">
-              <TabsTrigger value="guests" className="data-[state=active]:bg-[#C9A95B] data-[state=active]:text-anniversary-purple">
-                Guest Management
-              </TabsTrigger>
+              <TabsTrigger value="guests" className="data-[state=active]:bg-[#C9A95B] data-[state=active]:text-anniversary-purple">Guests</TabsTrigger>
               <TabsTrigger value="content" className="data-[state=active]:bg-[#C9A95B] data-[state=active]:text-anniversary-purple">Website Content</TabsTrigger>
               <TabsTrigger value="communications" className="data-[state=active]:bg-[#C9A95B] data-[state=active]:text-anniversary-purple">Message Content</TabsTrigger>
               <TabsTrigger value="messages-sent" className="data-[state=active]:bg-[#C9A95B] data-[state=active]:text-anniversary-purple">Messages Sent</TabsTrigger>
