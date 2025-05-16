@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -60,8 +61,8 @@ export default function AuthForm() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-anniversary-purple relative overflow-hidden">
-      {/* Background logo image with overflow allowed */}
-      <div className="fixed inset-0 z-0 pointer-events-none flex items-center justify-center overflow-visible">
+      {/* Background logo image with padding added */}
+      <div className="fixed inset-0 z-0 pointer-events-none flex items-center justify-center overflow-visible px-8">
         <div className="absolute" style={{ minWidth: '500px', width: '100%', maxWidth: '900px' }}>
           <AspectRatio ratio={1 / 1}>
             <img 
