@@ -39,16 +39,56 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       setLoading(true);
       
-      // Check if we have a session
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        setUser(null);
+      // Check if we have a stored user in localStorage
+      const storedUser = localStorage.getItem('eventUser');
+      if (storedUser) {
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
         setLoading(false);
-        return false;
+        return true;
       }
       
-      // Get user data from our guests table
+      setUser(null);
+      setLoading(false);
+      return false;
+    } catch (error) {
+      console.error('Auth check error:', error);
+      setUser(null);
+      setLoading(false);
+      return false;
+    }
+  };
+
+  const login = async (email: string) => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      // For development/testing, allow a special test user login
+      if (process.env.NODE_ENV === 'development' && email === 'test@example.com') {
+        const testUser = {
+          id: "test-user-id",
+          first_name: "Test User",
+          email: "test@example.com",
+          invitation_type: "main event" as const,
+          rsvp: {
+            attending: true,
+            plus_one: false
+          }
+        };
+        
+        setUser(testUser);
+        localStorage.setItem('eventUser', JSON.stringify(testUser));
+        
+        setLoading(false);
+        toast({
+          title: "Test Login Successful",
+          description: "You are now logged in as a test user.",
+        });
+        return;
+      }
+      
+      // Check if the email exists in our guest list
       const { data: guestData, error: guestError } = await supabase
         .from('guests')
         .select(`
@@ -60,14 +100,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           party_id,
           rsvps(*)
         `)
-        .eq('email', session.user.email)
+        .eq('email', email.toLowerCase())
         .maybeSingle();
       
-      if (guestError || !guestData) {
-        console.error('Error fetching user data:', guestError);
-        setUser(null);
-        setLoading(false);
-        return false;
+      if (guestError) {
+        throw new Error('Error checking guest list');
+      }
+      
+      if (!guestData) {
+        throw new Error('Email not found in guest list');
       }
       
       // Transform the data to match our Guest interface
@@ -89,72 +130,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         };
       }
       
+      // Store the user in state and localStorage
       setUser(guest);
-      setLoading(false);
-      return true;
-    } catch (error) {
-      console.error('Auth check error:', error);
-      setUser(null);
-      setLoading(false);
-      return false;
-    }
-  };
-
-  const login = async (email: string) => {
-    try {
-      setLoading(true);
-      setError(null);
-      
-      // For development/testing, allow a special test user login
-      if (process.env.NODE_ENV === 'development' && email === 'test@example.com') {
-        setUser({
-          id: "test-user-id",
-          first_name: "Test User",
-          email: "test@example.com",
-          invitation_type: "main event",
-          rsvp: {
-            attending: true,
-            plus_one: false
-          }
-        });
-        setLoading(false);
-        toast({
-          title: "Test Login Successful",
-          description: "You are now logged in as a test user.",
-        });
-        return;
-      }
-      
-      // Check if the email exists in our guest list
-      const { data: guestData, error: guestError } = await supabase
-        .from('guests')
-        .select('*')
-        .eq('email', email.toLowerCase())
-        .maybeSingle();
-      
-      if (guestError) {
-        throw new Error('Error checking guest list');
-      }
-      
-      if (!guestData) {
-        throw new Error('Email not found in guest list');
-      }
-      
-      // Send magic link
-      const { error } = await supabase.auth.signInWithOtp({
-        email: email.toLowerCase(),
-        options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
-        },
-      });
-      
-      if (error) {
-        throw new Error(error.message);
-      }
+      localStorage.setItem('eventUser', JSON.stringify(guest));
       
       toast({
-        title: "Login Link Sent",
-        description: "Check your email for a login link.",
+        title: "Login Successful",
+        description: `Welcome, ${guest.first_name}!`,
       });
     } catch (err: any) {
       console.error('Login error:', err);
@@ -173,11 +155,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       setLoading(true);
       
-      const { error } = await supabase.auth.signOut();
-      
-      if (error) {
-        throw error;
-      }
+      // Clear the stored user from localStorage
+      localStorage.removeItem('eventUser');
       
       setUser(null);
       toast({
