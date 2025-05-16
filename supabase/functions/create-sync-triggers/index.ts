@@ -1,5 +1,4 @@
 
-import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
@@ -28,40 +27,12 @@ serve(async (req) => {
     
     const supabase = createClient(supabaseUrl, supabaseServiceRole);
     
-    // First enable extensions - do this separately to ensure they are enabled
-    const enableExtensionsSQL = `
-      CREATE EXTENSION IF NOT EXISTS "http" WITH SCHEMA "extensions";
-      CREATE EXTENSION IF NOT EXISTS "pg_net" WITH SCHEMA "net";
-    `;
-    
-    // Execute extension setup first
-    try {
-      const { error: extensionsError } = await supabase.rpc('supabase_functions.http_request', {
-        method: 'POST',
-        url: `${supabaseUrl}/rest/v1/sql`,
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${supabaseServiceRole}`,
-          'apikey': supabaseServiceRole
-        },
-        body: JSON.stringify({
-          query: enableExtensionsSQL
-        })
-      });
-      
-      if (extensionsError) {
-        console.error("[ERROR] Failed to enable extensions:", extensionsError);
-        throw new Error(`Failed to enable extensions: ${extensionsError.message}`);
-      }
-      
-      console.log("[INFO] Successfully enabled extensions");
-    } catch (error) {
-      console.error("[ERROR] Error enabling extensions:", error);
-      throw new Error(`Error enabling extensions: ${error instanceof Error ? error.message : String(error)}`);
-    }
-    
-    // Now create the SQL for notification functions and triggers
+    // Set up the database triggers directly without using RPC
     const triggerSQL = `
+      -- First enable required extensions
+      CREATE EXTENSION IF NOT EXISTS "http";
+      CREATE EXTENSION IF NOT EXISTS "pg_net";
+      
       -- Function for guests table
       CREATE OR REPLACE FUNCTION public.notify_guest_change()
       RETURNS trigger AS $$
@@ -121,48 +92,24 @@ serve(async (req) => {
       ALTER PUBLICATION supabase_realtime ADD TABLE public.rsvps;
     `;
     
-    // Execute the trigger SQL
-    try {
-      const { error: triggerError } = await supabase.rpc('supabase_functions.http_request', {
-        method: 'POST',
-        url: `${supabaseUrl}/rest/v1/sql`,
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${supabaseServiceRole}`,
-          'apikey': supabaseServiceRole
-        },
-        body: JSON.stringify({
-          query: triggerSQL
-        })
-      });
-      
-      if (triggerError) {
-        console.error("[ERROR] Failed to create triggers:", triggerError);
-        throw new Error(`Failed to create triggers: ${triggerError.message}`);
-      }
-      
-      console.log("[INFO] Successfully created database triggers");
-    } catch (error) {
-      console.error("[ERROR] Error creating database triggers:", error);
-      throw new Error(`Error creating database triggers: ${error instanceof Error ? error.message : String(error)}`);
+    // Execute the SQL directly using the REST API
+    const { error: sqlError } = await fetch(`${supabaseUrl}/rest/v1/sql`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${supabaseServiceRole}`,
+        'apikey': supabaseServiceRole
+      },
+      body: JSON.stringify({
+        query: triggerSQL
+      })
+    }).then(r => r.json());
+    
+    if (sqlError) {
+      throw new Error(`Failed to execute SQL: ${JSON.stringify(sqlError)}`);
     }
     
-    // Now update the listen-to-realtime function to handle the notifications
-    // This will serve as a bridge between the database triggers and the Airtable sync function
-    try {
-      await fetch(`${supabaseUrl}/functions/v1/listen-to-realtime`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${supabaseServiceRole}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      console.log("[INFO] Successfully invoked listen-to-realtime function");
-    } catch (error) {
-      console.warn("[WARN] Failed to invoke listen-to-realtime function:", error);
-      // Non-fatal, continue
-    }
+    console.log("[INFO] Successfully created database triggers");
     
     // Return a success response
     return new Response(

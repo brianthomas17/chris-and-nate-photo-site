@@ -20,34 +20,13 @@ serve(async (req) => {
   }
 
   try {
-    console.log("[INFO] Setting up realtime listener for syncing to Airtable");
+    console.log("[INFO] Setting up connection to sync changes to Airtable");
     
     if (!supabaseUrl || !supabaseServiceRole) {
       throw new Error("Missing required environment variables: SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
     }
 
-    // Instead of trying to set up a complex realtime listener, let's create a simpler solution
-    // We'll directly test the sync function by adding a test record to ensure the system works
-    
-    // First, test Airtable connection
-    console.log("[INFO] Testing Airtable connection");
-    const airtableTest = await fetch(`${supabaseUrl}/functions/v1/test-airtable-connection`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${supabaseServiceRole}`,
-        'Content-Type': 'application/json'
-      }
-    });
-    
-    if (!airtableTest.ok) {
-      const errorText = await airtableTest.text();
-      throw new Error(`Airtable test failed: ${airtableTest.status} - ${errorText}`);
-    }
-    
-    const airtableTestResult = await airtableTest.json();
-    console.log("[INFO] Airtable test result:", airtableTestResult);
-    
-    // Create a test guest
+    // Create a test guest to verify the sync works
     console.log("[INFO] Creating a test guest to verify sync");
     const supabase = createClient(supabaseUrl, supabaseServiceRole);
     
@@ -68,9 +47,9 @@ serve(async (req) => {
     
     console.log("[INFO] Test guest created:", guestData);
     
-    // Manually trigger the sync for this test guest
+    // Now directly call the sync-to-airtable function to add this guest to Airtable
     if (guestData && guestData.length > 0) {
-      console.log("[INFO] Manually triggering sync for test guest");
+      console.log("[INFO] Directly calling sync-to-airtable for test guest");
       
       const syncResponse = await fetch(`${supabaseUrl}/functions/v1/sync-to-airtable`, {
         method: 'POST',
@@ -85,13 +64,11 @@ serve(async (req) => {
         })
       });
       
+      const syncResult = await syncResponse.text();
+      console.log("[INFO] Sync result:", syncResult);
+      
       if (!syncResponse.ok) {
-        const errorText = await syncResponse.text();
-        console.error(`[ERROR] Manual sync failed: ${syncResponse.status} - ${errorText}`);
-        // Continue execution as this is just a test
-      } else {
-        const syncResult = await syncResponse.json();
-        console.log("[INFO] Manual sync result:", syncResult);
+        throw new Error(`Failed to sync test guest: ${syncResponse.status} - ${syncResult}`);
       }
     }
     
@@ -99,7 +76,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         success: true, 
-        message: 'Airtable sync test completed',
+        message: 'Airtable sync system has been tested successfully',
         testGuest: guestData,
         note: 'Check your Airtable to confirm the test guest was synchronized'
       }),
@@ -111,7 +88,7 @@ serve(async (req) => {
       }
     );
   } catch (error) {
-    console.error('[ERROR] Error in realtime listener:', error);
+    console.error('[ERROR] Error in sync test:', error);
     
     return new Response(
       JSON.stringify({ 
