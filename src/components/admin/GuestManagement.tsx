@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useGuests } from "@/context/GuestContext";
 import { Guest, InvitationType, Party } from "@/types";
@@ -21,7 +22,7 @@ export default function GuestManagement() {
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState<string>("");
-  const [invitationType, setInvitationType] = useState<InvitationType>("evening");
+  const [invitationType, setInvitationType] = useState<InvitationType>("main event");
   const [partyId, setPartyId] = useState<string | null>(null);
   const [currentGuest, setCurrentGuest] = useState<Guest | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -38,7 +39,7 @@ export default function GuestManagement() {
     setFirstName("");
     setEmail("");
     setPhoneNumber("");
-    setInvitationType("evening");
+    setInvitationType("main event");
     setPartyId(null);
     setCurrentGuest(null);
     setNewPartyName("");

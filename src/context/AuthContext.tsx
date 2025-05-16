@@ -1,13 +1,15 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Guest } from '../types';
-import { supabase } from "@/integrations/supabase/client";
+import { Guest } from '@/types';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 interface AuthContextType {
-  currentGuest: Guest | null;
-  isLoading: boolean;
-  login: (email: string) => Promise<boolean>;
-  logout: () => void;
+  user: Guest | null;
+  loading: boolean;
+  error: string | null;
+  login: (email: string) => Promise<void>;
+  logout: () => Promise<void>;
+  checkAuth: () => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -21,169 +23,178 @@ export const useAuth = () => {
 };
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [currentGuest, setCurrentGuest] = useState<Guest | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState<Guest | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
-    // Check if user is already logged in from localStorage
-    const storedGuest = localStorage.getItem('currentGuest');
-    if (storedGuest) {
-      try {
-        setCurrentGuest(JSON.parse(storedGuest));
-      } catch (error) {
-        console.error("Error parsing stored guest:", error);
-        localStorage.removeItem('currentGuest');
-      }
-    }
-    setIsLoading(false);
+    checkAuth();
   }, []);
 
-  const login = async (email: string): Promise<boolean> => {
-    setIsLoading(true);
-    
+  const checkAuth = async (): Promise<boolean> => {
     try {
-      if (!email) {
-        console.error("No email provided for login");
-        setIsLoading(false);
+      setLoading(true);
+      
+      // Check if we have a session
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        setUser(null);
+        setLoading(false);
         return false;
       }
       
-      // Clean and normalize email for searching
-      const cleanEmail = email.trim().toLowerCase();
-      console.log("Attempting login with normalized email:", cleanEmail);
-
-      // Hardcoded test accounts for development purposes ONLY
-      // In a real application, these would be properly stored in the database
-      const testGuests = [
-        {
-          id: "test-john-id",
-          first_name: "John",
-          email: "john@example.com",
-          invitation_type: "full day" as const,
-          rsvp: null
-        },
-        {
-          id: "test-jane-id",
-          first_name: "Jane",
-          email: "jane@example.com",
-          invitation_type: "evening" as const,
-          rsvp: null
-        },
-        {
-          id: "test-admin-id",
-          first_name: "Admin",
-          email: "admin@example.com",
-          invitation_type: "admin" as const,
-          rsvp: null
-        }
-      ];
-
-      // First try local test accounts (for development when DB access is problematic)
-      const testMatch = testGuests.find(g => g.email.toLowerCase() === cleanEmail);
-      
-      if (testMatch) {
-        console.log("Found matching test guest:", testMatch);
-        setCurrentGuest(testMatch);
-        localStorage.setItem('currentGuest', JSON.stringify(testMatch));
-        setIsLoading(false);
-        return true;
-      }
-      
-      // If no test match, try the database
-      console.log("No test match, trying database...");
-      
-      // First try a direct query
-      let { data: guestData, error: guestError } = await supabase
+      // Get user data from our guests table
+      const { data: guestData, error: guestError } = await supabase
         .from('guests')
         .select(`
           id, 
           first_name, 
           email, 
+          phone_number,
           invitation_type,
-          rsvps (*)
+          party_id,
+          rsvps(*)
         `)
-        .eq('email', cleanEmail)
+        .eq('email', session.user.email)
         .maybeSingle();
       
-      // If direct match fails, try case-insensitive
       if (guestError || !guestData) {
-        console.log("Direct query failed, trying case-insensitive search...");
-        
-        const { data: guests, error } = await supabase
-          .from('guests')
-          .select(`
-            id, 
-            first_name, 
-            email, 
-            invitation_type,
-            rsvps (*)
-          `)
-          .ilike('email', cleanEmail);
-        
-        console.log("Case-insensitive search result:", { guests, error });
-        
-        if (error) {
-          console.error('Error finding guest:', error);
-          setIsLoading(false);
-          return false;
-        }
-        
-        if (!guests || guests.length === 0) {
-          console.error('No guest found with email:', cleanEmail);
-          setIsLoading(false);
-          return false;
-        }
-        
-        guestData = guests[0];
-      }
-      
-      if (!guestData) {
-        console.error('No guest data found');
-        setIsLoading(false);
+        console.error('Error fetching user data:', guestError);
+        setUser(null);
+        setLoading(false);
         return false;
       }
       
-      console.log("Found guest data:", guestData);
-      
-      // Construct the guest object
+      // Transform the data to match our Guest interface
       const guest: Guest = {
         id: guestData.id,
         first_name: guestData.first_name,
         email: guestData.email,
+        phone_number: guestData.phone_number,
         invitation_type: guestData.invitation_type,
+        party_id: guestData.party_id,
       };
       
-      // Add RSVP data if available
+      // Add RSVP data if it exists
       if (guestData.rsvps && Array.isArray(guestData.rsvps) && guestData.rsvps.length > 0) {
-        const rsvpData = guestData.rsvps[0];
         guest.rsvp = {
-          attending: rsvpData.attending,
-          plus_one: rsvpData.plus_one,
-          dietary_restrictions: rsvpData.dietary_restrictions
+          attending: guestData.rsvps[0].attending,
+          plus_one: guestData.rsvps[0].plus_one,
+          dietary_restrictions: guestData.rsvps[0].dietary_restrictions
         };
       }
       
-      console.log("Successfully constructed guest object:", guest);
-      
-      setCurrentGuest(guest);
-      localStorage.setItem('currentGuest', JSON.stringify(guest));
-      setIsLoading(false);
+      setUser(guest);
+      setLoading(false);
       return true;
     } catch (error) {
-      console.error('Unexpected error during login:', error);
-      setIsLoading(false);
+      console.error('Auth check error:', error);
+      setUser(null);
+      setLoading(false);
       return false;
     }
   };
 
-  const logout = () => {
-    setCurrentGuest(null);
-    localStorage.removeItem('currentGuest');
-    console.log("User logged out");
+  const login = async (email: string) => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      // For development/testing, allow a special test user login
+      if (process.env.NODE_ENV === 'development' && email === 'test@example.com') {
+        setUser({
+          id: "test-user-id",
+          first_name: "Test User",
+          email: "test@example.com",
+          invitation_type: "main event",
+          rsvp: {
+            attending: true,
+            plus_one: false
+          }
+        });
+        setLoading(false);
+        toast({
+          title: "Test Login Successful",
+          description: "You are now logged in as a test user.",
+        });
+        return;
+      }
+      
+      // Check if the email exists in our guest list
+      const { data: guestData, error: guestError } = await supabase
+        .from('guests')
+        .select('*')
+        .eq('email', email.toLowerCase())
+        .maybeSingle();
+      
+      if (guestError) {
+        throw new Error('Error checking guest list');
+      }
+      
+      if (!guestData) {
+        throw new Error('Email not found in guest list');
+      }
+      
+      // Send magic link
+      const { error } = await supabase.auth.signInWithOtp({
+        email: email.toLowerCase(),
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+      
+      if (error) {
+        throw new Error(error.message);
+      }
+      
+      toast({
+        title: "Login Link Sent",
+        description: "Check your email for a login link.",
+      });
+    } catch (err: any) {
+      console.error('Login error:', err);
+      setError(err.message);
+      toast({
+        title: "Login Failed",
+        description: err.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const logout = async () => {
+    try {
+      setLoading(true);
+      
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        throw error;
+      }
+      
+      setUser(null);
+      toast({
+        title: "Logged Out",
+        description: "You have been successfully logged out.",
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+      toast({
+        title: "Logout Failed",
+        description: "An error occurred during logout.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ currentGuest, isLoading, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, error, login, logout, checkAuth }}>
       {children}
     </AuthContext.Provider>
   );

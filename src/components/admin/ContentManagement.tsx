@@ -40,8 +40,8 @@ export default function ContentManagement() {
   const handleAddContent = async () => {
     setIsSubmitting(true);
     const visibleTo: InvitationType[] = [];
-    if (visibleToFullDay) visibleTo.push("full day");
-    if (visibleToEvening) visibleTo.push("evening");
+    if (visibleToFullDay) visibleTo.push("main event");
+    if (visibleToEvening) visibleTo.push("afterparty");
     if (visibleToAdmin) visibleTo.push("admin");
 
     await addContentSection({
@@ -61,8 +61,8 @@ export default function ContentManagement() {
     
     setIsSubmitting(true);
     const visibleTo: InvitationType[] = [];
-    if (visibleToFullDay) visibleTo.push("full day");
-    if (visibleToEvening) visibleTo.push("evening");
+    if (visibleToFullDay) visibleTo.push("main event");
+    if (visibleToEvening) visibleTo.push("afterparty");
     if (visibleToAdmin) visibleTo.push("admin");
 
     await updateContentSection({
@@ -82,8 +82,8 @@ export default function ContentManagement() {
     setCurrentSection(section);
     setTitle(section.title);
     setContent(section.content);
-    setVisibleToFullDay(section.visible_to.includes("full day"));
-    setVisibleToEvening(section.visible_to.includes("evening"));
+    setVisibleToFullDay(section.visible_to.includes("main event"));
+    setVisibleToEvening(section.visible_to.includes("afterparty"));
     setVisibleToAdmin(section.visible_to.includes("admin"));
     setOrderIndex(section.order_index);
     setIsEditDialogOpen(true);

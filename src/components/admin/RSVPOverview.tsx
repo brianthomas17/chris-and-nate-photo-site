@@ -45,8 +45,8 @@ export default function RSVPOverview() {
   const pendingResponses = totalGuests - responded;
   const plusOnes = guests.filter(g => g.rsvp?.plus_one).length;
   
-  const attendingFullDay = guests.filter(g => g.invitation_type === 'full day' && g.rsvp?.attending).length;
-  const attendingEvening = guests.filter(g => g.invitation_type === 'evening' && g.rsvp?.attending).length;
+  const attendingFullDay = guests.filter(g => g.invitation_type === 'main event' && g.rsvp?.attending).length;
+  const attendingEvening = guests.filter(g => g.invitation_type === 'afterparty' && g.rsvp?.attending).length;
   
   const totalExpectedGuests = attending + plusOnes;
 
