@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useGuests } from "@/context/GuestContext";
 import { Guest } from "@/types";
@@ -8,9 +9,11 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+
 interface RSVPFormProps {
   guest: Guest;
 }
+
 export default function RSVPForm({
   guest
 }: RSVPFormProps) {
@@ -25,10 +28,23 @@ export default function RSVPForm({
   const [dietaryRestrictions, setDietaryRestrictions] = useState<string>(guest.rsvp?.dietary_restrictions || "");
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [hasResponded, setHasResponded] = useState<boolean>(!!guest.rsvp);
+
+  // Validate if the guest ID is a valid UUID format
+  const isValidUUID = (id: string): boolean => {
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    return uuidRegex.test(id);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
+    
     try {
+      // Check if the guest ID is a valid UUID before submitting
+      if (!isValidUUID(guest.id)) {
+        throw new Error("Invalid guest ID format. Please contact support.");
+      }
+      
       await updateRSVP(guest.id, attending, plusOne, dietaryRestrictions);
       setHasResponded(true);
       toast({
@@ -39,13 +55,14 @@ export default function RSVPForm({
       console.error("Error submitting RSVP:", error);
       toast({
         title: "RSVP Error",
-        description: "There was a problem submitting your RSVP. Please try again.",
+        description: error instanceof Error ? error.message : "There was a problem submitting your RSVP. Please try again.",
         variant: "destructive"
       });
     } finally {
       setSubmitting(false);
     }
   };
+
   return <div className="max-w-2xl mx-auto">
       <Card className="backdrop-blur-sm bg-white/10 border border-anniversary-gold/30 shadow-[0_8px_30px_rgb(0,0,0,0.12)] overflow-hidden">
         <CardHeader className="pb-2">
@@ -69,11 +86,34 @@ export default function RSVPForm({
                 </RadioGroup>
               </div>
 
-              {attending && <>
+              {attending && (
+                <div className="space-y-6">
+                  <div className="flex flex-col items-center space-y-3">
+                    <div className="flex items-center space-x-3">
+                      <Switch 
+                        id="plus-one" 
+                        checked={plusOne} 
+                        onCheckedChange={setPlusOne}
+                        className="bg-anniversary-purple data-[state=checked]:bg-anniversary-gold"  
+                      />
+                      <Label htmlFor="plus-one" className="text-white text-lg">I'll bring a plus one</Label>
+                    </div>
+                  </div>
                   
-
-                  
-                </>}
+                  <div className="space-y-2">
+                    <Label htmlFor="dietary" className="text-white text-center block text-lg">
+                      Dietary Restrictions
+                    </Label>
+                    <Textarea 
+                      id="dietary" 
+                      placeholder="Please let us know if you have any dietary restrictions"
+                      value={dietaryRestrictions}
+                      onChange={(e) => setDietaryRestrictions(e.target.value)}
+                      className="bg-white/20 border-anniversary-gold/30 text-white placeholder:text-white/50 resize-none"
+                    />
+                  </div>
+                </div>
+              )}
             </div>
             
             <CardFooter className="flex justify-center px-0">
