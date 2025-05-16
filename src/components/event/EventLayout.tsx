@@ -1,3 +1,4 @@
+
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -22,8 +23,8 @@ export default function EventLayout() {
   };
   const isAdmin = currentGuest.invitation_type === 'admin';
   const hasParty = !!currentGuest.party_id;
-  return <div className="min-h-screen bg-anniversary-purple">
-      <div className="bg-anniversary-purple py-2 px-4 border-b border-anniversary-gold/10">
+  return <div className="min-h-screen">
+      <div className="py-2 px-4 border-b border-anniversary-gold/10">
         <div className="container mx-auto flex justify-end">
           <div className="ml-auto">
             <DropdownMenu>
@@ -50,7 +51,7 @@ export default function EventLayout() {
       </div>
       
       {/* Hero Section with circuit pattern frames */}
-      <header className="bg-anniversary-purple text-[#C9A95B] relative" style={{
+      <header className="text-[#C9A95B] relative" style={{
       minHeight: "800px",
       display: "flex",
       flexDirection: "column",

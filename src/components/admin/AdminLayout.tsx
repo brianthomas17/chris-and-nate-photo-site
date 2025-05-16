@@ -1,3 +1,4 @@
+
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -19,8 +20,8 @@ export default function AdminLayout() {
     navigate('/');
   };
   const isAdmin = currentGuest?.invitation_type === 'admin';
-  return <div className="min-h-screen bg-anniversary-purple">
-      <div className="bg-anniversary-purple py-2 px-4 border-b border-[#C9A95B]/10">
+  return <div className="min-h-screen">
+      <div className="py-2 px-4 border-b border-[#C9A95B]/10">
         <div className="container mx-auto flex justify-end">
           <div className="ml-auto">
             <DropdownMenu>
@@ -46,7 +47,7 @@ export default function AdminLayout() {
         </div>
       </div>
       
-      <header className="bg-anniversary-purple text-[#C9A95B] p-4 border-b border-[#C9A95B]/30 relative overflow-hidden">
+      <header className="text-[#C9A95B] p-4 border-b border-[#C9A95B]/30 relative overflow-hidden">
         {/* Top circuit frame - swapped image */}
         
         

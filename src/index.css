@@ -74,8 +74,10 @@
   }
 
   body {
-    @apply bg-anniversary-purple text-foreground;
+    @apply text-foreground;
     font-family: 'Bicyclette-Light', sans-serif;
+    background: linear-gradient(to bottom right, #543A64, #482B5A);
+    min-height: 100vh;
   }
 
   h1, h2, h3, h4, h5, h6 {

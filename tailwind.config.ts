@@ -68,7 +68,8 @@ export default {
 					navy: '#1A2238',
 					cream: '#F5F5DC',
 					burgundy: '#800020',
-					purple: '#543A64', // Updated purple color
+					purple: '#543A64', // Main purple color
+					darkPurple: '#482B5A', // Darker purple for gradient
 					lightgold: '#d9c172'
 				}
 			},
