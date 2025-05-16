@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useGuests } from "@/context/GuestContext";
 import { Guest, InvitationType, Party } from "@/types";
@@ -303,8 +302,8 @@ export default function GuestManagement() {
                       <SelectValue placeholder="Select type" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="full day">Full Day</SelectItem>
-                      <SelectItem value="evening">Evening Only</SelectItem>
+                      <SelectItem value="main event">Main Event</SelectItem>
+                      <SelectItem value="afterparty">Afterparty</SelectItem>
                       <SelectItem value="admin">Admin</SelectItem>
                     </SelectContent>
                   </Select>
@@ -439,8 +438,8 @@ export default function GuestManagement() {
                     <SelectValue placeholder="Select type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="full day">Full Day</SelectItem>
-                    <SelectItem value="evening">Evening Only</SelectItem>
+                    <SelectItem value="main event">Main Event</SelectItem>
+                    <SelectItem value="afterparty">Afterparty</SelectItem>
                     <SelectItem value="admin">Admin</SelectItem>
                   </SelectContent>
                 </Select>

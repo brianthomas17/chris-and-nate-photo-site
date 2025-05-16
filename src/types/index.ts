@@ -1,5 +1,5 @@
 
-export type InvitationType = 'full day' | 'evening' | 'admin';
+export type InvitationType = 'main event' | 'afterparty' | 'admin';
 
 export interface Guest {
   id: string;

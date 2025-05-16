@@ -246,7 +246,7 @@ export type Database = {
       }
     }
     Enums: {
-      invitation_type: "full day" | "evening" | "admin"
+      invitation_type: "main event" | "afterparty" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -362,7 +362,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      invitation_type: ["full day", "evening", "admin"],
+      invitation_type: ["main event", "afterparty", "admin"],
     },
   },
 } as const
