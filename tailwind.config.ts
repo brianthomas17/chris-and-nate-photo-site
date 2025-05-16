@@ -19,6 +19,27 @@ export default {
 			}
 		},
 		extend: {
+			typography: {
+				DEFAULT: {
+					css: {
+						p: {
+							fontSize: '1.25rem',
+						},
+						li: {
+							fontSize: '1.25rem',
+						},
+						h1: {
+							fontSize: '2rem',
+						},
+						h2: {
+							fontSize: '1.75rem',
+						},
+						h3: {
+							fontSize: '1.5rem',
+						},
+					},
+				},
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
@@ -126,5 +147,5 @@ export default {
 			}
 		}
 	},
-	plugins: [require("tailwindcss-animate")],
+	plugins: [require("tailwindcss-animate"), require('@tailwindcss/typography')],
 } satisfies Config;
