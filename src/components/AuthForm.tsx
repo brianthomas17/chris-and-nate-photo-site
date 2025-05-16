@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -82,7 +81,7 @@ export default function AuthForm() {
                   placeholder="Enter Your Email For Access" 
                   value={email} 
                   onChange={e => setEmail(e.target.value)} 
-                  className={`w-full border-anniversary-gold bg-white/80 text-black placeholder:text-gray-600 rounded-md ${formError ? 'border-red-500' : ''}`} 
+                  className={`w-full border-anniversary-gold bg-white/80 text-black placeholder:text-gray-600 rounded-md text-center ${formError ? 'border-red-500' : ''}`} 
                 />
                 {formError && (
                   <div className="flex items-center gap-2 text-sm text-red-500 mt-1">
