@@ -54,7 +54,7 @@ export default function EventLayout() {
       
       {/* Hero Section with circuit pattern frames */}
       <header className="bg-anniversary-purple text-[#C9A95B] relative overflow-hidden" style={{
-      height: "80vh"
+      minHeight: "800px"
     }}>
         {/* Top circuit frame - with animation */}
         <div className="absolute top-0 left-0 right-0 w-full h-[150px] bg-no-repeat bg-contain bg-center animate-[fadeIn_1s_ease-out_forwards]" style={{
