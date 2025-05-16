@@ -70,19 +70,9 @@ export default function RSVPForm({
               </div>
 
               {attending && <>
-                  <div className="space-y-4 pt-2">
-                    <div className="flex items-center justify-center space-x-4">
-                      <Label htmlFor="plus-one" className="text-white text-lg">Will you bring a plus one?</Label>
-                      <Switch id="plus-one" checked={plusOne} onCheckedChange={setPlusOne} className="data-[state=checked]:bg-anniversary-gold" />
-                    </div>
-                  </div>
+                  
 
-                  <div className="space-y-3 pt-2">
-                    <Label htmlFor="dietary" className="text-white text-lg text-center block">
-                      Dietary Restrictions or Special Requirements
-                    </Label>
-                    <Textarea id="dietary" placeholder="Please let us know if you have any dietary restrictions or special requirements" value={dietaryRestrictions} onChange={e => setDietaryRestrictions(e.target.value)} className="min-h-[100px] bg-white/10 text-white placeholder:text-white/50 text-base border-anniversary-gold/30" />
-                  </div>
+                  
                 </>}
             </div>
             
