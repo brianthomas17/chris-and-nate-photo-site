@@ -9,7 +9,7 @@ interface GuestContextType {
   addGuest: (guest: Omit<Guest, 'id'>) => Promise<void>;
   updateGuest: (guest: Guest) => Promise<void>;
   deleteGuest: (id: string) => Promise<void>;
-  updateRSVP: (guestId: string, attending: boolean, plusOne: boolean, dietaryRestrictions?: string) => Promise<void>;
+  updateRSVP: (guestId: string, attending: boolean, plus_one: boolean, dietary_restrictions: string) => Promise<void>;
   getGuestByEmail: (email: string) => Promise<Guest | undefined>;
   createParty: (name: string) => Promise<string | undefined>;
   updatePartyMembers: (partyId: string, guestIds: string[]) => Promise<void>;
@@ -232,7 +232,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   };
 
-  const updateRSVP = async (guestId: string, attending: boolean, plusOne: boolean, dietaryRestrictions?: string) => {
+  const updateRSVP = async (guestId: string, attending: boolean, plus_one: boolean, dietary_restrictions: string) => {
     try {
       // Check if RSVP already exists
       const { data: existingRsvp, error: checkError } = await supabase
@@ -252,8 +252,8 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           .from('rsvps')
           .update({
             attending,
-            plus_one: plusOne,
-            dietary_restrictions: dietaryRestrictions,
+            plus_one: plus_one,
+            dietary_restrictions: dietary_restrictions,
             updated_at: new Date().toISOString()
           })
           .eq('guest_id', guestId);
@@ -266,8 +266,8 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           .insert({
             guest_id: guestId,
             attending,
-            plus_one: plusOne,
-            dietary_restrictions: dietaryRestrictions
+            plus_one: plus_one,
+            dietary_restrictions: dietary_restrictions
           });
         
         error = insertError;
@@ -285,8 +285,8 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                 ...g, 
                 rsvp: { 
                   attending, 
-                  plus_one: plusOne, 
-                  dietary_restrictions: dietaryRestrictions 
+                  plus_one: plus_one, 
+                  dietary_restrictions: dietary_restrictions 
                 } 
               } 
             : g

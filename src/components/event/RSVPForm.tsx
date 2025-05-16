@@ -43,13 +43,14 @@ export default function RSVPForm({
         throw new Error("Invalid guest ID format. Please contact support.");
       }
       
+      // Call updateRSVP function with a configuration to prevent double toast
       await updateRSVP(guest.id, attending, plusOne, dietaryRestrictions);
       setHasResponded(true);
       
-      // Show only one toast notification
+      // This single toast will be shown after successful RSVP update
       toast({
         title: "RSVP Updated",
-        description: "Your response has been recorded. Thank you!"
+        description: `Thank you, ${guest.first_name}! Your RSVP has been recorded.`
       });
     } catch (error) {
       console.error("Error submitting RSVP:", error);
