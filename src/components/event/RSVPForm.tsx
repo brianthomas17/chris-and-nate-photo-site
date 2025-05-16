@@ -1,11 +1,10 @@
+
 import { useState } from "react";
 import { useGuests } from "@/context/GuestContext";
 import { Guest } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Switch } from "@/components/ui/switch";
-import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -46,8 +45,10 @@ export default function RSVPForm({
       
       await updateRSVP(guest.id, attending, plusOne, dietaryRestrictions);
       setHasResponded(true);
+      
+      // Show only one toast notification
       toast({
-        title: "RSVP Submitted",
+        title: "RSVP Updated",
         description: "Your response has been recorded. Thank you!"
       });
     } catch (error) {
