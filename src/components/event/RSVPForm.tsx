@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useGuests } from "@/context/GuestContext";
 import { Guest } from "@/types";
@@ -8,18 +7,10 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { 
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle
-} from "@/components/ui/card";
-
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 interface RSVPFormProps {
   guest: Guest;
 }
-
 export default function RSVPForm({
   guest
 }: RSVPFormProps) {
@@ -34,7 +25,6 @@ export default function RSVPForm({
   const [dietaryRestrictions, setDietaryRestrictions] = useState<string>(guest.rsvp?.dietary_restrictions || "");
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [hasResponded, setHasResponded] = useState<boolean>(!!guest.rsvp);
-  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
@@ -43,7 +33,7 @@ export default function RSVPForm({
       setHasResponded(true);
       toast({
         title: "RSVP Submitted",
-        description: "Your response has been recorded. Thank you!",
+        description: "Your response has been recorded. Thank you!"
       });
     } catch (error) {
       console.error("Error submitting RSVP:", error);
@@ -56,26 +46,18 @@ export default function RSVPForm({
       setSubmitting(false);
     }
   };
-
-  return (
-    <div className="max-w-2xl mx-auto">
+  return <div className="max-w-2xl mx-auto">
       <Card className="backdrop-blur-sm bg-white/10 border border-anniversary-gold/30 shadow-[0_8px_30px_rgb(0,0,0,0.12)] overflow-hidden">
         <CardHeader className="pb-2">
-          <CardTitle className="text-3xl text-center text-anniversary-gold font-din">
-            YOUR INVITATION
-          </CardTitle>
+          <CardTitle className="text-3xl text-center text-anniversary-gold font-din">WILL YOU JOIN US?</CardTitle>
         </CardHeader>
         
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-8">
             <div className="space-y-6 pt-4">
               <div className="space-y-4">
-                <Label className="text-white text-xl font-bicyclette text-center block">Will You Join Us?</Label>
-                <RadioGroup 
-                  value={attending ? "yes" : "no"} 
-                  onValueChange={v => setAttending(v === "yes")} 
-                  className="flex flex-col items-center space-y-4"
-                >
+                
+                <RadioGroup value={attending ? "yes" : "no"} onValueChange={v => setAttending(v === "yes")} className="flex flex-col items-center space-y-4">
                   <div className="flex items-center space-x-3">
                     <RadioGroupItem value="yes" id="attending-yes" className="border-anniversary-gold" />
                     <Label htmlFor="attending-yes" className="text-white text-lg">Yes, I'll be there!</Label>
@@ -87,17 +69,11 @@ export default function RSVPForm({
                 </RadioGroup>
               </div>
 
-              {attending && (
-                <>
+              {attending && <>
                   <div className="space-y-4 pt-2">
                     <div className="flex items-center justify-center space-x-4">
                       <Label htmlFor="plus-one" className="text-white text-lg">Will you bring a plus one?</Label>
-                      <Switch 
-                        id="plus-one" 
-                        checked={plusOne} 
-                        onCheckedChange={setPlusOne} 
-                        className="data-[state=checked]:bg-anniversary-gold"
-                      />
+                      <Switch id="plus-one" checked={plusOne} onCheckedChange={setPlusOne} className="data-[state=checked]:bg-anniversary-gold" />
                     </div>
                   </div>
 
@@ -105,16 +81,9 @@ export default function RSVPForm({
                     <Label htmlFor="dietary" className="text-white text-lg text-center block">
                       Dietary Restrictions or Special Requirements
                     </Label>
-                    <Textarea 
-                      id="dietary" 
-                      placeholder="Please let us know if you have any dietary restrictions or special requirements" 
-                      value={dietaryRestrictions} 
-                      onChange={e => setDietaryRestrictions(e.target.value)} 
-                      className="min-h-[100px] bg-white/10 text-white placeholder:text-white/50 text-base border-anniversary-gold/30" 
-                    />
+                    <Textarea id="dietary" placeholder="Please let us know if you have any dietary restrictions or special requirements" value={dietaryRestrictions} onChange={e => setDietaryRestrictions(e.target.value)} className="min-h-[100px] bg-white/10 text-white placeholder:text-white/50 text-base border-anniversary-gold/30" />
                   </div>
-                </>
-              )}
+                </>}
             </div>
             
             <CardFooter className="flex justify-center px-0">
@@ -122,11 +91,7 @@ export default function RSVPForm({
                 <div className="text-sm text-white/70">
                   {hasResponded ? "You can update your response until the deadline." : ""}
                 </div>
-                <Button 
-                  type="submit" 
-                  className="bg-anniversary-gold hover:bg-anniversary-gold/90 text-black text-lg px-8 py-2 font-medium" 
-                  disabled={submitting}
-                >
+                <Button type="submit" className="bg-anniversary-gold hover:bg-anniversary-gold/90 text-black text-lg px-8 py-2 font-medium" disabled={submitting}>
                   {submitting ? "Submitting..." : hasResponded ? "Update Response" : "Submit RSVP"}
                 </Button>
               </div>
@@ -134,6 +99,5 @@ export default function RSVPForm({
           </form>
         </CardContent>
       </Card>
-    </div>
-  );
+    </div>;
 }
