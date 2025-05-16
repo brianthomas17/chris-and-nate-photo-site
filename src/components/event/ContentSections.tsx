@@ -23,7 +23,7 @@ export default function ContentSections({ invitationType }: ContentSectionsProps
       {visibleSections.map((section) => (
         <div key={section.id} className="text-center">
           <div
-            className="prose prose-headings:text-anniversary-gold prose-p:text-white prose-li:text-white prose-strong:text-white max-w-none text-white"
+            className="prose prose-headings:text-anniversary-gold prose-p:text-white prose-li:text-white prose-strong:text-white prose-p:text-lg prose-li:text-lg max-w-none text-white"
             dangerouslySetInnerHTML={{ __html: section.content }}
           />
         </div>
