@@ -13,6 +13,7 @@ import Index from "./pages/Index";
 import Admin from "./pages/Admin";
 import RSVP from "./pages/RSVP";
 import NotFound from "./pages/NotFound";
+import EventLayout from "./components/event/EventLayout";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ const App = () => (
                   <Route path="/" element={<Index />} />
                   <Route path="/admin" element={<Admin />} />
                   <Route path="/rsvp" element={<RSVP />} />
+                  <Route path="/event" element={<EventLayout />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </BrowserRouter>
