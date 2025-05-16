@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Guest, InvitationType, RSVP, Party } from '../types';
 import { useToast } from '@/hooks/use-toast';
@@ -45,6 +46,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           id, 
           first_name, 
           email, 
+          phone_number,
           invitation_type,
           party_id,
           rsvps(*)
@@ -66,6 +68,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             id: g.id,
             first_name: g.first_name,
             email: g.email,
+            phone_number: g.phone_number,
             invitation_type: g.invitation_type,
             party_id: g.party_id,
           };
@@ -135,6 +138,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         .insert({
           first_name: guest.first_name,
           email: guest.email,
+          phone_number: guest.phone_number,
           invitation_type: guest.invitation_type,
           party_id: guest.party_id
         })
@@ -170,6 +174,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         .update({
           first_name: guest.first_name,
           email: guest.email,
+          phone_number: guest.phone_number,
           invitation_type: guest.invitation_type,
           party_id: guest.party_id
         })
@@ -310,6 +315,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           id, 
           first_name, 
           email, 
+          phone_number,
           invitation_type,
           party_id,
           rsvps(*)
@@ -328,6 +334,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         id: data.id,
         first_name: data.first_name,
         email: data.email,
+        phone_number: data.phone_number,
         invitation_type: data.invitation_type,
         party_id: data.party_id,
       };
@@ -451,6 +458,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           id, 
           first_name, 
           email, 
+          phone_number,
           invitation_type,
           party_id,
           rsvps(*)
@@ -468,6 +476,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             id: g.id,
             first_name: g.first_name,
             email: g.email,
+            phone_number: g.phone_number,
             invitation_type: g.invitation_type,
             party_id: g.party_id,
           };

@@ -86,6 +86,7 @@ export type Database = {
           id: string
           invitation_type: Database["public"]["Enums"]["invitation_type"]
           party_id: string | null
+          phone_number: string | null
           updated_at: string
         }
         Insert: {
@@ -95,6 +96,7 @@ export type Database = {
           id?: string
           invitation_type: Database["public"]["Enums"]["invitation_type"]
           party_id?: string | null
+          phone_number?: string | null
           updated_at?: string
         }
         Update: {
@@ -104,6 +106,7 @@ export type Database = {
           id?: string
           invitation_type?: Database["public"]["Enums"]["invitation_type"]
           party_id?: string | null
+          phone_number?: string | null
           updated_at?: string
         }
         Relationships: [

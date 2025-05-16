@@ -21,6 +21,7 @@ export default function GuestManagement() {
   const [isPartyDialogOpen, setIsPartyDialogOpen] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [invitationType, setInvitationType] = useState<InvitationType>("evening");
   const [partyId, setPartyId] = useState<string | null>(null);
   const [currentGuest, setCurrentGuest] = useState<Guest | null>(null);
@@ -37,6 +38,7 @@ export default function GuestManagement() {
   const resetForm = () => {
     setFirstName("");
     setEmail("");
+    setPhoneNumber("");
     setInvitationType("evening");
     setPartyId(null);
     setCurrentGuest(null);
@@ -53,6 +55,7 @@ export default function GuestManagement() {
     await addGuest({
       first_name: firstName,
       email,
+      phone_number: phoneNumber || null,
       invitation_type: invitationType,
       party_id: partyId,
     });
@@ -71,6 +74,7 @@ export default function GuestManagement() {
       ...currentGuest,
       first_name: firstName,
       email,
+      phone_number: phoneNumber || null,
       invitation_type: invitationType,
       party_id: partyId,
     });
@@ -94,6 +98,7 @@ export default function GuestManagement() {
     setCurrentGuest(guest);
     setFirstName(guest.first_name);
     setEmail(guest.email);
+    setPhoneNumber(guest.phone_number || "");
     setInvitationType(guest.invitation_type);
     setPartyId(guest.party_id || null);
     
@@ -279,6 +284,16 @@ export default function GuestManagement() {
                   />
                 </div>
                 <div className="space-y-2">
+                  <Label htmlFor="phoneNumber">Phone Number</Label>
+                  <Input
+                    id="phoneNumber"
+                    type="tel"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    placeholder="+1 (555) 123-4567"
+                  />
+                </div>
+                <div className="space-y-2">
                   <Label htmlFor="invitationType">Invitation Type</Label>
                   <Select
                     value={invitationType}
@@ -333,6 +348,7 @@ export default function GuestManagement() {
             <TableRow>
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
+              <TableHead>Phone</TableHead>
               <TableHead>Invitation Type</TableHead>
               <TableHead>Party</TableHead>
               <TableHead>RSVP Status</TableHead>
@@ -344,6 +360,7 @@ export default function GuestManagement() {
               <TableRow key={guest.id}>
                 <TableCell>{guest.first_name}</TableCell>
                 <TableCell>{guest.email}</TableCell>
+                <TableCell>{guest.phone_number || "-"}</TableCell>
                 <TableCell className="capitalize">{guest.invitation_type}</TableCell>
                 <TableCell>{getPartyName(guest.party_id)}</TableCell>
                 <TableCell>
@@ -400,6 +417,16 @@ export default function GuestManagement() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-phoneNumber">Phone Number</Label>
+                <Input
+                  id="edit-phoneNumber"
+                  type="tel"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  placeholder="+1 (555) 123-4567"
                 />
               </div>
               <div className="space-y-2">

@@ -5,6 +5,7 @@ export interface Guest {
   id: string;
   first_name: string;
   email: string;
+  phone_number?: string | null;
   invitation_type: InvitationType;
   created_at?: string;
   updated_at?: string;
