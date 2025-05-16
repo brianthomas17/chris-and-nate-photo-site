@@ -1,1 +1,8 @@
+
 project_id = "xpbbzmpqacbgqnyrnufb"
+
+[functions.sync-to-airtable]
+verify_jwt = false
+
+[functions.listen-to-realtime]
+verify_jwt = false
