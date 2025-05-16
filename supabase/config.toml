@@ -9,3 +9,6 @@ verify_jwt = false
 
 [functions.create-sync-triggers]
 verify_jwt = false
+
+[functions.test-airtable-connection]
+verify_jwt = false
