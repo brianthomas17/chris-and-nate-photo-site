@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useGuests } from "@/context/GuestContext";
 import { Guest } from "@/types";
@@ -85,35 +84,6 @@ export default function RSVPForm({
                   </div>
                 </RadioGroup>
               </div>
-
-              {attending && (
-                <div className="space-y-6">
-                  <div className="flex flex-col items-center space-y-3">
-                    <div className="flex items-center space-x-3">
-                      <Switch 
-                        id="plus-one" 
-                        checked={plusOne} 
-                        onCheckedChange={setPlusOne}
-                        className="bg-anniversary-purple data-[state=checked]:bg-anniversary-gold"  
-                      />
-                      <Label htmlFor="plus-one" className="text-white text-lg">I'll bring a plus one</Label>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="dietary" className="text-white text-center block text-lg">
-                      Dietary Restrictions
-                    </Label>
-                    <Textarea 
-                      id="dietary" 
-                      placeholder="Please let us know if you have any dietary restrictions"
-                      value={dietaryRestrictions}
-                      onChange={(e) => setDietaryRestrictions(e.target.value)}
-                      className="bg-white/20 border-anniversary-gold/30 text-white placeholder:text-white/50 resize-none"
-                    />
-                  </div>
-                </div>
-              )}
             </div>
             
             <CardFooter className="flex justify-center px-0">
