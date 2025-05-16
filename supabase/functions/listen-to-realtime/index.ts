@@ -3,15 +3,17 @@ import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-// Environment variables
-const supabaseUrl = Deno.env.get('SUPABASE_URL');
-const supabaseServiceRole = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
-
-// Set up CORS headers
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+// Environment variables
+const supabaseUrl = Deno.env.get('SUPABASE_URL');
+const supabaseServiceRole = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+
+// Create a Supabase client
+const supabase = createClient(supabaseUrl!, supabaseServiceRole!);
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -20,88 +22,84 @@ serve(async (req) => {
   }
 
   try {
-    console.log("[INFO] Setting up connection to sync changes to Airtable");
+    // Test the Airtable connection
+    console.log("[INFO] Testing the Airtable sync system");
     
-    if (!supabaseUrl || !supabaseServiceRole) {
-      throw new Error("Missing required environment variables: SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
+    // First, test the Airtable connection
+    const airtableResponse = await fetch(`${Deno.env.get('SUPABASE_FUNCTIONS_URL')}/sync-to-airtable`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+    
+    if (!airtableResponse.ok) {
+      const errorText = await airtableResponse.text();
+      throw new Error(`Failed to connect to Airtable: ${airtableResponse.status} - ${errorText}`);
     }
-
-    // Create a test guest to verify the sync works
-    console.log("[INFO] Creating a test guest to verify sync");
-    const supabase = createClient(supabaseUrl, supabaseServiceRole);
     
-    const testGuest = {
-      first_name: `Test Guest ${new Date().toISOString()}`,
-      email: `test-${Date.now()}@example.com`,
-      invitation_type: 'main event'
-    };
+    const airtableResult = await airtableResponse.json();
+    console.log("[INFO] Airtable connection result:", JSON.stringify(airtableResult));
+    
+    // Create a test guest to trigger a sync
+    console.log("[INFO] Creating a test guest to trigger sync");
     
     const { data: guestData, error: guestError } = await supabase
       .from('guests')
-      .insert(testGuest)
+      .insert({
+        first_name: `Test Guest ${new Date().toISOString()}`,
+        email: `test-${Date.now()}@example.com`,
+        invitation_type: 'main event'
+      })
       .select();
     
     if (guestError) {
-      throw new Error(`Failed to create test guest: ${guestError.message}`);
+      throw new Error(`Error creating test guest: ${guestError.message}`);
     }
     
-    console.log("[INFO] Test guest created:", guestData);
+    console.log("[SUCCESS] Created test guest:", guestData);
     
-    // Now directly call the sync-to-airtable function to add this guest to Airtable
-    if (guestData && guestData.length > 0) {
-      console.log("[INFO] Directly calling sync-to-airtable for test guest");
-      
-      const syncResponse = await fetch(`${supabaseUrl}/functions/v1/sync-to-airtable`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${supabaseServiceRole}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          type: 'INSERT',
-          table: 'guests',
-          record: guestData[0]
-        })
-      });
-      
-      const syncResult = await syncResponse.text();
-      console.log("[INFO] Sync result:", syncResult);
-      
-      if (!syncResponse.ok) {
-        throw new Error(`Failed to sync test guest: ${syncResponse.status} - ${syncResult}`);
-      }
+    // Manually trigger a sync to make sure it works
+    console.log("[INFO] Manually syncing the test guest to Airtable");
+    
+    const syncResponse = await fetch(`${Deno.env.get('SUPABASE_FUNCTIONS_URL')}/sync-to-airtable`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        type: 'INSERT',
+        table: 'guests',
+        record: guestData[0]
+      })
+    });
+    
+    if (!syncResponse.ok) {
+      const errorText = await syncResponse.text();
+      throw new Error(`Failed to sync test guest: ${syncResponse.status} - ${errorText}`);
     }
     
-    // Return success response
-    return new Response(
-      JSON.stringify({ 
-        success: true, 
-        message: 'Airtable sync system has been tested successfully',
-        testGuest: guestData,
-        note: 'Check your Airtable to confirm the test guest was synchronized'
-      }),
-      {
-        headers: {
-          ...corsHeaders,
-          'Content-Type': 'application/json',
-        },
-      }
-    );
+    const syncResult = await syncResponse.json();
+    console.log("[INFO] Manual sync result:", JSON.stringify(syncResult));
+    
+    return new Response(JSON.stringify({
+      success: true,
+      message: "Airtable sync test complete. Created a test guest and synced it to Airtable.",
+      airtableConnectionStatus: airtableResult,
+      testGuestCreated: guestData[0],
+      manualSyncResult: syncResult
+    }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 200
+    });
   } catch (error) {
-    console.error('[ERROR] Error in sync test:', error);
-    
-    return new Response(
-      JSON.stringify({ 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Unknown error' 
-      }),
-      {
-        status: 500,
-        headers: {
-          ...corsHeaders,
-          'Content-Type': 'application/json',
-        },
-      }
-    );
+    console.error("[ERROR] Error testing Airtable sync:", error);
+    return new Response(JSON.stringify({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 500
+    });
   }
 });

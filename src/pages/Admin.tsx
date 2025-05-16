@@ -10,6 +10,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 const Admin = () => {
   const [isSeeding, setIsSeeding] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
+  const [isEnablingWebhooks, setIsEnablingWebhooks] = useState(false);
   const { toast } = useToast();
   const { currentGuest, isLoading } = useAuth();
   const navigate = useNavigate();
@@ -69,11 +70,25 @@ const Admin = () => {
   const handleTestAirtableSync = async () => {
     setIsSyncing(true);
     try {
-      const response = await fetch(`${import.meta.env.VITE_SUPABASE_FUNCTIONS_URL}/listen-to-realtime`, {
-        method: 'GET',
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_FUNCTIONS_URL}/sync-to-airtable`, {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-        }
+        },
+        body: JSON.stringify({
+          type: 'manual',
+          table: 'guests',
+          record: {
+            id: '00000000-0000-0000-0000-000000000000',
+            first_name: 'Test Sync',
+            email: 'test-sync@example.com',
+            phone_number: null,
+            invitation_type: 'main event',
+            party_id: null,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          }
+        })
       });
       
       const result = await response.json();
@@ -98,6 +113,38 @@ const Admin = () => {
     }
   };
 
+  const handleEnableWebhookTriggers = async () => {
+    setIsEnablingWebhooks(true);
+    try {
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_FUNCTIONS_URL}/setup-webhooks`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        toast({
+          title: "Success",
+          description: "Database webhook triggers have been set up successfully."
+        });
+      } else {
+        throw new Error(result.error || "Unknown error occurred");
+      }
+    } catch (error) {
+      console.error("Error enabling webhook triggers:", error);
+      toast({
+        title: "Error",
+        description: `Failed to enable webhook triggers: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        variant: "destructive"
+      });
+    } finally {
+      setIsEnablingWebhooks(false);
+    }
+  };
+
   return (
     <>
       <AdminLayout />
@@ -115,6 +162,13 @@ const Admin = () => {
           className="bg-emerald-600 hover:bg-emerald-700"
         >
           {isSyncing ? "Testing..." : "Test Airtable Sync"}
+        </Button>
+        <Button 
+          onClick={handleEnableWebhookTriggers}
+          disabled={isEnablingWebhooks}
+          className="bg-blue-600 hover:bg-blue-700"
+        >
+          {isEnablingWebhooks ? "Setting up..." : "Set Up Database Webhooks"}
         </Button>
       </div>
     </>
