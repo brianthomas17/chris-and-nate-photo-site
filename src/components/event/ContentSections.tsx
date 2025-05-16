@@ -18,13 +18,20 @@ export default function ContentSections({ invitationType }: ContentSectionsProps
     );
   }
 
+  // Function to process HTML content to modify heading tags
+  const processContent = (html: string): string => {
+    // Add font-bicyclette and uppercase classes to all h1, h2, h3, h4, h5, h6 tags
+    return html
+      .replace(/<h([1-6])(.*?)>/g, '<h$1$2 class="font-bicyclette uppercase">');
+  };
+
   return (
     <div className="space-y-12">
       {visibleSections.map((section) => (
         <div key={section.id} className="text-center">
           <div
             className="prose prose-headings:text-anniversary-gold prose-headings:text-2xl prose-p:text-white prose-li:text-white prose-strong:text-white prose-p:text-xl prose-li:text-xl max-w-none text-white"
-            dangerouslySetInnerHTML={{ __html: section.content }}
+            dangerouslySetInnerHTML={{ __html: processContent(section.content) }}
           />
         </div>
       ))}
