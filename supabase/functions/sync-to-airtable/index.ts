@@ -248,33 +248,70 @@ serve(async (req) => {
   }
 
   try {
-    // Process the webhook payload
-    const payload = await req.json();
-    console.log("Received webhook payload:", JSON.stringify(payload));
-    
-    // Handle database changes
-    const { type, table, record } = payload;
-    console.log(`Processing ${type} event for table ${table}`);
-    
-    if (!record || !record.id) {
-      throw new Error(`Invalid payload: missing record or record ID`);
+    // Handle GET requests (status check/debugging)
+    if (req.method === 'GET') {
+      console.log("Received GET request to sync-to-airtable function - returning status info");
+      
+      // Check if all required environment variables are set
+      const envVars = {
+        airtableApiKey: !!airtableApiKey,
+        airtableBaseId: !!airtableBaseId,
+        airtableRsvpsTableId: !!airtableRsvpsTableId,
+        airtableGuestsTableId: !!airtableGuestsTableId,
+        supabaseUrl: !!supabaseUrl,
+        supabaseServiceRole: !!supabaseServiceRole
+      };
+      
+      return new Response(JSON.stringify({ 
+        success: true, 
+        message: "This endpoint is working and expects POST requests with payload data",
+        environmentVarsSet: envVars
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200,
+      });
     }
     
-    if (table === 'guests') {
-      await syncGuestToAirtable(record as GuestRecord);
-    } else if (table === 'rsvps') {
-      await syncRsvpToAirtable(record as RSVPRecord);
-    } else {
-      console.log(`Ignoring change to table ${table}`);
-    }
+    // For POST requests, process the webhook payload
+    if (req.method === 'POST') {
+      // Process the webhook payload
+      const payload = await req.json();
+      console.log("Received webhook payload:", JSON.stringify(payload));
+      
+      // Handle database changes
+      const { type, table, record } = payload;
+      console.log(`Processing ${type} event for table ${table}`);
+      
+      if (!record || !record.id) {
+        throw new Error(`Invalid payload: missing record or record ID`);
+      }
+      
+      if (table === 'guests') {
+        await syncGuestToAirtable(record as GuestRecord);
+      } else if (table === 'rsvps') {
+        await syncRsvpToAirtable(record as RSVPRecord);
+      } else {
+        console.log(`Ignoring change to table ${table}`);
+      }
 
-    return new Response(JSON.stringify({ success: true }), {
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200,
+      });
+    }
+    
+    // If not GET or POST, return method not allowed
+    return new Response(JSON.stringify({ 
+      error: "Method not allowed. Only GET and POST are supported." 
+    }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      status: 200,
+      status: 405,
     });
   } catch (error) {
-    console.error("Error processing webhook:", error);
-    return new Response(JSON.stringify({ error: error.message }), {
+    console.error("Error processing request:", error);
+    return new Response(JSON.stringify({ 
+      error: error instanceof Error ? error.message : 'Unknown error' 
+    }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 500,
     });
