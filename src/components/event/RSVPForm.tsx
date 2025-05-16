@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useGuests } from "@/context/GuestContext";
 import { Guest } from "@/types";
@@ -7,9 +8,18 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { 
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle
+} from "@/components/ui/card";
+
 interface RSVPFormProps {
   guest: Guest;
 }
+
 export default function RSVPForm({
   guest
 }: RSVPFormProps) {
@@ -24,12 +34,17 @@ export default function RSVPForm({
   const [dietaryRestrictions, setDietaryRestrictions] = useState<string>(guest.rsvp?.dietary_restrictions || "");
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [hasResponded, setHasResponded] = useState<boolean>(!!guest.rsvp);
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
     try {
       await updateRSVP(guest.id, attending, plusOne, dietaryRestrictions);
       setHasResponded(true);
+      toast({
+        title: "RSVP Submitted",
+        description: "Your response has been recorded. Thank you!",
+      });
     } catch (error) {
       console.error("Error submitting RSVP:", error);
       toast({
@@ -41,55 +56,84 @@ export default function RSVPForm({
       setSubmitting(false);
     }
   };
-  return <div className="max-w-xl mx-auto text-center">
-      <div className="bg-transparent text-white">
-        <div className="text-center mb-6">
-          
-          
-        </div>
+
+  return (
+    <div className="max-w-2xl mx-auto">
+      <Card className="backdrop-blur-sm bg-white/10 border border-anniversary-gold/30 shadow-[0_8px_30px_rgb(0,0,0,0.12)] overflow-hidden">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-3xl text-center text-anniversary-gold font-din">
+            YOUR INVITATION
+          </CardTitle>
+        </CardHeader>
         
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-6 pt-4">
-            <div className="space-y-2">
-              <Label className="text-white">Will Your Join Us?</Label>
-              <RadioGroup value={attending ? "yes" : "no"} onValueChange={v => setAttending(v === "yes")} className="flex flex-col items-center space-y-2">
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="yes" id="attending-yes" />
-                  <Label htmlFor="attending-yes" className="text-white">Yes, I'll be there!</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="no" id="attending-no" />
-                  <Label htmlFor="attending-no" className="text-white">No, I can't make it</Label>
-                </div>
-              </RadioGroup>
-            </div>
-
-            {attending && <>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-center space-x-4">
-                    <Label htmlFor="plus-one" className="text-white">Will you bring a plus one?</Label>
-                    <Switch id="plus-one" checked={plusOne} onCheckedChange={setPlusOne} />
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-8">
+            <div className="space-y-6 pt-4">
+              <div className="space-y-4">
+                <Label className="text-white text-xl font-bicyclette text-center block">Will You Join Us?</Label>
+                <RadioGroup 
+                  value={attending ? "yes" : "no"} 
+                  onValueChange={v => setAttending(v === "yes")} 
+                  className="flex flex-col items-center space-y-4"
+                >
+                  <div className="flex items-center space-x-3">
+                    <RadioGroupItem value="yes" id="attending-yes" className="border-anniversary-gold" />
+                    <Label htmlFor="attending-yes" className="text-white text-lg">Yes, I'll be there!</Label>
                   </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="dietary" className="text-white">Dietary Restrictions or Special Requirements</Label>
-                  <Textarea id="dietary" placeholder="Please let us know if you have any dietary restrictions or special requirements" value={dietaryRestrictions} onChange={e => setDietaryRestrictions(e.target.value)} className="min-h-[100px] bg-white/10 text-white placeholder:text-white/50" />
-                </div>
-              </>}
-          </div>
-          
-          <div className="flex justify-center pt-4">
-            <div className="flex flex-col items-center space-y-4">
-              <div className="text-sm text-white/70">
-                {hasResponded ? "You can update your response until the deadline." : ""}
+                  <div className="flex items-center space-x-3">
+                    <RadioGroupItem value="no" id="attending-no" className="border-anniversary-gold" />
+                    <Label htmlFor="attending-no" className="text-white text-lg">No, I can't make it</Label>
+                  </div>
+                </RadioGroup>
               </div>
-              <Button type="submit" className="bg-anniversary-gold hover:bg-anniversary-gold/90 text-black" disabled={submitting}>
-                {submitting ? "Submitting..." : hasResponded ? "Update Response" : "Submit RSVP"}
-              </Button>
+
+              {attending && (
+                <>
+                  <div className="space-y-4 pt-2">
+                    <div className="flex items-center justify-center space-x-4">
+                      <Label htmlFor="plus-one" className="text-white text-lg">Will you bring a plus one?</Label>
+                      <Switch 
+                        id="plus-one" 
+                        checked={plusOne} 
+                        onCheckedChange={setPlusOne} 
+                        className="data-[state=checked]:bg-anniversary-gold"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-3 pt-2">
+                    <Label htmlFor="dietary" className="text-white text-lg text-center block">
+                      Dietary Restrictions or Special Requirements
+                    </Label>
+                    <Textarea 
+                      id="dietary" 
+                      placeholder="Please let us know if you have any dietary restrictions or special requirements" 
+                      value={dietaryRestrictions} 
+                      onChange={e => setDietaryRestrictions(e.target.value)} 
+                      className="min-h-[100px] bg-white/10 text-white placeholder:text-white/50 text-base border-anniversary-gold/30" 
+                    />
+                  </div>
+                </>
+              )}
             </div>
-          </div>
-        </form>
-      </div>
-    </div>;
+            
+            <CardFooter className="flex justify-center px-0">
+              <div className="flex flex-col items-center space-y-4">
+                <div className="text-sm text-white/70">
+                  {hasResponded ? "You can update your response until the deadline." : ""}
+                </div>
+                <Button 
+                  type="submit" 
+                  className="bg-anniversary-gold hover:bg-anniversary-gold/90 text-black text-lg px-8 py-2 font-medium" 
+                  disabled={submitting}
+                >
+                  {submitting ? "Submitting..." : hasResponded ? "Update Response" : "Submit RSVP"}
+                </Button>
+              </div>
+            </CardFooter>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
+  );
 }
