@@ -119,34 +119,36 @@ serve(async (req) => {
       ALTER PUBLICATION supabase_realtime ADD TABLE public.rsvps;
     `;
     
-    // Execute the SQL using the Postgres REST API directly
+    // Execute the SQL by using direct query approach
     const { data, error } = await supabase
-      .from('_dummy_query')
-      .select('*')
+      .from('guests')
+      .select('count(*)')
       .limit(1)
       .then(async () => {
-        // Use the internal connection to execute raw SQL
-        const response = await fetch(`${supabaseUrl}/rest/v1/rpc/exec`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'apikey': supabaseServiceRole,
-            'Authorization': `Bearer ${supabaseServiceRole}`
-          },
-          body: JSON.stringify({ 
-            name: 'exec_sql',
-            args: { sql: sql }
-          })
-        });
-        
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(`Failed to execute SQL: ${response.status} - ${errorText}`);
+        try {
+          // Create a special administrative query to run the SQL directly
+          const response = await fetch(`${supabaseUrl}/rest/v1/`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'apikey': supabaseServiceRole,
+              'Authorization': `Bearer ${supabaseServiceRole}`,
+              'Prefer': 'params=single-object',
+              'X-Custom-SQL': 'true'  // Custom header to indicate direct SQL execution
+            },
+            body: JSON.stringify({ query: sql })
+          });
+          
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Failed to execute SQL: ${response.status} - ${errorText}`);
+          }
+          
+          return { data: await response.json(), error: null };
+        } catch (err) {
+          return { data: null, error: err };
         }
-        
-        return { data: await response.json(), error: null };
-      })
-      .catch(err => ({ data: null, error: err }));
+      });
     
     if (error) {
       throw error;
