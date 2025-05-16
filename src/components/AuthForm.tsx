@@ -61,11 +61,15 @@ export default function AuthForm() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-anniversary-purple relative overflow-hidden">
-      {/* Background logo image */}
-      <div className="fixed inset-0 z-0 pointer-events-none flex items-center justify-center">
-        <div className="w-full mx-auto" style={{ minWidth: '500px' }}>
+      {/* Background logo image with overflow allowed */}
+      <div className="fixed inset-0 z-0 pointer-events-none flex items-center justify-center overflow-visible">
+        <div className="absolute" style={{ minWidth: '500px', width: '100%', maxWidth: 'none' }}>
           <AspectRatio ratio={1 / 1}>
-            <img src="/lovable-uploads/logo.svg" alt="Anniversary Logo" className="w-full h-full object-contain opacity-80" />
+            <img 
+              src="/lovable-uploads/logo.svg" 
+              alt="Anniversary Logo" 
+              className="w-full h-full object-contain opacity-80" 
+            />
           </AspectRatio>
         </div>
       </div>
