@@ -23,44 +23,70 @@ serve(async (req) => {
   }
 
   try {
+    console.log("Starting realtime listener service...");
+    
     // Set up the realtime channel to listen for changes
     const channel = supabase
       .channel('schema-db-changes')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'guests' }, async (payload) => {
         console.log('Change received for guests table:', payload);
         
-        // Call the sync-to-airtable function
-        await fetch(`${supabaseUrl}/functions/v1/sync-to-airtable`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${supabaseServiceRole}`,
-          },
-          body: JSON.stringify({
-            type: payload.eventType,
-            table: 'guests',
-            record: payload.new,
-          }),
-        });
+        try {
+          // Call the sync-to-airtable function
+          const response = await fetch(`${supabaseUrl}/functions/v1/sync-to-airtable`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${supabaseServiceRole}`,
+            },
+            body: JSON.stringify({
+              type: payload.eventType,
+              table: 'guests',
+              record: payload.new,
+            }),
+          });
+          
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Error calling sync-to-airtable: ${response.status} - ${errorText}`);
+          }
+          
+          console.log('Successfully triggered sync for guest change');
+        } catch (error) {
+          console.error('Error processing guest change:', error);
+        }
       })
       .on('postgres_changes', { event: '*', schema: 'public', table: 'rsvps' }, async (payload) => {
         console.log('Change received for rsvps table:', payload);
         
-        // Call the sync-to-airtable function
-        await fetch(`${supabaseUrl}/functions/v1/sync-to-airtable`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${supabaseServiceRole}`,
-          },
-          body: JSON.stringify({
-            type: payload.eventType,
-            table: 'rsvps',
-            record: payload.new,
-          }),
-        });
+        try {
+          // Call the sync-to-airtable function
+          const response = await fetch(`${supabaseUrl}/functions/v1/sync-to-airtable`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${supabaseServiceRole}`,
+            },
+            body: JSON.stringify({
+              type: payload.eventType,
+              table: 'rsvps',
+              record: payload.new,
+            }),
+          });
+          
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Error calling sync-to-airtable: ${response.status} - ${errorText}`);
+          }
+          
+          console.log('Successfully triggered sync for rsvp change');
+        } catch (error) {
+          console.error('Error processing rsvp change:', error);
+        }
       })
-      .subscribe();
+      .subscribe((status) => {
+        console.log('Subscription status:', status);
+      });
 
     // Wait for a few seconds to allow the subscription to be established
     await new Promise(resolve => setTimeout(resolve, 5000));

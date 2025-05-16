@@ -43,11 +43,16 @@ const supabase = createClient(supabaseUrl!, supabaseServiceRole!);
 // Function to sync a guest to Airtable
 async function syncGuestToAirtable(guest: GuestRecord): Promise<void> {
   try {
-    console.log(`Syncing guest with ID: ${guest.id}`);
+    console.log(`Syncing guest with Supabase ID: ${guest.id}`);
+    
+    // Build a filter formula to find records with matching Supabase ID in the id field
+    // Using proper Airtable formula syntax
+    const filterFormula = `{id}="${guest.id}"`;
+    console.log(`Searching in Airtable with filter formula: ${filterFormula}`);
     
     // First check if the record exists in Airtable by looking for the Supabase ID
     const checkResponse = await fetch(
-      `https://api.airtable.com/v0/${airtableBaseId}/${airtableGuestsTableId}?filterByFormula={id}="${guest.id}"`,
+      `https://api.airtable.com/v0/${airtableBaseId}/${airtableGuestsTableId}?filterByFormula=${encodeURIComponent(filterFormula)}`,
       {
         headers: {
           'Authorization': `Bearer ${airtableApiKey}`,
@@ -56,7 +61,13 @@ async function syncGuestToAirtable(guest: GuestRecord): Promise<void> {
       }
     );
     
+    if (!checkResponse.ok) {
+      const errorData = await checkResponse.text();
+      throw new Error(`Airtable check failed with status ${checkResponse.status}: ${errorData}`);
+    }
+    
     const checkData = await checkResponse.json();
+    console.log(`Airtable check results: ${checkData.records ? checkData.records.length : 0} records found`);
     
     // Prepare the record for Airtable
     // Map the fields to match Airtable's column structure
@@ -74,8 +85,9 @@ async function syncGuestToAirtable(guest: GuestRecord): Promise<void> {
     // If record exists, update it
     if (checkData.records && checkData.records.length > 0) {
       const airtableId = checkData.records[0].id;
+      console.log(`Found existing Airtable record with ID: ${airtableId}`);
       
-      await fetch(
+      const updateResponse = await fetch(
         `https://api.airtable.com/v0/${airtableBaseId}/${airtableGuestsTableId}/${airtableId}`,
         {
           method: 'PATCH',
@@ -86,11 +98,19 @@ async function syncGuestToAirtable(guest: GuestRecord): Promise<void> {
           body: JSON.stringify({ fields }),
         }
       );
+      
+      if (!updateResponse.ok) {
+        const errorData = await updateResponse.text();
+        throw new Error(`Airtable update failed with status ${updateResponse.status}: ${errorData}`);
+      }
+      
       console.log(`Updated guest record in Airtable with ID: ${guest.id}`);
     } 
     // If record doesn't exist, create it
     else {
-      await fetch(
+      console.log(`No existing record found in Airtable for Supabase ID: ${guest.id}, creating new record`);
+      
+      const createResponse = await fetch(
         `https://api.airtable.com/v0/${airtableBaseId}/${airtableGuestsTableId}`,
         {
           method: 'POST',
@@ -103,6 +123,12 @@ async function syncGuestToAirtable(guest: GuestRecord): Promise<void> {
           }),
         }
       );
+      
+      if (!createResponse.ok) {
+        const errorData = await createResponse.text();
+        throw new Error(`Airtable create failed with status ${createResponse.status}: ${errorData}`);
+      }
+      
       console.log(`Created new guest record in Airtable with ID: ${guest.id}`);
     }
   } catch (error) {
@@ -114,11 +140,15 @@ async function syncGuestToAirtable(guest: GuestRecord): Promise<void> {
 // Function to sync an RSVP to Airtable
 async function syncRsvpToAirtable(rsvp: RSVPRecord): Promise<void> {
   try {
-    console.log(`Syncing RSVP with ID: ${rsvp.id}`);
+    console.log(`Syncing RSVP with Supabase ID: ${rsvp.id}`);
+    
+    // Build a filter formula to find records with matching Supabase ID in the id field
+    const filterFormula = `{id}="${rsvp.id}"`;
+    console.log(`Searching in Airtable with filter formula: ${filterFormula}`);
     
     // First check if the record exists in Airtable
     const checkResponse = await fetch(
-      `https://api.airtable.com/v0/${airtableBaseId}/${airtableRsvpsTableId}?filterByFormula={id}="${rsvp.id}"`,
+      `https://api.airtable.com/v0/${airtableBaseId}/${airtableRsvpsTableId}?filterByFormula=${encodeURIComponent(filterFormula)}`,
       {
         headers: {
           'Authorization': `Bearer ${airtableApiKey}`,
@@ -127,7 +157,13 @@ async function syncRsvpToAirtable(rsvp: RSVPRecord): Promise<void> {
       }
     );
     
+    if (!checkResponse.ok) {
+      const errorData = await checkResponse.text();
+      throw new Error(`Airtable check failed with status ${checkResponse.status}: ${errorData}`);
+    }
+    
     const checkData = await checkResponse.json();
+    console.log(`Airtable check results: ${checkData.records ? checkData.records.length : 0} records found`);
     
     // Prepare the record for Airtable
     const fields = {
@@ -143,8 +179,9 @@ async function syncRsvpToAirtable(rsvp: RSVPRecord): Promise<void> {
     // If record exists, update it
     if (checkData.records && checkData.records.length > 0) {
       const airtableId = checkData.records[0].id;
+      console.log(`Found existing Airtable record with ID: ${airtableId}`);
       
-      await fetch(
+      const updateResponse = await fetch(
         `https://api.airtable.com/v0/${airtableBaseId}/${airtableRsvpsTableId}/${airtableId}`,
         {
           method: 'PATCH',
@@ -155,11 +192,19 @@ async function syncRsvpToAirtable(rsvp: RSVPRecord): Promise<void> {
           body: JSON.stringify({ fields }),
         }
       );
+      
+      if (!updateResponse.ok) {
+        const errorData = await updateResponse.text();
+        throw new Error(`Airtable update failed with status ${updateResponse.status}: ${errorData}`);
+      }
+      
       console.log(`Updated RSVP record in Airtable with ID: ${rsvp.id}`);
     } 
     // If record doesn't exist, create it
     else {
-      await fetch(
+      console.log(`No existing record found in Airtable for Supabase ID: ${rsvp.id}, creating new record`);
+      
+      const createResponse = await fetch(
         `https://api.airtable.com/v0/${airtableBaseId}/${airtableRsvpsTableId}`,
         {
           method: 'POST',
@@ -172,6 +217,12 @@ async function syncRsvpToAirtable(rsvp: RSVPRecord): Promise<void> {
           }),
         }
       );
+      
+      if (!createResponse.ok) {
+        const errorData = await createResponse.text();
+        throw new Error(`Airtable create failed with status ${createResponse.status}: ${errorData}`);
+      }
+      
       console.log(`Created new RSVP record in Airtable with ID: ${rsvp.id}`);
     }
   } catch (error) {
@@ -194,6 +245,7 @@ serve(async (req) => {
     
     // Handle database changes
     const { type, table, record } = payload;
+    console.log(`Processing ${type} event for table ${table}`);
     
     if (table === 'guests') {
       await syncGuestToAirtable(record as GuestRecord);
