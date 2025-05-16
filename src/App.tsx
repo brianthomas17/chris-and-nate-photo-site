@@ -25,9 +25,8 @@ const App = () => (
         <GuestProvider>
           <ContentProvider>
             <PhotoProvider>
+              {/* Only include one toaster component */}
               <Toaster />
-              {/* Remove the Sonner component to prevent double toasts */}
-              {/* <Sonner /> */}
               <BrowserRouter>
                 <Routes>
                   <Route path="/" element={<Index />} />

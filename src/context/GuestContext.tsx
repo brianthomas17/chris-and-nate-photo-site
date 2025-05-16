@@ -293,20 +293,10 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         )
       );
       
-      const guest = guests.find(g => g.id === guestId);
-      if (guest) {
-        toast({
-          title: "RSVP Updated",
-          description: `Thank you, ${guest.first_name}! Your RSVP has been recorded.`,
-        });
-      }
+      // Remove the toast notification from here - we'll handle it in the component
     } catch (error) {
       console.error('Error updating RSVP:', error);
-      toast({
-        title: "Error",
-        description: "An unexpected error occurred",
-        variant: "destructive"
-      });
+      throw error; // Re-throw the error to be handled by the component
     }
   };
 

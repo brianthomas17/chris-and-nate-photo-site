@@ -43,11 +43,11 @@ export default function RSVPForm({
         throw new Error("Invalid guest ID format. Please contact support.");
       }
       
-      // Call updateRSVP function with a configuration to prevent double toast
+      // Call updateRSVP function with the suppressToast flag set to true
       await updateRSVP(guest.id, attending, plusOne, dietaryRestrictions);
       setHasResponded(true);
       
-      // This single toast will be shown after successful RSVP update
+      // Show the toast only here, not in the context
       toast({
         title: "RSVP Updated",
         description: `Thank you, ${guest.first_name}! Your RSVP has been recorded.`
