@@ -2,6 +2,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
+// Set up CORS headers
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -13,6 +14,7 @@ const airtableBaseId = Deno.env.get('AIRTABLE_BASE_ID');
 const airtableGuestsTableId = Deno.env.get('AIRTABLE_GUESTS_TABLE_ID');
 const airtableRsvpsTableId = Deno.env.get('AIRTABLE_RSVPS_TABLE_ID');
 
+// Main handler function
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -20,120 +22,101 @@ serve(async (req) => {
   }
 
   try {
-    console.log("[INFO] Testing Airtable API connection");
-    
-    // Check environment variables
-    if (!airtableApiKey) {
-      return new Response(JSON.stringify({ 
-        success: false, 
-        message: "Missing AIRTABLE_API_KEY environment variable" 
-      }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 400
-      });
+    // First check if we have all required environment variables
+    if (!airtableApiKey || !airtableBaseId || !airtableGuestsTableId) {
+      throw new Error("Missing required environment variables for Airtable");
     }
+
+    // Generate a test record with timestamp to make it unique
+    const testTimestamp = new Date().toISOString();
+    const testId = crypto.randomUUID();
+    const testRecord = {
+      id: testId,
+      first_name: `Test User ${testTimestamp}`,
+      email: `test-${Date.now()}@example.com`,
+      invitation_type: "main event",
+      phone_number: "555-123-4567",
+      created_at: testTimestamp,
+      updated_at: testTimestamp
+    };
+
+    console.log("[DEBUG] Attempting to create test record in Airtable:", JSON.stringify(testRecord));
+
+    // Prepare the record for Airtable
+    const fields = {
+      id: testRecord.id,
+      first_name: testRecord.first_name,
+      email: testRecord.email,
+      phone_number: testRecord.phone_number,
+      invitation_type: testRecord.invitation_type,
+      created_at: testRecord.created_at,
+      updated_at: testRecord.updated_at
+    };
+
+    // Try to create the record in Airtable
+    console.log(`[DEBUG] Creating Airtable record at URL: https://api.airtable.com/v0/${airtableBaseId}/${airtableGuestsTableId}`);
+    console.log(`[DEBUG] Create payload: ${JSON.stringify({ records: [{ fields }] })}`);
     
-    if (!airtableBaseId) {
-      return new Response(JSON.stringify({ 
-        success: false, 
-        message: "Missing AIRTABLE_BASE_ID environment variable" 
-      }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 400
-      });
-    }
-    
-    if (!airtableGuestsTableId) {
-      return new Response(JSON.stringify({ 
-        success: false, 
-        message: "Missing AIRTABLE_GUESTS_TABLE_ID environment variable" 
-      }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 400
-      });
-    }
-    
-    if (!airtableRsvpsTableId) {
-      return new Response(JSON.stringify({ 
-        success: false, 
-        message: "Missing AIRTABLE_RSVPS_TABLE_ID environment variable" 
-      }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 400
-      });
-    }
-    
-    // Test connection to guests table
-    const guestsResponse = await fetch(
-      `https://api.airtable.com/v0/${airtableBaseId}/${airtableGuestsTableId}?maxRecords=1`,
+    const createResponse = await fetch(
+      `https://api.airtable.com/v0/${airtableBaseId}/${airtableGuestsTableId}`,
       {
+        method: 'POST',
         headers: {
           'Authorization': `Bearer ${airtableApiKey}`,
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify({ 
+          records: [{ fields }]
+        }),
       }
     );
     
-    if (!guestsResponse.ok) {
-      const errorText = await guestsResponse.text();
-      return new Response(JSON.stringify({ 
-        success: false, 
-        message: `Failed to connect to Airtable guests table: ${guestsResponse.status} - ${errorText}`
-      }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 500
-      });
-    }
+    // Parse the response
+    const responseText = await createResponse.text();
+    console.log(`[DEBUG] Airtable create response status: ${createResponse.status}`);
+    console.log(`[DEBUG] Airtable create response body: ${responseText}`);
     
-    // Test connection to RSVPs table
-    const rsvpsResponse = await fetch(
-      `https://api.airtable.com/v0/${airtableBaseId}/${airtableRsvpsTableId}?maxRecords=1`,
+    // Return detailed information about the connection test
+    const result = {
+      success: createResponse.ok,
+      statusCode: createResponse.status,
+      statusText: createResponse.statusText,
+      airtableEnvironmentVars: {
+        apiKeyPresent: !!airtableApiKey,
+        baseIdPresent: !!airtableBaseId,
+        guestsTableIdPresent: !!airtableGuestsTableId,
+        rsvpsTableIdPresent: !!airtableRsvpsTableId
+      },
+      testRecord: testRecord,
+      response: createResponse.ok ? JSON.parse(responseText) : responseText
+    };
+
+    return new Response(
+      JSON.stringify(result, null, 2),
       {
+        status: 200,
         headers: {
-          'Authorization': `Bearer ${airtableApiKey}`,
+          ...corsHeaders,
           'Content-Type': 'application/json',
         },
       }
     );
-    
-    if (!rsvpsResponse.ok) {
-      const errorText = await rsvpsResponse.text();
-      return new Response(JSON.stringify({ 
-        success: false, 
-        message: `Failed to connect to Airtable RSVPs table: ${rsvpsResponse.status} - ${errorText}`
-      }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 500
-      });
-    }
-    
-    // Both connections successful
-    const guestsData = await guestsResponse.json();
-    const rsvpsData = await rsvpsResponse.json();
-    
-    return new Response(JSON.stringify({ 
-      success: true, 
-      message: "Successfully connected to Airtable API",
-      details: {
-        guests: {
-          recordCount: guestsData.records?.length || 0
-        },
-        rsvps: {
-          recordCount: rsvpsData.records?.length || 0
-        }
-      }
-    }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      status: 200
-    });
   } catch (error) {
     console.error("[ERROR] Error testing Airtable connection:", error);
-    return new Response(JSON.stringify({ 
-      success: false, 
-      message: `Error connecting to Airtable: ${error instanceof Error ? error.message : String(error)}`
-    }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      status: 500
-    });
+    
+    return new Response(
+      JSON.stringify({ 
+        success: false, 
+        error: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined
+      }, null, 2),
+      {
+        status: 500,
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
   }
 });
