@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useGuests } from "@/context/GuestContext";
 import { Guest } from "@/types";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,8 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface RSVPFormProps {
   guest: Guest;
@@ -28,6 +30,21 @@ export default function RSVPForm({
   const [dietaryRestrictions, setDietaryRestrictions] = useState<string>(guest.rsvp?.dietary_restrictions || "");
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [hasResponded, setHasResponded] = useState<boolean>(!!guest.rsvp);
+  const [formError, setFormError] = useState<string | null>(null);
+
+  // Log guest info for debugging
+  useEffect(() => {
+    console.log("RSVPForm mounted with guest:", guest);
+    console.log("Guest ID:", guest.id);
+    console.log("Guest has RSVP:", !!guest.rsvp);
+    if (guest.rsvp) {
+      console.log("RSVP details:", { 
+        attending: guest.rsvp.attending,
+        plusOne: guest.rsvp.plus_one, 
+        dietary: guest.rsvp.dietary_restrictions 
+      });
+    }
+  }, [guest]);
 
   // Validate if the guest ID is a valid UUID format
   const isValidUUID = (id: string): boolean => {
@@ -37,12 +54,18 @@ export default function RSVPForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setFormError(null);
+    
+    console.log("RSVP form submitted with values:", { attending, plusOne, dietaryRestrictions });
     
     // Ensure a selection has been made before submitting
     if (attending === null) {
+      const errorMessage = "Please select whether you will attend or not.";
+      console.error(errorMessage);
+      setFormError(errorMessage);
       toast({
         title: "Selection Required",
-        description: "Please select whether you will attend or not.",
+        description: errorMessage,
         variant: "destructive"
       });
       return;
@@ -53,11 +76,23 @@ export default function RSVPForm({
     try {
       // Check if the guest ID is a valid UUID before submitting
       if (!isValidUUID(guest.id)) {
-        throw new Error("Invalid guest ID format. Please contact support.");
+        const errorMessage = "Invalid guest ID format. Please contact support.";
+        console.error(errorMessage, guest.id);
+        setFormError(errorMessage);
+        throw new Error(errorMessage);
       }
+      
+      console.log("Calling updateRSVP with:", {
+        guestId: guest.id,
+        attending,
+        plusOne,
+        dietaryRestrictions
+      });
       
       // Call updateRSVP function with the suppressToast flag set to true
       await updateRSVP(guest.id, attending, plusOne, dietaryRestrictions);
+      console.log("RSVP updated successfully");
+      
       setHasResponded(true);
       
       // Show the toast only here, not in the context
@@ -67,6 +102,7 @@ export default function RSVPForm({
       });
     } catch (error) {
       console.error("Error submitting RSVP:", error);
+      setFormError(error instanceof Error ? error.message : "Unknown error occurred");
       toast({
         title: "RSVP Error",
         description: error instanceof Error ? error.message : "There was a problem submitting your RSVP. Please try again.",
@@ -103,7 +139,38 @@ export default function RSVPForm({
                   </div>
                 </RadioGroup>
               </div>
+              
+              {attending && (
+                <div className="space-y-4 pt-4">
+                  <div className="flex items-center space-x-3 justify-center">
+                    <Checkbox 
+                      id="plus-one" 
+                      checked={plusOne} 
+                      onCheckedChange={(checked) => setPlusOne(checked === true)}
+                      className="border-anniversary-gold"
+                    />
+                    <Label htmlFor="plus-one" className="text-white">I'll bring a plus one</Label>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="dietary" className="text-white text-center block">Dietary Restrictions</Label>
+                    <Textarea 
+                      id="dietary" 
+                      value={dietaryRestrictions} 
+                      onChange={(e) => setDietaryRestrictions(e.target.value)} 
+                      placeholder="Please let us know of any dietary restrictions or allergies"
+                      className="bg-white/20 border-anniversary-gold/50 text-white placeholder:text-white/50"
+                    />
+                  </div>
+                </div>
+              )}
             </div>
+            
+            {formError && (
+              <div className="text-red-500 text-sm text-center bg-red-100/20 p-2 rounded-md">
+                Error: {formError}
+              </div>
+            )}
             
             <CardFooter className="flex justify-center px-0">
               <div className="flex flex-col items-center space-y-4">

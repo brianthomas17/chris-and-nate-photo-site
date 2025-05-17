@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Guest, InvitationType, RSVP, Party } from '../types';
 import { useToast } from '@/hooks/use-toast';
@@ -238,8 +237,11 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const updateRSVP = async (guestId: string, attending: boolean, plus_one: boolean, dietary_restrictions: string) => {
+    console.log("updateRSVP called with:", { guestId, attending, plus_one, dietary_restrictions });
+    
     try {
       // Check if RSVP already exists
+      console.log("Checking if RSVP exists for guest:", guestId);
       const { data: existingRsvp, error: checkError } = await supabase
         .from('rsvps')
         .select()
@@ -247,12 +249,16 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         .maybeSingle();
 
       if (checkError) {
+        console.error("Error checking existing RSVP:", checkError);
         throw checkError;
       }
+
+      console.log("Existing RSVP check result:", existingRsvp);
 
       let error;
       if (existingRsvp) {
         // Update existing RSVP
+        console.log("Updating existing RSVP for guest:", guestId);
         const { error: updateError } = await supabase
           .from('rsvps')
           .update({
@@ -264,8 +270,14 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           .eq('guest_id', guestId);
         
         error = updateError;
+        if (updateError) {
+          console.error("Error updating RSVP:", updateError);
+        } else {
+          console.log("RSVP updated successfully");
+        }
       } else {
         // Insert new RSVP
+        console.log("Creating new RSVP for guest:", guestId);
         const { error: insertError } = await supabase
           .from('rsvps')
           .insert({
@@ -276,6 +288,11 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           });
         
         error = insertError;
+        if (insertError) {
+          console.error("Error inserting RSVP:", insertError);
+        } else {
+          console.log("RSVP created successfully");
+        }
       }
 
       if (error) {
@@ -298,6 +315,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         )
       );
       
+      console.log("Local state updated with new RSVP");
       // Remove the toast notification from here - we'll handle it in the component
     } catch (error) {
       console.error('Error updating RSVP:', error);
