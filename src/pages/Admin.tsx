@@ -9,7 +9,6 @@ import { Navigate, useNavigate } from "react-router-dom";
 
 const Admin = () => {
   const [isSeeding, setIsSeeding] = useState(false);
-  const [isSettingUpSync, setIsSettingUpSync] = useState(false);
   const { toast } = useToast();
   const { currentGuest, isLoading } = useAuth();
   const navigate = useNavigate();
@@ -66,43 +65,6 @@ const Admin = () => {
     }
   };
 
-  const handleSetupAirtableSync = async () => {
-    setIsSettingUpSync(true);
-    try {
-      const response = await fetch(`${import.meta.env.VITE_SUPABASE_FUNCTIONS_URL}/listen-to-realtime`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      });
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Error setting up sync: ${response.status} - ${errorText}`);
-      }
-      
-      const result = await response.json();
-      
-      if (result.success) {
-        toast({
-          title: "Success",
-          description: "Airtable sync system has been set up successfully. All database changes will now sync to Airtable automatically."
-        });
-      } else {
-        throw new Error(result.error || "Unknown error occurred");
-      }
-    } catch (error) {
-      console.error("Error setting up Airtable sync:", error);
-      toast({
-        title: "Error",
-        description: `Failed to set up Airtable sync: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        variant: "destructive"
-      });
-    } finally {
-      setIsSettingUpSync(false);
-    }
-  };
-
   return (
     <>
       <AdminLayout />
@@ -113,13 +75,6 @@ const Admin = () => {
           variant="outline"
         >
           {isSeeding ? "Seeding..." : "Seed Test Accounts"}
-        </Button>
-        <Button 
-          onClick={handleSetupAirtableSync} 
-          disabled={isSettingUpSync} 
-          className="bg-emerald-600 hover:bg-emerald-700"
-        >
-          {isSettingUpSync ? "Setting up..." : "Set Up Airtable Sync"}
         </Button>
       </div>
     </>
