@@ -89,13 +89,12 @@ export default function RSVPForm({
         dietaryRestrictions
       });
       
-      // Call updateRSVP function with the suppressToast flag set to true
+      // Call updateRSVP function
       await updateRSVP(guest.id, attending, plusOne, dietaryRestrictions);
       console.log("RSVP updated successfully");
       
       setHasResponded(true);
       
-      // Show the toast only here, not in the context
       toast({
         title: "RSVP Updated",
         description: `Thank you, ${guest.first_name}! Your RSVP has been recorded.`
