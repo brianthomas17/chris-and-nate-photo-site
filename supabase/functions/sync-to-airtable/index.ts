@@ -1,6 +1,7 @@
 
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 interface GuestRecord {
   id: string;
@@ -23,12 +24,6 @@ interface RSVPRecord {
   updated_at?: string;
 }
 
-interface WebhookPayload {
-  type: string;
-  table: string;
-  record: GuestRecord | RSVPRecord;
-}
-
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -39,23 +34,20 @@ const airtableApiKey = Deno.env.get('AIRTABLE_API_KEY');
 const airtableBaseId = Deno.env.get('AIRTABLE_BASE_ID');
 const airtableRsvpsTableId = Deno.env.get('AIRTABLE_RSVPS_TABLE_ID');
 const airtableGuestsTableId = Deno.env.get('AIRTABLE_GUESTS_TABLE_ID');
+const supabaseUrl = Deno.env.get('SUPABASE_URL');
+const supabaseServiceRole = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+
+// Create a Supabase client
+const supabase = createClient(supabaseUrl!, supabaseServiceRole!);
 
 // Function to sync a guest to Airtable
 async function syncGuestToAirtable(guest: GuestRecord): Promise<void> {
   try {
-    console.log(`[DEBUG] Syncing guest with Supabase ID: ${guest.id}`);
+    console.log(`Syncing guest with ID: ${guest.id}`);
     
-    if (!airtableApiKey || !airtableBaseId || !airtableGuestsTableId) {
-      throw new Error("Missing required environment variables for Airtable");
-    }
-    
-    // Build a filter formula to find records with matching Supabase ID
-    const filterFormula = `{id}="${guest.id}"`;
-    const encodedFilterFormula = encodeURIComponent(filterFormula);
-    
-    // Check if the record exists in Airtable
+    // First check if the record exists in Airtable by looking for the Supabase ID
     const checkResponse = await fetch(
-      `https://api.airtable.com/v0/${airtableBaseId}/${airtableGuestsTableId}?filterByFormula=${encodedFilterFormula}`,
+      `https://api.airtable.com/v0/${airtableBaseId}/${airtableGuestsTableId}?filterByFormula={id}="${guest.id}"`,
       {
         headers: {
           'Authorization': `Bearer ${airtableApiKey}`,
@@ -64,14 +56,10 @@ async function syncGuestToAirtable(guest: GuestRecord): Promise<void> {
       }
     );
     
-    if (!checkResponse.ok) {
-      const errorData = await checkResponse.text();
-      throw new Error(`Airtable check failed with status ${checkResponse.status}: ${errorData}`);
-    }
-    
     const checkData = await checkResponse.json();
     
     // Prepare the record for Airtable
+    // Map the fields to match Airtable's column structure
     const fields = {
       id: guest.id,
       first_name: guest.first_name,
@@ -87,7 +75,7 @@ async function syncGuestToAirtable(guest: GuestRecord): Promise<void> {
     if (checkData.records && checkData.records.length > 0) {
       const airtableId = checkData.records[0].id;
       
-      const updateResponse = await fetch(
+      await fetch(
         `https://api.airtable.com/v0/${airtableBaseId}/${airtableGuestsTableId}/${airtableId}`,
         {
           method: 'PATCH',
@@ -98,17 +86,11 @@ async function syncGuestToAirtable(guest: GuestRecord): Promise<void> {
           body: JSON.stringify({ fields }),
         }
       );
-      
-      if (!updateResponse.ok) {
-        const errorData = await updateResponse.text();
-        throw new Error(`Airtable update failed with status ${updateResponse.status}: ${errorData}`);
-      }
-      
-      console.log(`[SUCCESS] Updated guest record in Airtable with ID: ${guest.id}`);
+      console.log(`Updated guest record in Airtable with ID: ${guest.id}`);
     } 
     // If record doesn't exist, create it
     else {
-      const createResponse = await fetch(
+      await fetch(
         `https://api.airtable.com/v0/${airtableBaseId}/${airtableGuestsTableId}`,
         {
           method: 'POST',
@@ -121,16 +103,10 @@ async function syncGuestToAirtable(guest: GuestRecord): Promise<void> {
           }),
         }
       );
-      
-      if (!createResponse.ok) {
-        const errorData = await createResponse.text();
-        throw new Error(`Airtable create failed with status ${createResponse.status}: ${errorData}`);
-      }
-      
-      console.log(`[SUCCESS] Created new guest record in Airtable with ID: ${guest.id}`);
+      console.log(`Created new guest record in Airtable with ID: ${guest.id}`);
     }
   } catch (error) {
-    console.error(`[ERROR] Error syncing guest with ID ${guest.id} to Airtable:`, error);
+    console.error(`Error syncing guest with ID ${guest.id} to Airtable:`, error);
     throw error;
   }
 }
@@ -138,19 +114,11 @@ async function syncGuestToAirtable(guest: GuestRecord): Promise<void> {
 // Function to sync an RSVP to Airtable
 async function syncRsvpToAirtable(rsvp: RSVPRecord): Promise<void> {
   try {
-    console.log(`[DEBUG] Syncing RSVP with Supabase ID: ${rsvp.id}`);
+    console.log(`Syncing RSVP with ID: ${rsvp.id}`);
     
-    if (!airtableApiKey || !airtableBaseId || !airtableRsvpsTableId) {
-      throw new Error("Missing required environment variables for Airtable");
-    }
-    
-    // Build a filter formula to find records with matching Supabase ID
-    const filterFormula = `{id}="${rsvp.id}"`;
-    const encodedFilterFormula = encodeURIComponent(filterFormula);
-    
-    // Check if the record exists in Airtable
+    // First check if the record exists in Airtable
     const checkResponse = await fetch(
-      `https://api.airtable.com/v0/${airtableBaseId}/${airtableRsvpsTableId}?filterByFormula=${encodedFilterFormula}`,
+      `https://api.airtable.com/v0/${airtableBaseId}/${airtableRsvpsTableId}?filterByFormula={id}="${rsvp.id}"`,
       {
         headers: {
           'Authorization': `Bearer ${airtableApiKey}`,
@@ -158,11 +126,6 @@ async function syncRsvpToAirtable(rsvp: RSVPRecord): Promise<void> {
         },
       }
     );
-    
-    if (!checkResponse.ok) {
-      const errorData = await checkResponse.text();
-      throw new Error(`Airtable check failed with status ${checkResponse.status}: ${errorData}`);
-    }
     
     const checkData = await checkResponse.json();
     
@@ -181,7 +144,7 @@ async function syncRsvpToAirtable(rsvp: RSVPRecord): Promise<void> {
     if (checkData.records && checkData.records.length > 0) {
       const airtableId = checkData.records[0].id;
       
-      const updateResponse = await fetch(
+      await fetch(
         `https://api.airtable.com/v0/${airtableBaseId}/${airtableRsvpsTableId}/${airtableId}`,
         {
           method: 'PATCH',
@@ -192,17 +155,11 @@ async function syncRsvpToAirtable(rsvp: RSVPRecord): Promise<void> {
           body: JSON.stringify({ fields }),
         }
       );
-      
-      if (!updateResponse.ok) {
-        const errorData = await updateResponse.text();
-        throw new Error(`Airtable update failed with status ${updateResponse.status}: ${errorData}`);
-      }
-      
-      console.log(`[SUCCESS] Updated RSVP record in Airtable with ID: ${rsvp.id}`);
+      console.log(`Updated RSVP record in Airtable with ID: ${rsvp.id}`);
     } 
     // If record doesn't exist, create it
     else {
-      const createResponse = await fetch(
+      await fetch(
         `https://api.airtable.com/v0/${airtableBaseId}/${airtableRsvpsTableId}`,
         {
           method: 'POST',
@@ -215,60 +172,11 @@ async function syncRsvpToAirtable(rsvp: RSVPRecord): Promise<void> {
           }),
         }
       );
-      
-      if (!createResponse.ok) {
-        const errorData = await createResponse.text();
-        throw new Error(`Airtable create failed with status ${createResponse.status}: ${errorData}`);
-      }
-      
-      console.log(`[SUCCESS] Created new RSVP record in Airtable with ID: ${rsvp.id}`);
+      console.log(`Created new RSVP record in Airtable with ID: ${rsvp.id}`);
     }
   } catch (error) {
-    console.error(`[ERROR] Error syncing RSVP with ID ${rsvp.id} to Airtable:`, error);
+    console.error(`Error syncing RSVP with ID ${rsvp.id} to Airtable:`, error);
     throw error;
-  }
-}
-
-// Function to test Airtable connection
-async function testAirtableConnection(): Promise<{success: boolean, message: string}> {
-  try {
-    console.log("Testing Airtable API connection...");
-    
-    if (!airtableApiKey || !airtableBaseId || !airtableGuestsTableId) {
-      return { 
-        success: false, 
-        message: "Missing required environment variables for Airtable" 
-      };
-    }
-    
-    const response = await fetch(
-      `https://api.airtable.com/v0/${airtableBaseId}/${airtableGuestsTableId}?maxRecords=1`,
-      {
-        headers: {
-          'Authorization': `Bearer ${airtableApiKey}`,
-          'Content-Type': 'application/json',
-        },
-      }
-    );
-    
-    if (!response.ok) {
-      const errorText = await response.text();
-      return { 
-        success: false, 
-        message: `Failed to connect to Airtable API: ${response.status} - ${errorText}`
-      };
-    }
-    
-    const data = await response.json();
-    return { 
-      success: true, 
-      message: `Successfully connected to Airtable API. Found ${data.records?.length || 0} records in test query.`
-    };
-  } catch (error) {
-    return { 
-      success: false, 
-      message: `Error connecting to Airtable: ${error instanceof Error ? error.message : String(error)}`
-    };
   }
 }
 
@@ -280,123 +188,30 @@ serve(async (req) => {
   }
 
   try {
-    // Handle GET requests (status check/debugging)
-    if (req.method === 'GET') {
-      console.log("[DEBUG] Received GET request to sync-to-airtable function");
-      
-      // Test the Airtable connection
-      const connectionTest = await testAirtableConnection();
-      
-      // Check if all required environment variables are set
-      const envVars = {
-        airtableApiKey: !!airtableApiKey,
-        airtableBaseId: !!airtableBaseId,
-        airtableRsvpsTableId: !!airtableRsvpsTableId,
-        airtableGuestsTableId: !!airtableGuestsTableId
-      };
-      
-      return new Response(JSON.stringify({ 
-        success: true, 
-        message: "Airtable sync is ready to process webhook payloads",
-        environmentVarsSet: envVars,
-        airtableConnection: connectionTest
-      }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200,
-      });
-    }
+    // Process the webhook payload
+    const payload = await req.json();
+    console.log("Received webhook payload:", JSON.stringify(payload));
     
-    // For POST requests, process the webhook payload or manual sync request
-    if (req.method === 'POST') {
-      // Process the webhook payload
-      const payload = await req.json() as WebhookPayload;
-      console.log("[DEBUG] Received payload:", JSON.stringify(payload));
-      
-      // Use waitUntil for background processing to prevent timeouts
-      if (typeof EdgeRuntime !== 'undefined') {
-        console.log("[DEBUG] Using EdgeRuntime.waitUntil for background processing");
-        EdgeRuntime.waitUntil(processPayload(payload));
-        
-        return new Response(JSON.stringify({ 
-          success: true,
-          message: "Sync request received and processing in background"
-        }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          status: 200,
-        });
-      } else {
-        // Process synchronously if EdgeRuntime is not available
-        console.log("[DEBUG] EdgeRuntime not available, processing synchronously");
-        await processPayload(payload);
-        
-        return new Response(JSON.stringify({ 
-          success: true,
-          message: "Sync completed successfully"
-        }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          status: 200,
-        });
-      }
-    }
+    // Handle database changes
+    const { type, table, record } = payload;
     
-    // If not GET or POST, return method not allowed
-    return new Response(JSON.stringify({ 
-      error: "Method not allowed. Only GET and POST are supported." 
-    }), {
+    if (table === 'guests') {
+      await syncGuestToAirtable(record as GuestRecord);
+    } else if (table === 'rsvps') {
+      await syncRsvpToAirtable(record as RSVPRecord);
+    } else {
+      console.log(`Ignoring change to table ${table}`);
+    }
+
+    return new Response(JSON.stringify({ success: true }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      status: 405,
+      status: 200,
     });
   } catch (error) {
-    console.error("[ERROR] Error processing request:", error);
-    return new Response(JSON.stringify({ 
-      error: error instanceof Error ? error.message : 'Unknown error' 
-    }), {
+    console.error("Error processing webhook:", error);
+    return new Response(JSON.stringify({ error: error.message }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 500,
     });
   }
 });
-
-// Process the webhook payload in the background
-async function processPayload(payload: WebhookPayload): Promise<void> {
-  try {
-    const { type, table, record } = payload;
-    console.log(`[DEBUG] Processing ${type} event for table ${table}`);
-    
-    if (!record || !record.id) {
-      console.error("[ERROR] Invalid payload: missing record or record ID");
-      throw new Error(`Invalid payload: missing record or record ID`);
-    }
-    
-    // Add retry logic with exponential backoff
-    let retries = 3;
-    let success = false;
-    
-    while (retries > 0 && !success) {
-      try {
-        if (table === 'guests') {
-          await syncGuestToAirtable(record as GuestRecord);
-        } else if (table === 'rsvps') {
-          await syncRsvpToAirtable(record as RSVPRecord);
-        } else {
-          console.log(`[INFO] Ignoring change to table ${table}`);
-        }
-        success = true;
-      } catch (error) {
-        retries--;
-        if (retries > 0) {
-          const delay = Math.pow(2, 3 - retries) * 1000; // Exponential backoff: 2s, 4s, 8s
-          console.log(`[WARN] Sync attempt failed, retrying in ${delay}ms. Retries left: ${retries}`);
-          await new Promise(resolve => setTimeout(resolve, delay));
-        } else {
-          throw error;
-        }
-      }
-    }
-    
-    console.log(`[SUCCESS] Successfully processed ${table} record with ID ${record.id}`);
-  } catch (error) {
-    console.error("[ERROR] Failed to process payload:", error);
-    throw error;
-  }
-}

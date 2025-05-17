@@ -133,18 +133,15 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const addGuest = async (guest: Omit<Guest, 'id'>) => {
     try {
-      // Fix: Don't pass "none" as party_id, use null instead
-      const guestToAdd = {
-        first_name: guest.first_name,
-        email: guest.email,
-        phone_number: guest.phone_number,
-        invitation_type: guest.invitation_type,
-        party_id: guest.party_id === "none" ? null : guest.party_id
-      };
-
       const { data, error } = await supabase
         .from('guests')
-        .insert(guestToAdd)
+        .insert({
+          first_name: guest.first_name,
+          email: guest.email,
+          phone_number: guest.phone_number,
+          invitation_type: guest.invitation_type,
+          party_id: guest.party_id
+        })
         .select();
         
       if (error) {
@@ -172,18 +169,15 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const updateGuest = async (guest: Guest) => {
     try {
-      // Fix: Don't pass "none" as party_id, use null instead
-      const guestToUpdate = {
-        first_name: guest.first_name,
-        email: guest.email,
-        phone_number: guest.phone_number,
-        invitation_type: guest.invitation_type,
-        party_id: guest.party_id === "none" ? null : guest.party_id
-      };
-
       const { error } = await supabase
         .from('guests')
-        .update(guestToUpdate)
+        .update({
+          first_name: guest.first_name,
+          email: guest.email,
+          phone_number: guest.phone_number,
+          invitation_type: guest.invitation_type,
+          party_id: guest.party_id
+        })
         .eq('id', guest.id);
 
       if (error) {
