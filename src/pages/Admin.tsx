@@ -69,28 +69,54 @@ const Admin = () => {
   const handleSetupAirtableSync = async () => {
     setIsSettingUpSync(true);
     try {
-      const response = await fetch(`${import.meta.env.VITE_SUPABASE_FUNCTIONS_URL}/listen-to-realtime`, {
+      // Step 1: Test connection to Airtable first
+      const testResponse = await fetch(`${import.meta.env.VITE_SUPABASE_FUNCTIONS_URL}/test-airtable-connection`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      
+      if (!testResponse.ok) {
+        const errorText = await testResponse.text();
+        throw new Error(`Airtable connection test failed: ${testResponse.status} - ${errorText}`);
+      }
+      
+      const testResult = await testResponse.json();
+      
+      if (!testResult.success) {
+        throw new Error(testResult.message || "Could not connect to Airtable");
+      }
+      
+      toast({
+        title: "Airtable Connection Successful",
+        description: "Successfully connected to Airtable API."
+      });
+      
+      // Step 2: Set up database triggers
+      const setupResponse = await fetch(`${import.meta.env.VITE_SUPABASE_FUNCTIONS_URL}/setup-webhooks`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         }
       });
       
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Error setting up sync: ${response.status} - ${errorText}`);
+      if (!setupResponse.ok) {
+        const errorText = await setupResponse.text();
+        throw new Error(`Error setting up database triggers: ${setupResponse.status} - ${errorText}`);
       }
       
-      const result = await response.json();
+      const setupResult = await setupResponse.json();
       
-      if (result.success) {
-        toast({
-          title: "Success",
-          description: "Airtable sync system has been set up successfully. All database changes will now sync to Airtable automatically."
-        });
-      } else {
-        throw new Error(result.error || "Unknown error occurred");
+      if (!setupResult.success) {
+        throw new Error(setupResult.error || "Unknown error occurred setting up database triggers");
       }
+      
+      // Final success message
+      toast({
+        title: "Setup Complete",
+        description: "Airtable sync system has been set up successfully. All database changes will now sync to Airtable automatically."
+      });
     } catch (error) {
       console.error("Error setting up Airtable sync:", error);
       toast({

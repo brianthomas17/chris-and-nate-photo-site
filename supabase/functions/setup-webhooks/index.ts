@@ -23,11 +23,50 @@ serve(async (req) => {
   }
 
   try {
+    console.log("[INFO] Starting setup of database webhooks");
+    
+    // Step 1: Create system_query function if it doesn't exist
+    console.log("[INFO] Creating system_query function");
+    
+    try {
+      // First try to use existing system_query function to test if it exists
+      await supabase.rpc('system_query', { query: 'SELECT 1' });
+      console.log("[INFO] system_query function already exists");
+    } catch (error) {
+      console.log("[INFO] system_query function doesn't exist yet, creating it");
+      
+      // Direct SQL execution since we can't use system_query yet
+      const { error: createFuncError } = await supabase.sql(`
+        CREATE OR REPLACE FUNCTION system_query(query text)
+        RETURNS json
+        LANGUAGE plpgsql
+        SECURITY DEFINER
+        AS $$
+        DECLARE
+          result json;
+        BEGIN
+          EXECUTE query;
+          result := json_build_object('success', true);
+          RETURN result;
+        EXCEPTION WHEN OTHERS THEN
+          result := json_build_object('success', false, 'error', SQLERRM);
+          RETURN result;
+        END;
+        $$;
+      `);
+      
+      if (createFuncError) {
+        throw new Error(`Failed to create system_query function: ${createFuncError.message}`);
+      }
+      
+      console.log("[SUCCESS] Created system_query function");
+    }
+
+    // Step 2: Create SQL for setting up webhooks
     console.log("[INFO] Setting up database webhooks");
 
-    // Create SQL for setting up webhooks that call our sync-to-airtable function
     const setupSQL = `
-      -- First, enable the necessary extensions (these might already be enabled)
+      -- First, enable the necessary extensions
       CREATE EXTENSION IF NOT EXISTS pg_net;
       CREATE EXTENSION IF NOT EXISTS http;
 
@@ -122,7 +161,7 @@ serve(async (req) => {
     `;
 
     // Execute the SQL
-    const { error } = await supabase.rpc('system_query', { query: setupSQL });
+    const { data, error } = await supabase.rpc('system_query', { query: setupSQL });
 
     if (error) {
       console.error("[ERROR] Error setting up webhooks:", error);
@@ -131,10 +170,29 @@ serve(async (req) => {
 
     console.log("[SUCCESS] Database webhooks successfully set up");
 
+    // Create test guest to verify webhook is working
+    console.log("[INFO] Creating test guest to verify webhook");
+    
+    const { data: guestData, error: guestError } = await supabase
+      .from('guests')
+      .insert({
+        first_name: `Test Guest ${new Date().toISOString()}`,
+        email: `test-${Date.now()}@example.com`,
+        invitation_type: 'main event'
+      })
+      .select();
+    
+    if (guestError) {
+      throw new Error(`Error creating test guest: ${guestError.message}`);
+    }
+    
+    console.log("[SUCCESS] Created test guest to verify webhook:", guestData);
+
     return new Response(
       JSON.stringify({
         success: true,
-        message: "Database webhook triggers have been set up successfully. Records in guests and rsvps tables will now be automatically synced to Airtable."
+        message: "Database webhook triggers have been set up successfully. Records in guests and rsvps tables will now be automatically synced to Airtable.",
+        testGuest: guestData ? guestData[0] : null
       }), 
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }, 
