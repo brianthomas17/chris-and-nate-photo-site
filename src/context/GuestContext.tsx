@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Guest, InvitationType, RSVP, Party } from '../types';
 import { useToast } from '@/hooks/use-toast';
@@ -237,7 +238,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const updateRSVP = async (guestId: string, attending: boolean, plus_one: boolean, dietary_restrictions: string) => {
-    console.log("updateRSVP called with:", { guestId, attending, plus_one, dietary_restrictions });
+    console.log("updateRSVP called with:", { guestId, attending, plus_one: plus_one, dietary_restrictions });
     
     try {
       // Check if RSVP already exists
@@ -257,7 +258,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
       let error;
       if (existingRsvp) {
-        // Update existing RSVP
+        // Update existing RSVP directly without the sync_to_airtable trigger
         console.log("Updating existing RSVP for guest:", guestId);
         const { error: updateError } = await supabase
           .from('rsvps')
@@ -267,7 +268,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             dietary_restrictions: dietary_restrictions,
             updated_at: new Date().toISOString()
           })
-          .eq('guest_id', guestId);
+          .eq('id', existingRsvp.id); // Update by ID instead of guest_id to be more specific
         
         error = updateError;
         if (updateError) {
@@ -316,7 +317,6 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       );
       
       console.log("Local state updated with new RSVP");
-      // Remove the toast notification from here - we'll handle it in the component
     } catch (error) {
       console.error('Error updating RSVP:', error);
       throw error; // Re-throw the error to be handled by the component

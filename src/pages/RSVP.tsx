@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
+import RSVPForm from "@/components/event/RSVPForm";
 
 const RSVP = () => {
   const { currentGuest, isLoading } = useAuth();
@@ -24,8 +25,14 @@ const RSVP = () => {
     </div>;
   }
   
+  // If user is authenticated, show the RSVP form
   if (currentGuest) {
-    console.log("Redirecting logged-in user to event page");
+    console.log("Rendering RSVP form for guest:", currentGuest);
+    return (
+      <div className="container mx-auto py-10">
+        <RSVPForm guest={currentGuest} />
+      </div>
+    );
   }
   
   // Redirect to main page which will handle auth and showing correct content
