@@ -10,7 +10,7 @@ interface GuestContextType {
   addGuest: (guest: Omit<Guest, 'id'>) => Promise<void>;
   updateGuest: (guest: Guest) => Promise<void>;
   deleteGuest: (id: string) => Promise<void>;
-  updateRSVP: (guestId: string, attending: boolean, plus_one: boolean, dietary_restrictions: string) => Promise<void>;
+  updateRSVP: (guestId: string, attending: boolean, plus_one: boolean, dietary_restrictions: string) => Promise<any>;
   getGuestByEmail: (email: string) => Promise<Guest | undefined>;
   createParty: (name: string) => Promise<string | undefined>;
   updatePartyMembers: (partyId: string, guestIds: string[]) => Promise<void>;
@@ -238,7 +238,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const updateRSVP = async (guestId: string, attending: boolean, plus_one: boolean, dietary_restrictions: string) => {
-    console.log("updateRSVP called with:", { guestId, attending, plus_one: plus_one, dietary_restrictions });
+    console.log("updateRSVP called with:", { guestId, attending, plus_one, dietary_restrictions });
     
     try {
       // Check if RSVP already exists
@@ -256,48 +256,48 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
       console.log("Existing RSVP check result:", existingRsvp);
 
-      let error;
+      let result;
       if (existingRsvp) {
-        // Update existing RSVP directly without the sync_to_airtable trigger
+        // Update existing RSVP
         console.log("Updating existing RSVP for guest:", guestId);
-        const { error: updateError } = await supabase
+        const { data, error: updateError } = await supabase
           .from('rsvps')
           .update({
             attending,
-            plus_one: plus_one,
-            dietary_restrictions: dietary_restrictions,
+            plus_one,
+            dietary_restrictions,
             updated_at: new Date().toISOString()
           })
-          .eq('id', existingRsvp.id); // Update by ID instead of guest_id to be more specific
+          .eq('id', existingRsvp.id)
+          .select();
         
-        error = updateError;
         if (updateError) {
           console.error("Error updating RSVP:", updateError);
+          throw updateError;
         } else {
-          console.log("RSVP updated successfully");
+          console.log("RSVP updated successfully:", data);
+          result = data;
         }
       } else {
         // Insert new RSVP
         console.log("Creating new RSVP for guest:", guestId);
-        const { error: insertError } = await supabase
+        const { data, error: insertError } = await supabase
           .from('rsvps')
           .insert({
             guest_id: guestId,
             attending,
-            plus_one: plus_one,
-            dietary_restrictions: dietary_restrictions
-          });
+            plus_one,
+            dietary_restrictions
+          })
+          .select();
         
-        error = insertError;
         if (insertError) {
           console.error("Error inserting RSVP:", insertError);
+          throw insertError;
         } else {
-          console.log("RSVP created successfully");
+          console.log("RSVP created successfully:", data);
+          result = data;
         }
-      }
-
-      if (error) {
-        throw error;
       }
 
       // Update the local state
@@ -308,8 +308,8 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                 ...g, 
                 rsvp: { 
                   attending, 
-                  plus_one: plus_one, 
-                  dietary_restrictions: dietary_restrictions 
+                  plus_one, 
+                  dietary_restrictions 
                 } 
               } 
             : g
@@ -317,6 +317,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       );
       
       console.log("Local state updated with new RSVP");
+      return result;
     } catch (error) {
       console.error('Error updating RSVP:', error);
       throw error; // Re-throw the error to be handled by the component

@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
+import { AlertCircle } from "lucide-react";
 
 interface RSVPFormProps {
   guest: Guest;
@@ -31,6 +32,7 @@ export default function RSVPForm({
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [hasResponded, setHasResponded] = useState<boolean>(!!guest.rsvp);
   const [formError, setFormError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   // Log guest info for debugging
   useEffect(() => {
@@ -55,6 +57,7 @@ export default function RSVPForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError(null);
+    setSuccessMessage(null);
     
     console.log("RSVP form submitted with values:", { attending, plusOne, dietaryRestrictions });
     
@@ -89,11 +92,12 @@ export default function RSVPForm({
         dietaryRestrictions
       });
       
-      // Call updateRSVP function
-      await updateRSVP(guest.id, attending, plusOne, dietaryRestrictions);
-      console.log("RSVP updated successfully");
+      // Call updateRSVP function with direct connection to Supabase
+      const result = await updateRSVP(guest.id, attending, plusOne, dietaryRestrictions);
+      console.log("RSVP update result:", result);
       
       setHasResponded(true);
+      setSuccessMessage(`Thank you, ${guest.first_name}! Your RSVP has been recorded.`);
       
       toast({
         title: "RSVP Updated",
@@ -166,8 +170,15 @@ export default function RSVPForm({
             </div>
             
             {formError && (
-              <div className="text-red-500 text-sm text-center bg-red-100/20 p-2 rounded-md">
-                Error: {formError}
+              <div className="text-red-500 text-sm text-center bg-red-100/20 p-2 rounded-md flex items-center gap-2 justify-center">
+                <AlertCircle className="w-4 h-4" />
+                <span>Error: {formError}</span>
+              </div>
+            )}
+            
+            {successMessage && (
+              <div className="text-green-500 text-sm text-center bg-green-100/20 p-2 rounded-md">
+                {successMessage}
               </div>
             )}
             
@@ -176,7 +187,11 @@ export default function RSVPForm({
                 <div className="text-sm text-white/70">
                   {hasResponded ? "You can update your response until the deadline." : ""}
                 </div>
-                <Button type="submit" className="bg-anniversary-gold hover:bg-anniversary-gold/90 text-black text-lg px-8 py-2 font-medium" disabled={submitting}>
+                <Button 
+                  type="submit" 
+                  className="bg-anniversary-gold hover:bg-anniversary-gold/90 text-black text-lg px-8 py-2 font-medium" 
+                  disabled={submitting}
+                >
                   {submitting ? "Submitting..." : hasResponded ? "Update Response" : "Submit RSVP"}
                 </Button>
               </div>
