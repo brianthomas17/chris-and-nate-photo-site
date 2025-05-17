@@ -9,8 +9,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 
 const Admin = () => {
   const [isSeeding, setIsSeeding] = useState(false);
-  const [isSyncing, setIsSyncing] = useState(false);
-  const [isEnablingWebhooks, setIsEnablingWebhooks] = useState(false);
+  const [isSettingUpSync, setIsSettingUpSync] = useState(false);
   const { toast } = useToast();
   const { currentGuest, isLoading } = useAuth();
   const navigate = useNavigate();
@@ -67,81 +66,40 @@ const Admin = () => {
     }
   };
 
-  const handleTestAirtableSync = async () => {
-    setIsSyncing(true);
+  const handleSetupAirtableSync = async () => {
+    setIsSettingUpSync(true);
     try {
-      const response = await fetch(`${import.meta.env.VITE_SUPABASE_FUNCTIONS_URL}/sync-to-airtable`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          type: 'manual',
-          table: 'guests',
-          record: {
-            id: '00000000-0000-0000-0000-000000000000',
-            first_name: 'Test Sync',
-            email: 'test-sync@example.com',
-            phone_number: null,
-            invitation_type: 'main event',
-            party_id: null,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          }
-        })
-      });
-      
-      const result = await response.json();
-      
-      if (result.success) {
-        toast({
-          title: "Success",
-          description: "Airtable sync system has been tested successfully. Check Airtable."
-        });
-      } else {
-        throw new Error(result.error || "Unknown error occurred");
-      }
-    } catch (error) {
-      console.error("Error testing Airtable sync:", error);
-      toast({
-        title: "Error",
-        description: `Failed to test Airtable sync: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        variant: "destructive"
-      });
-    } finally {
-      setIsSyncing(false);
-    }
-  };
-
-  const handleEnableWebhookTriggers = async () => {
-    setIsEnablingWebhooks(true);
-    try {
-      const response = await fetch(`${import.meta.env.VITE_SUPABASE_FUNCTIONS_URL}/setup-webhooks`, {
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_FUNCTIONS_URL}/listen-to-realtime`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         }
       });
       
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Error setting up sync: ${response.status} - ${errorText}`);
+      }
+      
       const result = await response.json();
       
       if (result.success) {
         toast({
           title: "Success",
-          description: "Database webhook triggers have been set up successfully."
+          description: "Airtable sync system has been set up successfully. All database changes will now sync to Airtable automatically."
         });
       } else {
         throw new Error(result.error || "Unknown error occurred");
       }
     } catch (error) {
-      console.error("Error enabling webhook triggers:", error);
+      console.error("Error setting up Airtable sync:", error);
       toast({
         title: "Error",
-        description: `Failed to enable webhook triggers: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        description: `Failed to set up Airtable sync: ${error instanceof Error ? error.message : 'Unknown error'}`,
         variant: "destructive"
       });
     } finally {
-      setIsEnablingWebhooks(false);
+      setIsSettingUpSync(false);
     }
   };
 
@@ -157,18 +115,11 @@ const Admin = () => {
           {isSeeding ? "Seeding..." : "Seed Test Accounts"}
         </Button>
         <Button 
-          onClick={handleTestAirtableSync} 
-          disabled={isSyncing} 
+          onClick={handleSetupAirtableSync} 
+          disabled={isSettingUpSync} 
           className="bg-emerald-600 hover:bg-emerald-700"
         >
-          {isSyncing ? "Testing..." : "Test Airtable Sync"}
-        </Button>
-        <Button 
-          onClick={handleEnableWebhookTriggers}
-          disabled={isEnablingWebhooks}
-          className="bg-blue-600 hover:bg-blue-700"
-        >
-          {isEnablingWebhooks ? "Setting up..." : "Set Up Database Webhooks"}
+          {isSettingUpSync ? "Setting up..." : "Set Up Airtable Sync"}
         </Button>
       </div>
     </>
