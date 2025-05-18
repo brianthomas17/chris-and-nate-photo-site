@@ -29,6 +29,13 @@ export default function RSVPForm({
   const [hasResponded, setHasResponded] = useState<boolean>(guest.attending !== null);
   const [formError, setFormError] = useState<string | null>(null);
 
+  // Update local state whenever the guest prop changes
+  useEffect(() => {
+    console.log("Guest data updated:", guest);
+    setAttending(guest.attending ?? null);
+    setHasResponded(guest.attending !== null);
+  }, [guest]);
+
   // Log guest info for debugging
   useEffect(() => {
     console.log("RSVPForm mounted with guest:", guest);
