@@ -72,8 +72,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           email: "test@example.com",
           invitation_type: "main event" as const,
           rsvp: {
-            attending: true,
-            plus_one: false
+            attending: true
           }
         };
         
@@ -124,9 +123,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Add RSVP data if it exists
       if (guestData.rsvps && Array.isArray(guestData.rsvps) && guestData.rsvps.length > 0) {
         guest.rsvp = {
-          attending: guestData.rsvps[0].attending,
-          plus_one: guestData.rsvps[0].plus_one,
-          dietary_restrictions: guestData.rsvps[0].dietary_restrictions
+          attending: guestData.rsvps[0].attending
         };
       }
       
