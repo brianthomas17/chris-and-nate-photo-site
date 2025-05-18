@@ -23,17 +23,20 @@ export default function RSVPForm({
     toast
   } = useToast();
   
-  // For pending RSVPs, default to null (no selection)
-  const [attending, setAttending] = useState<string | null>(guest.attending ?? null);
+  // Ensure we correctly initialize the state from the guest prop
+  const [attending, setAttending] = useState<string | null>(guest?.attending || null);
   const [submitting, setSubmitting] = useState<boolean>(false);
-  const [hasResponded, setHasResponded] = useState<boolean>(guest.attending !== null);
+  const [hasResponded, setHasResponded] = useState<boolean>(guest?.attending !== null);
   const [formError, setFormError] = useState<string | null>(null);
 
   // Update local state whenever the guest prop changes
   useEffect(() => {
-    console.log("Guest data updated:", guest);
-    setAttending(guest.attending ?? null);
-    setHasResponded(guest.attending !== null);
+    if (guest) {
+      console.log("Guest data updated:", guest);
+      console.log("Guest attending status:", guest.attending);
+      setAttending(guest.attending || null);
+      setHasResponded(guest.attending !== null);
+    }
   }, [guest]);
 
   // Log guest info for debugging
@@ -41,12 +44,15 @@ export default function RSVPForm({
     console.log("RSVPForm mounted with guest:", guest);
     console.log("Guest ID:", guest.id);
     console.log("Guest has RSVP:", guest.attending !== null);
+    console.log("Current attending state:", attending);
+    console.log("Current hasResponded state:", hasResponded);
+    
     if (guest.attending !== null) {
       console.log("RSVP details:", { 
         attending: guest.attending
       });
     }
-  }, [guest]);
+  }, [guest, attending, hasResponded]);
 
   // Validate if the guest ID is a valid UUID format
   const isValidUUID = (id: string): boolean => {
