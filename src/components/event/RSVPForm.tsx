@@ -108,7 +108,9 @@ export default function RSVPForm({
   return <div className="max-w-2xl mx-auto">
       <Card className="backdrop-blur-sm bg-white/10 border border-anniversary-gold/30 shadow-[0_8px_30px_rgb(0,0,0,0.12)] overflow-hidden">
         <CardHeader className="pb-2">
-          <CardTitle className="text-3xl text-center text-anniversary-gold font-din">WILL YOU JOIN US?</CardTitle>
+          <CardTitle className="text-3xl text-center text-anniversary-gold font-din">
+            WILL YOU JOIN US, {guest.first_name}?
+          </CardTitle>
         </CardHeader>
         
         <CardContent>
