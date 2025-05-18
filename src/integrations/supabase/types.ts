@@ -80,6 +80,7 @@ export type Database = {
       }
       guests: {
         Row: {
+          attending: boolean | null
           created_at: string
           email: string
           first_name: string
@@ -90,6 +91,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          attending?: boolean | null
           created_at?: string
           email: string
           first_name: string
@@ -100,6 +102,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          attending?: boolean | null
           created_at?: string
           email?: string
           first_name?: string

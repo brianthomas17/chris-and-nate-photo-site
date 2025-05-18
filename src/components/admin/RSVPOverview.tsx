@@ -35,13 +35,13 @@ export default function RSVPOverview() {
   
   // Calculate statistics
   const totalGuests = guests.length;
-  const responded = guests.filter(g => g.rsvp).length;
-  const attending = guests.filter(g => g.rsvp?.attending).length;
-  const notAttending = guests.filter(g => g.rsvp && !g.rsvp.attending).length;
+  const responded = guests.filter(g => g.attending !== null).length;
+  const attending = guests.filter(g => g.attending === true).length;
+  const notAttending = guests.filter(g => g.attending === false).length;
   const pendingResponses = totalGuests - responded;
   
-  const attendingFullDay = guests.filter(g => g.invitation_type === 'main event' && g.rsvp?.attending).length;
-  const attendingEvening = guests.filter(g => g.invitation_type === 'afterparty' && g.rsvp?.attending).length;
+  const attendingFullDay = guests.filter(g => g.invitation_type === 'main event' && g.attending === true).length;
+  const attendingEvening = guests.filter(g => g.invitation_type === 'afterparty' && g.attending === true).length;
   
   const totalExpectedGuests = attending;
 
@@ -61,7 +61,7 @@ export default function RSVPOverview() {
     const guest = guests.find(g => g.id === guestId);
     if (guest) {
       setFormState({
-        attending: guest.rsvp?.attending || false
+        attending: guest.attending || false
       });
       setEditingGuest(guestId);
     }
@@ -215,8 +215,8 @@ export default function RSVPOverview() {
                   ) : (
                     <>
                       <TableCell>
-                        {guest.rsvp ? (
-                          guest.rsvp.attending ? (
+                        {guest.attending !== null ? (
+                          guest.attending ? (
                             <Badge className="bg-green-500">Attending</Badge>
                           ) : (
                             <Badge variant="destructive">Not Attending</Badge>

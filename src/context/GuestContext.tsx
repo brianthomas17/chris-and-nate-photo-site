@@ -1,6 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Guest, InvitationType, RSVP, Party } from '../types';
+import { Guest, InvitationType, Party } from '../types';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from "@/integrations/supabase/client";
 
@@ -51,7 +51,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           phone_number,
           invitation_type,
           party_id,
-          rsvps(*)
+          attending
         `);
 
       if (error) {
@@ -66,31 +66,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
       if (data && data.length > 0) {
         console.log("Raw guest data from database:", data);
-        const transformedGuests: Guest[] = data.map((g: any) => {
-          const guest: Guest = {
-            id: g.id,
-            first_name: g.first_name,
-            email: g.email,
-            phone_number: g.phone_number,
-            invitation_type: g.invitation_type,
-            party_id: g.party_id,
-          };
-          
-          // Fixed: Check if rsvps array exists, has elements, and first element has attending property
-          if (g.rsvps && Array.isArray(g.rsvps) && g.rsvps.length > 0) {
-            console.log(`Guest ${g.first_name} has RSVP:`, g.rsvps[0]);
-            guest.rsvp = {
-              attending: g.rsvps[0].attending
-            };
-          } else {
-            console.log(`Guest ${g.first_name} has no RSVP record`);
-          }
-          
-          return guest;
-        });
-
-        console.log("Transformed guests with RSVP data:", transformedGuests);
-        setGuests(transformedGuests);
+        setGuests(data);
       } else {
         console.log('No guests found in database');
         setGuests([]);
@@ -146,7 +122,8 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           email: guest.email,
           phone_number: guest.phone_number,
           invitation_type: guest.invitation_type,
-          party_id: guest.party_id
+          party_id: guest.party_id,
+          attending: guest.attending
         })
         .select();
         
@@ -182,7 +159,8 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           email: guest.email,
           phone_number: guest.phone_number,
           invitation_type: guest.invitation_type,
-          party_id: guest.party_id
+          party_id: guest.party_id,
+          attending: guest.attending
         })
         .eq('id', guest.id);
 
@@ -247,60 +225,22 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     console.log("updateRSVP called with:", { guestId, attending });
     
     try {
-      // Check if RSVP already exists
-      console.log("Checking if RSVP exists for guest:", guestId);
-      const { data: existingRsvp, error: checkError } = await supabase
-        .from('rsvps')
-        .select()
-        .eq('guest_id', guestId)
-        .maybeSingle();
-
-      if (checkError) {
-        console.error("Error checking existing RSVP:", checkError);
-        throw checkError;
+      // Update the attending status directly on the guests table
+      const { data, error } = await supabase
+        .from('guests')
+        .update({
+          attending,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', guestId)
+        .select();
+      
+      if (error) {
+        console.error("Error updating RSVP:", error);
+        throw error;
       }
 
-      console.log("Existing RSVP check result:", existingRsvp);
-
-      let result;
-      if (existingRsvp) {
-        // Update existing RSVP
-        console.log("Updating existing RSVP for guest:", guestId);
-        const { data, error: updateError } = await supabase
-          .from('rsvps')
-          .update({
-            attending,
-            updated_at: new Date().toISOString()
-          })
-          .eq('id', existingRsvp.id)
-          .select();
-        
-        if (updateError) {
-          console.error("Error updating RSVP:", updateError);
-          throw updateError;
-        } else {
-          console.log("RSVP updated successfully:", data);
-          result = data;
-        }
-      } else {
-        // Insert new RSVP
-        console.log("Creating new RSVP for guest:", guestId);
-        const { data, error: insertError } = await supabase
-          .from('rsvps')
-          .insert({
-            guest_id: guestId,
-            attending
-          })
-          .select();
-        
-        if (insertError) {
-          console.error("Error inserting RSVP:", insertError);
-          throw insertError;
-        } else {
-          console.log("RSVP created successfully:", data);
-          result = data;
-        }
-      }
+      console.log("RSVP updated successfully:", data);
 
       // Update the local state
       setGuests(prevGuests => 
@@ -308,9 +248,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           g.id === guestId 
             ? { 
                 ...g, 
-                rsvp: { 
-                  attending
-                } 
+                attending
               } 
             : g
         )
@@ -321,7 +259,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       // Immediately fetch fresh data from the database to ensure consistency
       await fetchGuests();
       
-      return result;
+      return data;
     } catch (error) {
       console.error('Error updating RSVP:', error);
       throw error; // Re-throw the error to be handled by the component
@@ -334,15 +272,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     try {
       const { data, error } = await supabase
         .from('guests')
-        .select(`
-          id, 
-          first_name, 
-          email, 
-          phone_number,
-          invitation_type,
-          party_id,
-          rsvps(*)
-        `)
+        .select()
         .ilike('email', normalizedEmail)
         .limit(1)
         .maybeSingle();
@@ -351,25 +281,8 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         console.error('Error fetching guest by email:', error);
         return undefined;
       }
-
-      // Transform the data to match our Guest interface
-      const guest: Guest = {
-        id: data.id,
-        first_name: data.first_name,
-        email: data.email,
-        phone_number: data.phone_number,
-        invitation_type: data.invitation_type,
-        party_id: data.party_id,
-      };
       
-      // Add RSVP data if it exists
-      if (data.rsvps && Array.isArray(data.rsvps) && data.rsvps.length > 0) {
-        guest.rsvp = {
-          attending: data.rsvps[0].attending
-        };
-      }
-      
-      return guest;
+      return data as Guest;
     } catch (error) {
       console.error('Error fetching guest by email:', error);
       return undefined;
@@ -475,15 +388,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     try {
       const { data, error } = await supabase
         .from('guests')
-        .select(`
-          id, 
-          first_name, 
-          email, 
-          phone_number,
-          invitation_type,
-          party_id,
-          rsvps(*)
-        `)
+        .select()
         .eq('party_id', partyId);
 
       if (error) {
@@ -492,24 +397,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
 
       if (data && data.length > 0) {
-        return data.map((g: any) => {
-          const guest: Guest = {
-            id: g.id,
-            first_name: g.first_name,
-            email: g.email,
-            phone_number: g.phone_number,
-            invitation_type: g.invitation_type,
-            party_id: g.party_id,
-          };
-          
-          if (g.rsvps && Array.isArray(g.rsvps) && g.rsvps.length > 0) {
-            guest.rsvp = {
-              attending: g.rsvps[0].attending
-            };
-          }
-          
-          return guest;
-        });
+        return data as Guest[];
       }
       return [];
     } catch (error) {

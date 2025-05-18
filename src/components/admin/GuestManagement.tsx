@@ -54,6 +54,7 @@ export default function GuestManagement() {
       phone_number: phoneNumber || null,
       invitation_type: invitationType,
       party_id: partyId,
+      attending: rsvpAttending
     });
     setIsSubmitting(false);
     setIsAddDialogOpen(false);
@@ -65,7 +66,7 @@ export default function GuestManagement() {
     
     setIsSubmitting(true);
     
-    // Update guest basic info
+    // Update guest including RSVP status
     await updateGuest({
       ...currentGuest,
       first_name: firstName,
@@ -73,15 +74,8 @@ export default function GuestManagement() {
       phone_number: phoneNumber || null,
       invitation_type: invitationType,
       party_id: partyId,
+      attending: rsvpAttending
     });
-    
-    // Update RSVP if attending status is set (not null)
-    if (rsvpAttending !== null) {
-      await updateRSVP(
-        currentGuest.id,
-        rsvpAttending
-      );
-    }
     
     setIsSubmitting(false);
     setIsEditDialogOpen(false);
@@ -98,13 +92,8 @@ export default function GuestManagement() {
     setPartyId(guest.party_id || null);
     
     // Set RSVP data if available
-    if (guest.rsvp) {
-      console.log("Setting RSVP status from guest data:", guest.rsvp);
-      setRsvpAttending(guest.rsvp.attending);
-    } else {
-      console.log("No RSVP data for this guest");
-      setRsvpAttending(null);
-    }
+    console.log("Setting RSVP status from guest data:", guest.attending);
+    setRsvpAttending(guest.attending ?? null);
     
     setIsEditDialogOpen(true);
   };
@@ -321,6 +310,29 @@ export default function GuestManagement() {
                     </SelectContent>
                   </Select>
                 </div>
+                <div className="space-y-2">
+                  <Label htmlFor="rsvpStatus">RSVP Status (Optional)</Label>
+                  <Select
+                    value={rsvpAttending === null ? undefined : rsvpAttending ? "attending" : "not-attending"}
+                    onValueChange={(value) => {
+                      if (value === "attending") {
+                        setRsvpAttending(true);
+                      } else if (value === "not-attending") {
+                        setRsvpAttending(false);
+                      } else {
+                        setRsvpAttending(null);
+                      }
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select RSVP status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="attending">Attending</SelectItem>
+                      <SelectItem value="not-attending">Not Attending</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
               <DialogFooter>
                 <Button variant="outline" onClick={() => setIsAddDialogOpen(false)} disabled={isSubmitting}>
@@ -357,8 +369,8 @@ export default function GuestManagement() {
                 <TableCell className="capitalize">{guest.invitation_type}</TableCell>
                 <TableCell>{getPartyName(guest.party_id)}</TableCell>
                 <TableCell>
-                  {guest.rsvp ? (
-                    guest.rsvp.attending ? (
+                  {guest.attending !== null ? (
+                    guest.attending ? (
                       <Badge className="bg-green-500">Attending</Badge>
                     ) : (
                       <Badge variant="destructive">Not Attending</Badge>

@@ -24,19 +24,19 @@ export default function RSVPForm({
   } = useToast();
   
   // For pending RSVPs, default to null (no selection)
-  const [attending, setAttending] = useState<boolean | null>(guest.rsvp ? guest.rsvp.attending : null);
+  const [attending, setAttending] = useState<boolean | null>(guest.attending ?? null);
   const [submitting, setSubmitting] = useState<boolean>(false);
-  const [hasResponded, setHasResponded] = useState<boolean>(!!guest.rsvp);
+  const [hasResponded, setHasResponded] = useState<boolean>(guest.attending !== null);
   const [formError, setFormError] = useState<string | null>(null);
 
   // Log guest info for debugging
   useEffect(() => {
     console.log("RSVPForm mounted with guest:", guest);
     console.log("Guest ID:", guest.id);
-    console.log("Guest has RSVP:", !!guest.rsvp);
-    if (guest.rsvp) {
+    console.log("Guest has RSVP:", guest.attending !== null);
+    if (guest.attending !== null) {
       console.log("RSVP details:", { 
-        attending: guest.rsvp.attending
+        attending: guest.attending
       });
     }
   }, [guest]);
