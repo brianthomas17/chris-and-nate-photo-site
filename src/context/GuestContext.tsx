@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Guest, InvitationType, RSVP, Party } from '../types';
 import { useToast } from '@/hooks/use-toast';
@@ -75,6 +76,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             party_id: g.party_id,
           };
           
+          // Fixed: Check if rsvps array exists, has elements, and first element has attending property
           if (g.rsvps && Array.isArray(g.rsvps) && g.rsvps.length > 0) {
             console.log(`Guest ${g.first_name} has RSVP:`, g.rsvps[0]);
             guest.rsvp = {
@@ -315,6 +317,10 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       );
       
       console.log("Local state updated with new RSVP");
+      
+      // Immediately fetch fresh data from the database to ensure consistency
+      await fetchGuests();
+      
       return result;
     } catch (error) {
       console.error('Error updating RSVP:', error);

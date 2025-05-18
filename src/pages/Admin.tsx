@@ -49,26 +49,6 @@ const Admin = () => {
     return null;
   }
   
-  const handleSeedTestAccounts = async () => {
-    setIsSeeding(true);
-    try {
-      await seedTestAccounts();
-      toast({
-        title: "Success",
-        description: "Test accounts have been seeded successfully."
-      });
-    } catch (error) {
-      console.error("Error seeding test accounts:", error);
-      toast({
-        title: "Error",
-        description: "Failed to seed test accounts.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsSeeding(false);
-    }
-  };
-  
   const handleRefreshData = async () => {
     setIsRefreshing(true);
     try {
