@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Guest, InvitationType, RSVP, Party } from '../types';
 import { useToast } from '@/hooks/use-toast';
@@ -74,9 +75,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           
           if (g.rsvps && Array.isArray(g.rsvps) && g.rsvps.length > 0) {
             guest.rsvp = {
-              attending: g.rsvps[0].attending,
-              plus_one: g.rsvps[0].plus_one,
-              dietary_restrictions: g.rsvps[0].dietary_restrictions
+              attending: g.rsvps[0].attending
             };
           }
           
@@ -354,9 +353,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       // Add RSVP data if it exists
       if (data.rsvps && Array.isArray(data.rsvps) && data.rsvps.length > 0) {
         guest.rsvp = {
-          attending: data.rsvps[0].attending,
-          plus_one: data.rsvps[0].plus_one,
-          dietary_restrictions: data.rsvps[0].dietary_restrictions
+          attending: data.rsvps[0].attending
         };
       }
       
@@ -495,9 +492,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           
           if (g.rsvps && Array.isArray(g.rsvps) && g.rsvps.length > 0) {
             guest.rsvp = {
-              attending: g.rsvps[0].attending,
-              plus_one: g.rsvps[0].plus_one,
-              dietary_restrictions: g.rsvps[0].dietary_restrictions
+              attending: g.rsvps[0].attending
             };
           }
           

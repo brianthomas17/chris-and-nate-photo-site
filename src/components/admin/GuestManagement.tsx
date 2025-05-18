@@ -32,8 +32,6 @@ export default function GuestManagement() {
   
   // New state for RSVP data
   const [rsvpAttending, setRsvpAttending] = useState<boolean | null>(null);
-  const [rsvpPlusOne, setRsvpPlusOne] = useState<boolean>(false);
-  const [rsvpDietaryRestrictions, setRsvpDietaryRestrictions] = useState<string>("");
 
   const resetForm = () => {
     setFirstName("");
@@ -46,8 +44,6 @@ export default function GuestManagement() {
     setSelectedGuests([]);
     setSelectedParty(null);
     setRsvpAttending(null);
-    setRsvpPlusOne(false);
-    setRsvpDietaryRestrictions("");
   };
 
   const handleAddGuest = async () => {
@@ -83,9 +79,7 @@ export default function GuestManagement() {
     if (rsvpAttending !== null) {
       await updateRSVP(
         currentGuest.id,
-        rsvpAttending,
-        rsvpPlusOne,
-        rsvpDietaryRestrictions
+        rsvpAttending
       );
     }
     
@@ -105,12 +99,8 @@ export default function GuestManagement() {
     // Set RSVP data if available
     if (guest.rsvp) {
       setRsvpAttending(guest.rsvp.attending);
-      setRsvpPlusOne(guest.rsvp.plus_one);
-      setRsvpDietaryRestrictions(guest.rsvp.dietary_restrictions || "");
     } else {
       setRsvpAttending(null);
-      setRsvpPlusOne(false);
-      setRsvpDietaryRestrictions("");
     }
     
     setIsEditDialogOpen(true);
@@ -492,30 +482,6 @@ export default function GuestManagement() {
                       </SelectContent>
                     </Select>
                   </div>
-                  
-                  {rsvpAttending && (
-                    <>
-                      <div className="flex items-center space-x-2">
-                        <Checkbox 
-                          id="rsvp-plus-one" 
-                          checked={rsvpPlusOne}
-                          onCheckedChange={(checked) => setRsvpPlusOne(checked === true)}
-                        />
-                        <Label htmlFor="rsvp-plus-one">Plus One</Label>
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="rsvp-dietary">Dietary Restrictions</Label>
-                        <Textarea
-                          id="rsvp-dietary"
-                          value={rsvpDietaryRestrictions}
-                          onChange={(e) => setRsvpDietaryRestrictions(e.target.value)}
-                          placeholder="Any dietary requirements or allergies"
-                          className="h-20"
-                        />
-                      </div>
-                    </>
-                  )}
                 </div>
               </div>
             </div>
