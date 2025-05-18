@@ -4,10 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
-import { Switch } from "@/components/ui/switch";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { Check, X, Pencil, Trash2 } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
 import {
@@ -32,9 +29,7 @@ export default function RSVPOverview() {
   const { guests, updateRSVP, deleteGuest } = useGuests();
   const [editingGuest, setEditingGuest] = useState<string | null>(null);
   const [formState, setFormState] = useState({
-    attending: false,
-    plusOne: false,
-    dietaryRestrictions: "",
+    attending: false
   });
   const [guestToDelete, setGuestToDelete] = useState<string | null>(null);
   
@@ -43,20 +38,17 @@ export default function RSVPOverview() {
   const attending = guests.filter(g => g.rsvp?.attending).length;
   const notAttending = guests.filter(g => g.rsvp && !g.rsvp.attending).length;
   const pendingResponses = totalGuests - responded;
-  const plusOnes = guests.filter(g => g.rsvp?.plus_one).length;
   
   const attendingFullDay = guests.filter(g => g.invitation_type === 'main event' && g.rsvp?.attending).length;
   const attendingEvening = guests.filter(g => g.invitation_type === 'afterparty' && g.rsvp?.attending).length;
   
-  const totalExpectedGuests = attending + plusOnes;
+  const totalExpectedGuests = attending;
 
   const handleEdit = (guestId: string) => {
     const guest = guests.find(g => g.id === guestId);
     if (guest) {
       setFormState({
-        attending: guest.rsvp?.attending || false,
-        plusOne: guest.rsvp?.plus_one || false,
-        dietaryRestrictions: guest.rsvp?.dietary_restrictions || "",
+        attending: guest.rsvp?.attending || false
       });
       setEditingGuest(guestId);
     }
@@ -69,9 +61,7 @@ export default function RSVPOverview() {
   const handleSave = async (guestId: string) => {
     await updateRSVP(
       guestId,
-      formState.attending,
-      formState.plusOne,
-      formState.dietaryRestrictions
+      formState.attending
     );
     setEditingGuest(null);
   };
@@ -118,11 +108,11 @@ export default function RSVPOverview() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle>Expected Attendance</CardTitle>
-            <CardDescription>Including plus ones</CardDescription>
+            <CardDescription>Total confirmed guests</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="text-4xl font-bold">{totalExpectedGuests}</div>
-            <p className="text-sm text-muted-foreground">{attending} guests + {plusOnes} plus ones</p>
+            <p className="text-sm text-muted-foreground">{attending} attending, {notAttending} not attending</p>
           </CardContent>
         </Card>
         <Card>
@@ -151,8 +141,6 @@ export default function RSVPOverview() {
                 <TableHead>Email</TableHead>
                 <TableHead>Invitation Type</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>Plus One</TableHead>
-                <TableHead>Dietary Restrictions</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -179,30 +167,6 @@ export default function RSVPOverview() {
                             <SelectItem value="pending">Pending</SelectItem>
                           </SelectContent>
                         </Select>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center">
-                          <Checkbox 
-                            id={`plus-one-${guest.id}`} 
-                            checked={formState.plusOne}
-                            onCheckedChange={(checked) => 
-                              setFormState({...formState, plusOne: checked === true})
-                            }
-                          />
-                          <label htmlFor={`plus-one-${guest.id}`} className="ml-2">
-                            Plus One
-                          </label>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Textarea 
-                          value={formState.dietaryRestrictions} 
-                          onChange={(e) => 
-                            setFormState({...formState, dietaryRestrictions: e.target.value})
-                          }
-                          placeholder="Dietary restrictions"
-                          className="h-20 resize-none"
-                        />
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
@@ -235,12 +199,6 @@ export default function RSVPOverview() {
                         ) : (
                           <Badge variant="outline">Pending</Badge>
                         )}
-                      </TableCell>
-                      <TableCell>
-                        {guest.rsvp?.plus_one ? "Yes" : "No"}
-                      </TableCell>
-                      <TableCell className="max-w-[200px] truncate">
-                        {guest.rsvp?.dietary_restrictions || "None"}
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">

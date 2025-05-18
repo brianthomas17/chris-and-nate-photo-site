@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Guest, InvitationType, RSVP, Party } from '../types';
 import { useToast } from '@/hooks/use-toast';
@@ -10,7 +9,7 @@ interface GuestContextType {
   addGuest: (guest: Omit<Guest, 'id'>) => Promise<void>;
   updateGuest: (guest: Guest) => Promise<void>;
   deleteGuest: (id: string) => Promise<void>;
-  updateRSVP: (guestId: string, attending: boolean, plus_one: boolean, dietary_restrictions: string) => Promise<any>;
+  updateRSVP: (guestId: string, attending: boolean) => Promise<any>;
   getGuestByEmail: (email: string) => Promise<Guest | undefined>;
   createParty: (name: string) => Promise<string | undefined>;
   updatePartyMembers: (partyId: string, guestIds: string[]) => Promise<void>;
@@ -237,8 +236,8 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   };
 
-  const updateRSVP = async (guestId: string, attending: boolean, plus_one: boolean, dietary_restrictions: string) => {
-    console.log("updateRSVP called with:", { guestId, attending, plus_one, dietary_restrictions });
+  const updateRSVP = async (guestId: string, attending: boolean) => {
+    console.log("updateRSVP called with:", { guestId, attending });
     
     try {
       // Check if RSVP already exists
@@ -264,8 +263,6 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           .from('rsvps')
           .update({
             attending,
-            plus_one,
-            dietary_restrictions,
             updated_at: new Date().toISOString()
           })
           .eq('id', existingRsvp.id)
@@ -285,9 +282,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           .from('rsvps')
           .insert({
             guest_id: guestId,
-            attending,
-            plus_one,
-            dietary_restrictions
+            attending
           })
           .select();
         
@@ -307,9 +302,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             ? { 
                 ...g, 
                 rsvp: { 
-                  attending, 
-                  plus_one, 
-                  dietary_restrictions 
+                  attending
                 } 
               } 
             : g

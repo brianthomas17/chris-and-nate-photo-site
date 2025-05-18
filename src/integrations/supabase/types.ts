@@ -173,28 +173,22 @@ export type Database = {
         Row: {
           attending: boolean
           created_at: string
-          dietary_restrictions: string | null
           guest_id: string
           id: string
-          plus_one: boolean
           updated_at: string
         }
         Insert: {
           attending: boolean
           created_at?: string
-          dietary_restrictions?: string | null
           guest_id: string
           id?: string
-          plus_one?: boolean
           updated_at?: string
         }
         Update: {
           attending?: boolean
           created_at?: string
-          dietary_restrictions?: string | null
           guest_id?: string
           id?: string
-          plus_one?: boolean
           updated_at?: string
         }
         Relationships: [

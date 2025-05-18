@@ -18,8 +18,6 @@ interface RSVPRecord {
   id: string;
   guest_id: string;
   attending: boolean;
-  plus_one: boolean;
-  dietary_restrictions?: string | null;
   created_at?: string;
   updated_at?: string;
 }
@@ -134,8 +132,6 @@ async function syncRsvpToAirtable(rsvp: RSVPRecord): Promise<void> {
       id: rsvp.id,
       guest_id: rsvp.guest_id,
       attending: rsvp.attending,
-      plus_one: rsvp.plus_one,
-      dietary_restrictions: rsvp.dietary_restrictions || '',
       created_at: rsvp.created_at,
       updated_at: rsvp.updated_at || new Date().toISOString(),
     };

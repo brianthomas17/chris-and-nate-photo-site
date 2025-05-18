@@ -12,8 +12,6 @@ export interface Guest {
   party_id?: string | null;
   rsvp?: {
     attending: boolean;
-    plus_one: boolean;
-    dietary_restrictions?: string;
   };
 }
 
@@ -46,8 +44,6 @@ export interface RSVP {
   id: string;
   guest_id: string;
   attending: boolean;
-  plus_one: boolean;
-  dietary_restrictions?: string;
   created_at?: string;
   updated_at?: string;
 }

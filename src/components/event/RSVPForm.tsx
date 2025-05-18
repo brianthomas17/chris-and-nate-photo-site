@@ -7,8 +7,6 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
 import { AlertCircle } from "lucide-react";
 
 interface RSVPFormProps {
@@ -27,8 +25,6 @@ export default function RSVPForm({
   
   // For pending RSVPs, default to null (no selection)
   const [attending, setAttending] = useState<boolean | null>(guest.rsvp ? guest.rsvp.attending : null);
-  const [plusOne, setPlusOne] = useState<boolean>(guest.rsvp?.plus_one || false);
-  const [dietaryRestrictions, setDietaryRestrictions] = useState<string>(guest.rsvp?.dietary_restrictions || "");
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [hasResponded, setHasResponded] = useState<boolean>(!!guest.rsvp);
   const [formError, setFormError] = useState<string | null>(null);
@@ -41,9 +37,7 @@ export default function RSVPForm({
     console.log("Guest has RSVP:", !!guest.rsvp);
     if (guest.rsvp) {
       console.log("RSVP details:", { 
-        attending: guest.rsvp.attending,
-        plusOne: guest.rsvp.plus_one, 
-        dietary: guest.rsvp.dietary_restrictions 
+        attending: guest.rsvp.attending
       });
     }
   }, [guest]);
@@ -59,7 +53,7 @@ export default function RSVPForm({
     setFormError(null);
     setSuccessMessage(null);
     
-    console.log("RSVP form submitted with values:", { attending, plusOne, dietaryRestrictions });
+    console.log("RSVP form submitted with values:", { attending });
     
     // Ensure a selection has been made before submitting
     if (attending === null) {
@@ -87,13 +81,11 @@ export default function RSVPForm({
       
       console.log("Calling updateRSVP with:", {
         guestId: guest.id,
-        attending,
-        plusOne,
-        dietaryRestrictions
+        attending
       });
       
       // Call updateRSVP function with direct connection to Supabase
-      const result = await updateRSVP(guest.id, attending, plusOne, dietaryRestrictions);
+      const result = await updateRSVP(guest.id, attending);
       console.log("RSVP update result:", result);
       
       setHasResponded(true);
@@ -142,31 +134,6 @@ export default function RSVPForm({
                   </div>
                 </RadioGroup>
               </div>
-              
-              {attending && (
-                <div className="space-y-4 pt-4">
-                  <div className="flex items-center space-x-3 justify-center">
-                    <Checkbox 
-                      id="plus-one" 
-                      checked={plusOne} 
-                      onCheckedChange={(checked) => setPlusOne(checked === true)}
-                      className="border-anniversary-gold"
-                    />
-                    <Label htmlFor="plus-one" className="text-white">I'll bring a plus one</Label>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="dietary" className="text-white text-center block">Dietary Restrictions</Label>
-                    <Textarea 
-                      id="dietary" 
-                      value={dietaryRestrictions} 
-                      onChange={(e) => setDietaryRestrictions(e.target.value)} 
-                      placeholder="Please let us know of any dietary restrictions or allergies"
-                      className="bg-white/20 border-anniversary-gold/50 text-white placeholder:text-white/50"
-                    />
-                  </div>
-                </div>
-              )}
             </div>
             
             {formError && (
