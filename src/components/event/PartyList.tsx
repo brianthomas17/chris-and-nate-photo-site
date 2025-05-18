@@ -39,11 +39,13 @@ export default function PartyList({ guestId, partyId }: PartyListProps) {
 
   if (isLoading) {
     return (
-      <Card className="backdrop-blur-sm bg-white/10 border border-anniversary-gold/30 shadow-lg">
-        <CardContent className="p-8 flex justify-center items-center">
-          <div className="w-8 h-8 border-t-4 border-anniversary-gold rounded-full animate-spin"></div>
-        </CardContent>
-      </Card>
+      <div className="max-w-2xl mx-auto">
+        <Card className="backdrop-blur-sm bg-white/10 border border-anniversary-gold/30 shadow-lg">
+          <CardContent className="p-8 flex justify-center items-center">
+            <div className="w-8 h-8 border-t-4 border-anniversary-gold rounded-full animate-spin"></div>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
@@ -52,28 +54,30 @@ export default function PartyList({ guestId, partyId }: PartyListProps) {
   }
 
   return (
-    <Card className="backdrop-blur-sm bg-white/10 border border-anniversary-gold/30 shadow-lg">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-xl text-center text-anniversary-gold font-din">
-          YOUR PARTY
-        </CardTitle>
-        <CardDescription className="text-center text-gray-300">
-          {partyMembers.length > 1 
-            ? `You have ${partyMembers.length} guests in your party` 
-            : "You are the only guest in your party"}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="p-6">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          {partyMembers.map(guest => (
-            <PartyMemberCard
-              key={guest.id}
-              guest={guest}
-              currentUserId={guestId}
-            />
-          ))}
-        </div>
-      </CardContent>
-    </Card>
+    <div className="max-w-2xl mx-auto">
+      <Card className="backdrop-blur-sm bg-white/10 border border-anniversary-gold/30 shadow-lg">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-xl text-center text-anniversary-gold font-din">
+            YOUR PARTY
+          </CardTitle>
+          <CardDescription className="text-center text-gray-300">
+            {partyMembers.length > 1 
+              ? `You have ${partyMembers.length} guests in your party` 
+              : "You are the only guest in your party"}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="p-6">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {partyMembers.map(guest => (
+              <PartyMemberCard
+                key={guest.id}
+                guest={guest}
+                currentUserId={guestId}
+              />
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
