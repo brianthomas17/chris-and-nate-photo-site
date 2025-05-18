@@ -28,7 +28,6 @@ export default function RSVPForm({
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [hasResponded, setHasResponded] = useState<boolean>(!!guest.rsvp);
   const [formError, setFormError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   // Log guest info for debugging
   useEffect(() => {
@@ -51,7 +50,6 @@ export default function RSVPForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError(null);
-    setSuccessMessage(null);
     
     console.log("RSVP form submitted with values:", { attending });
     
@@ -89,7 +87,6 @@ export default function RSVPForm({
       console.log("RSVP update result:", result);
       
       setHasResponded(true);
-      setSuccessMessage(`Thank you, ${guest.first_name}! Your RSVP has been recorded.`);
       
       toast({
         title: "RSVP Updated",
@@ -140,12 +137,6 @@ export default function RSVPForm({
               <div className="text-red-500 text-sm text-center bg-red-100/20 p-2 rounded-md flex items-center gap-2 justify-center">
                 <AlertCircle className="w-4 h-4" />
                 <span>Error: {formError}</span>
-              </div>
-            )}
-            
-            {successMessage && (
-              <div className="text-green-500 text-sm text-center bg-green-100/20 p-2 rounded-md">
-                {successMessage}
               </div>
             )}
             
