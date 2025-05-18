@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useGuests } from "@/context/GuestContext";
 import { Guest, InvitationType, Party } from "@/types";
@@ -30,8 +29,8 @@ export default function GuestManagement() {
   const [selectedGuests, setSelectedGuests] = useState<string[]>([]);
   const [selectedParty, setSelectedParty] = useState<string | null>(null);
   
-  // RSVP state
-  const [rsvpAttending, setRsvpAttending] = useState<boolean | null>(null);
+  // RSVP state - updated to use string instead of boolean
+  const [rsvpAttending, setRsvpAttending] = useState<string | null>(null);
 
   const resetForm = () => {
     setFirstName("");
@@ -93,7 +92,7 @@ export default function GuestManagement() {
     
     // Set RSVP data if available
     console.log("Setting RSVP status from guest data:", guest.attending);
-    setRsvpAttending(guest.attending ?? null);
+    setRsvpAttending(guest.attending);
     
     setIsEditDialogOpen(true);
   };
@@ -313,12 +312,10 @@ export default function GuestManagement() {
                 <div className="space-y-2">
                   <Label htmlFor="rsvpStatus">RSVP Status (Optional)</Label>
                   <Select
-                    value={rsvpAttending === null ? undefined : rsvpAttending ? "attending" : "not-attending"}
+                    value={rsvpAttending || undefined}
                     onValueChange={(value) => {
-                      if (value === "attending") {
-                        setRsvpAttending(true);
-                      } else if (value === "not-attending") {
-                        setRsvpAttending(false);
+                      if (value === "Yes" || value === "No") {
+                        setRsvpAttending(value);
                       } else {
                         setRsvpAttending(null);
                       }
@@ -328,8 +325,8 @@ export default function GuestManagement() {
                       <SelectValue placeholder="Select RSVP status" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="attending">Attending</SelectItem>
-                      <SelectItem value="not-attending">Not Attending</SelectItem>
+                      <SelectItem value="Yes">Attending</SelectItem>
+                      <SelectItem value="No">Not Attending</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -370,7 +367,7 @@ export default function GuestManagement() {
                 <TableCell>{getPartyName(guest.party_id)}</TableCell>
                 <TableCell>
                   {guest.attending !== null ? (
-                    guest.attending ? (
+                    guest.attending === "Yes" ? (
                       <Badge className="bg-green-500">Attending</Badge>
                     ) : (
                       <Badge variant="destructive">Not Attending</Badge>
@@ -478,12 +475,12 @@ export default function GuestManagement() {
                   <div className="space-y-2">
                     <Label htmlFor="rsvp-status">RSVP Status</Label>
                     <Select
-                      value={rsvpAttending === null ? 'pending' : rsvpAttending ? 'attending' : 'not-attending'}
+                      value={rsvpAttending || 'pending'}
                       onValueChange={(value) => {
                         if (value === 'pending') {
                           setRsvpAttending(null);
                         } else {
-                          setRsvpAttending(value === 'attending');
+                          setRsvpAttending(value);
                         }
                       }}
                     >
@@ -492,8 +489,8 @@ export default function GuestManagement() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="pending">Pending</SelectItem>
-                        <SelectItem value="attending">Attending</SelectItem>
-                        <SelectItem value="not-attending">Not Attending</SelectItem>
+                        <SelectItem value="Yes">Attending</SelectItem>
+                        <SelectItem value="No">Not Attending</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
