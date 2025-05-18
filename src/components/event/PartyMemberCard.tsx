@@ -56,10 +56,8 @@ export default function PartyMemberCard({ guest, currentUserId }: PartyMemberCar
 
   // Determine card background based on RSVP status
   const getCardStyles = () => {
-    if (guest.attending === 'Yes') {
-      return 'border-green-500/30 bg-green-500/10';
-    } else if (guest.attending === 'No') {
-      return 'border-red-500/30 bg-red-500/10';
+    if (guest.attending === 'No') {
+      return 'opacity-60';
     }
     return 'border-anniversary-gold/30 bg-white/10';
   };
@@ -67,9 +65,9 @@ export default function PartyMemberCard({ guest, currentUserId }: PartyMemberCar
   // RSVP status icon
   const StatusIcon = () => {
     if (guest.attending === 'Yes') {
-      return <UserCheck className="h-5 w-5 text-green-500" />;
+      return <UserCheck className="h-5 w-5 text-anniversary-gold" />;
     } else if (guest.attending === 'No') {
-      return <UserX className="h-5 w-5 text-red-500" />;
+      return <UserX className="h-5 w-5 text-anniversary-gold" />;
     }
     return null;
   };
@@ -77,7 +75,7 @@ export default function PartyMemberCard({ guest, currentUserId }: PartyMemberCar
   return (
     <>
       <Card 
-        className={`cursor-pointer hover:shadow-md transition-all ${getCardStyles()}`}
+        className={`cursor-pointer hover:shadow-md transition-all border-anniversary-gold/30 bg-white/10 ${getCardStyles()}`}
         onClick={() => setIsModalOpen(true)}
       >
         <CardContent className="p-4">
