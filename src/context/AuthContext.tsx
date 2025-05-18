@@ -71,9 +71,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           first_name: "Test User",
           email: "test@example.com",
           invitation_type: "main event" as const,
-          rsvp: {
-            attending: true
-          }
+          attending: true
         };
         
         setUser(testUser);
@@ -97,7 +95,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           phone_number,
           invitation_type,
           party_id,
-          rsvps(*)
+          attending
         `)
         .eq('email', email.toLowerCase())
         .maybeSingle();
@@ -118,14 +116,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         phone_number: guestData.phone_number,
         invitation_type: guestData.invitation_type,
         party_id: guestData.party_id,
+        attending: guestData.attending
       };
-      
-      // Add RSVP data if it exists
-      if (guestData.rsvps && Array.isArray(guestData.rsvps) && guestData.rsvps.length > 0) {
-        guest.rsvp = {
-          attending: guestData.rsvps[0].attending
-        };
-      }
       
       // Store the user in state and localStorage
       setUser(guest);
