@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Guest, InvitationType, RSVP, Party } from '../types';
 import { useToast } from '@/hooks/use-toast';
@@ -16,6 +15,7 @@ interface GuestContextType {
   updatePartyMembers: (partyId: string, guestIds: string[]) => Promise<void>;
   getPartyById: (partyId: string) => Promise<Party | undefined>;
   getPartyMembers: (partyId: string) => Promise<Guest[]>;
+  fetchGuests: () => Promise<void>;
 }
 
 const GuestContext = createContext<GuestContextType | undefined>(undefined);
@@ -524,7 +524,8 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       createParty,
       updatePartyMembers,
       getPartyById,
-      getPartyMembers
+      getPartyMembers,
+      fetchGuests
     }}>
       {children}
     </GuestContext.Provider>
