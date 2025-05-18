@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useGuests } from "@/context/GuestContext";
 import { Guest, InvitationType, Party } from "@/types";
@@ -19,8 +20,13 @@ export default function GuestManagement() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isPartyDialogOpen, setIsPartyDialogOpen] = useState(false);
   const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [address, setAddress] = useState<string>("");
+  const [city, setCity] = useState<string>("");
+  const [state, setState] = useState<string>("");
+  const [zipCode, setZipCode] = useState<string>("");
   const [invitationType, setInvitationType] = useState<InvitationType>("main event");
   const [partyId, setPartyId] = useState<string | null>(null);
   const [currentGuest, setCurrentGuest] = useState<Guest | null>(null);
@@ -34,8 +40,13 @@ export default function GuestManagement() {
 
   const resetForm = () => {
     setFirstName("");
+    setLastName("");
     setEmail("");
     setPhoneNumber("");
+    setAddress("");
+    setCity("");
+    setState("");
+    setZipCode("");
     setInvitationType("main event");
     setPartyId(null);
     setCurrentGuest(null);
@@ -49,8 +60,13 @@ export default function GuestManagement() {
     setIsSubmitting(true);
     await addGuest({
       first_name: firstName,
+      last_name: lastName || null,
       email,
       phone_number: phoneNumber || null,
+      address: address || null,
+      city: city || null,
+      state: state || null,
+      zip_code: zipCode || null,
       invitation_type: invitationType,
       party_id: partyId,
       attending: rsvpAttending
@@ -69,8 +85,13 @@ export default function GuestManagement() {
     await updateGuest({
       ...currentGuest,
       first_name: firstName,
+      last_name: lastName || null,
       email,
       phone_number: phoneNumber || null,
+      address: address || null,
+      city: city || null,
+      state: state || null,
+      zip_code: zipCode || null,
       invitation_type: invitationType,
       party_id: partyId,
       attending: rsvpAttending
@@ -85,8 +106,13 @@ export default function GuestManagement() {
     console.log("Editing guest with data:", guest);
     setCurrentGuest(guest);
     setFirstName(guest.first_name);
+    setLastName(guest.last_name || "");
     setEmail(guest.email);
     setPhoneNumber(guest.phone_number || "");
+    setAddress(guest.address || "");
+    setCity(guest.city || "");
+    setState(guest.state || "");
+    setZipCode(guest.zip_code || "");
     setInvitationType(guest.invitation_type);
     setPartyId(guest.party_id || null);
     
@@ -245,15 +271,27 @@ export default function GuestManagement() {
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
-                <div className="space-y-2">
-                  <Label htmlFor="firstName">Name</Label>
-                  <Input
-                    id="firstName"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    placeholder="Guest name"
-                  />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="firstName">First Name</Label>
+                    <Input
+                      id="firstName"
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                      placeholder="First name"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="lastName">Last Name</Label>
+                    <Input
+                      id="lastName"
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                      placeholder="Last name"
+                    />
+                  </div>
                 </div>
+                
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
                   <Input
@@ -274,6 +312,47 @@ export default function GuestManagement() {
                     placeholder="+1 (555) 123-4567"
                   />
                 </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="address">Address</Label>
+                  <Input
+                    id="address"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    placeholder="123 Main St"
+                  />
+                </div>
+                
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="city">City</Label>
+                    <Input
+                      id="city"
+                      value={city}
+                      onChange={(e) => setCity(e.target.value)}
+                      placeholder="City"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="state">State</Label>
+                    <Input
+                      id="state"
+                      value={state}
+                      onChange={(e) => setState(e.target.value)}
+                      placeholder="State"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="zipCode">ZIP Code</Label>
+                    <Input
+                      id="zipCode"
+                      value={zipCode}
+                      onChange={(e) => setZipCode(e.target.value)}
+                      placeholder="12345"
+                    />
+                  </div>
+                </div>
+                
                 <div className="space-y-2">
                   <Label htmlFor="invitationType">Invitation Type</Label>
                   <Select
@@ -348,9 +427,11 @@ export default function GuestManagement() {
           <TableCaption>List of all invited guests.</TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead>
+              <TableHead>First Name</TableHead>
+              <TableHead>Last Name</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Phone</TableHead>
+              <TableHead>Address</TableHead>
               <TableHead>Invitation Type</TableHead>
               <TableHead>Party</TableHead>
               <TableHead>RSVP Status</TableHead>
@@ -361,8 +442,18 @@ export default function GuestManagement() {
             {guests.map((guest) => (
               <TableRow key={guest.id}>
                 <TableCell>{guest.first_name}</TableCell>
+                <TableCell>{guest.last_name || "-"}</TableCell>
                 <TableCell>{guest.email}</TableCell>
                 <TableCell>{guest.phone_number || "-"}</TableCell>
+                <TableCell>
+                  {guest.address ? (
+                    <>
+                      {guest.address}<br />
+                      {guest.city && guest.state ? `${guest.city}, ${guest.state}` : guest.city || guest.state}{' '}
+                      {guest.zip_code}
+                    </>
+                  ) : "-"}
+                </TableCell>
                 <TableCell className="capitalize">{guest.invitation_type}</TableCell>
                 <TableCell>{getPartyName(guest.party_id)}</TableCell>
                 <TableCell>
@@ -404,14 +495,25 @@ export default function GuestManagement() {
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
-              <div className="space-y-2">
-                <Label htmlFor="edit-firstName">Name</Label>
-                <Input
-                  id="edit-firstName"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="edit-firstName">First Name</Label>
+                  <Input
+                    id="edit-firstName"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="edit-lastName">Last Name</Label>
+                  <Input
+                    id="edit-lastName"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                  />
+                </div>
               </div>
+              
               <div className="space-y-2">
                 <Label htmlFor="edit-email">Email</Label>
                 <Input
@@ -431,6 +533,47 @@ export default function GuestManagement() {
                   placeholder="+1 (555) 123-4567"
                 />
               </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="edit-address">Address</Label>
+                <Input
+                  id="edit-address"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  placeholder="123 Main St"
+                />
+              </div>
+              
+              <div className="grid grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="edit-city">City</Label>
+                  <Input
+                    id="edit-city"
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                    placeholder="City"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="edit-state">State</Label>
+                  <Input
+                    id="edit-state"
+                    value={state}
+                    onChange={(e) => setState(e.target.value)}
+                    placeholder="State"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="edit-zipCode">ZIP Code</Label>
+                  <Input
+                    id="edit-zipCode"
+                    value={zipCode}
+                    onChange={(e) => setZipCode(e.target.value)}
+                    placeholder="12345"
+                  />
+                </div>
+              </div>
+              
               <div className="space-y-2">
                 <Label htmlFor="edit-invitationType">Invitation Type</Label>
                 <Select

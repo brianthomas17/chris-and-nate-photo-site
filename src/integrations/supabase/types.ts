@@ -80,37 +80,52 @@ export type Database = {
       }
       guests: {
         Row: {
+          address: string | null
           attending: string | null
+          city: string | null
           created_at: string
           email: string
           first_name: string
           id: string
           invitation_type: Database["public"]["Enums"]["invitation_type"]
+          last_name: string | null
           party_id: string | null
           phone_number: string | null
+          state: string | null
           updated_at: string
+          zip_code: string | null
         }
         Insert: {
+          address?: string | null
           attending?: string | null
+          city?: string | null
           created_at?: string
           email: string
           first_name: string
           id?: string
           invitation_type: Database["public"]["Enums"]["invitation_type"]
+          last_name?: string | null
           party_id?: string | null
           phone_number?: string | null
+          state?: string | null
           updated_at?: string
+          zip_code?: string | null
         }
         Update: {
+          address?: string | null
           attending?: string | null
+          city?: string | null
           created_at?: string
           email?: string
           first_name?: string
           id?: string
           invitation_type?: Database["public"]["Enums"]["invitation_type"]
+          last_name?: string | null
           party_id?: string | null
           phone_number?: string | null
+          state?: string | null
           updated_at?: string
+          zip_code?: string | null
         }
         Relationships: [
           {

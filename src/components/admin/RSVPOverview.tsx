@@ -1,4 +1,3 @@
-
 import { useGuests } from "@/context/GuestContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -173,7 +172,9 @@ export default function RSVPOverview() {
             <TableBody>
               {guests.map((guest) => (
                 <TableRow key={guest.id}>
-                  <TableCell>{guest.first_name}</TableCell>
+                  <TableCell>
+                    {guest.first_name} {guest.last_name}
+                  </TableCell>
                   <TableCell className="font-mono text-xs">{guest.email}</TableCell>
                   <TableCell className="capitalize">{guest.invitation_type}</TableCell>
                   

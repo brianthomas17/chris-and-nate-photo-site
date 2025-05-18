@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Guest, InvitationType, Party } from '../types';
 import { useToast } from '@/hooks/use-toast';
@@ -45,9 +46,14 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         .from('guests')
         .select(`
           id, 
-          first_name, 
+          first_name,
+          last_name,
           email, 
           phone_number,
+          address,
+          city,
+          state,
+          zip_code,
           invitation_type,
           party_id,
           attending
@@ -118,8 +124,13 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         .from('guests')
         .insert({
           first_name: guest.first_name,
+          last_name: guest.last_name,
           email: guest.email,
           phone_number: guest.phone_number,
+          address: guest.address,
+          city: guest.city,
+          state: guest.state,
+          zip_code: guest.zip_code,
           invitation_type: guest.invitation_type,
           party_id: guest.party_id,
           attending: guest.attending
@@ -155,8 +166,13 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         .from('guests')
         .update({
           first_name: guest.first_name,
+          last_name: guest.last_name,
           email: guest.email,
           phone_number: guest.phone_number,
+          address: guest.address,
+          city: guest.city,
+          state: guest.state,
+          zip_code: guest.zip_code,
           invitation_type: guest.invitation_type,
           party_id: guest.party_id,
           attending: guest.attending

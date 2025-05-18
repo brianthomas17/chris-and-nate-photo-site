@@ -4,8 +4,13 @@ export type InvitationType = 'main event' | 'afterparty' | 'admin';
 export interface Guest {
   id: string;
   first_name: string;
+  last_name?: string | null;
   email: string;
   phone_number?: string | null;
+  address?: string | null;
+  city?: string | null;
+  state?: string | null;
+  zip_code?: string | null;
   invitation_type: InvitationType;
   created_at?: string;
   updated_at?: string;
