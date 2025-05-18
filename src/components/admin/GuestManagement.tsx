@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useGuests } from "@/context/GuestContext";
 import { Guest, InvitationType, Party } from "@/types";
@@ -21,7 +20,7 @@ export default function GuestManagement() {
   const [isPartyDialogOpen, setIsPartyDialogOpen] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState<string>("");
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [address, setAddress] = useState<string>("");
   const [city, setCity] = useState<string>("");
@@ -34,8 +33,6 @@ export default function GuestManagement() {
   const [newPartyName, setNewPartyName] = useState("");
   const [selectedGuests, setSelectedGuests] = useState<string[]>([]);
   const [selectedParty, setSelectedParty] = useState<string | null>(null);
-  
-  // RSVP state - updated to use string instead of boolean
   const [rsvpAttending, setRsvpAttending] = useState<string | null>(null);
 
   const resetForm = () => {
@@ -58,10 +55,18 @@ export default function GuestManagement() {
 
   const handleAddGuest = async () => {
     setIsSubmitting(true);
+    
+    // Validate that at least first name is provided
+    if (!firstName.trim()) {
+      alert("First name is required");
+      setIsSubmitting(false);
+      return;
+    }
+    
     await addGuest({
       first_name: firstName,
       last_name: lastName || null,
-      email,
+      email: email || undefined,
       phone_number: phoneNumber || null,
       address: address || null,
       city: city || null,
@@ -71,6 +76,7 @@ export default function GuestManagement() {
       party_id: partyId,
       attending: rsvpAttending
     });
+    
     setIsSubmitting(false);
     setIsAddDialogOpen(false);
     resetForm();
@@ -79,14 +85,20 @@ export default function GuestManagement() {
   const handleUpdateGuest = async () => {
     if (!currentGuest) return;
     
+    // Validate that at least first name is provided
+    if (!firstName.trim()) {
+      alert("First name is required");
+      setIsSubmitting(false);
+      return;
+    }
+    
     setIsSubmitting(true);
     
-    // Update guest including RSVP status
     await updateGuest({
       ...currentGuest,
       first_name: firstName,
       last_name: lastName || null,
-      email,
+      email: email || undefined,
       phone_number: phoneNumber || null,
       address: address || null,
       city: city || null,
@@ -267,18 +279,19 @@ export default function GuestManagement() {
               <DialogHeader>
                 <DialogTitle>Add New Guest</DialogTitle>
                 <DialogDescription>
-                  Enter the details of the guest you want to add.
+                  Enter the details of the guest you want to add. Email is optional.
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="firstName">First Name</Label>
+                    <Label htmlFor="firstName">First Name *</Label>
                     <Input
                       id="firstName"
                       value={firstName}
                       onChange={(e) => setFirstName(e.target.value)}
                       placeholder="First name"
+                      required
                     />
                   </div>
                   <div className="space-y-2">
@@ -293,7 +306,7 @@ export default function GuestManagement() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">Email (Optional)</Label>
                   <Input
                     id="email"
                     type="email"
@@ -302,6 +315,7 @@ export default function GuestManagement() {
                     placeholder="guest@example.com"
                   />
                 </div>
+                
                 <div className="space-y-2">
                   <Label htmlFor="phoneNumber">Phone Number</Label>
                   <Input
@@ -414,7 +428,7 @@ export default function GuestManagement() {
                 <Button variant="outline" onClick={() => setIsAddDialogOpen(false)} disabled={isSubmitting}>
                   Cancel
                 </Button>
-                <Button onClick={handleAddGuest} disabled={isSubmitting}>
+                <Button onClick={handleAddGuest} disabled={isSubmitting || !firstName.trim()}>
                   {isSubmitting ? "Adding..." : "Add Guest"}
                 </Button>
               </DialogFooter>
@@ -443,7 +457,7 @@ export default function GuestManagement() {
               <TableRow key={guest.id}>
                 <TableCell>{guest.first_name}</TableCell>
                 <TableCell>{guest.last_name || "-"}</TableCell>
-                <TableCell>{guest.email}</TableCell>
+                <TableCell>{guest.email || "-"}</TableCell>
                 <TableCell>{guest.phone_number || "-"}</TableCell>
                 <TableCell>
                   {guest.address ? (
@@ -491,17 +505,18 @@ export default function GuestManagement() {
             <DialogHeader>
               <DialogTitle>Edit Guest</DialogTitle>
               <DialogDescription>
-                Update the details of this guest.
+                Update the details of this guest. Email is optional.
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="edit-firstName">First Name</Label>
+                  <Label htmlFor="edit-firstName">First Name *</Label>
                   <Input
                     id="edit-firstName"
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
+                    required
                   />
                 </div>
                 <div className="space-y-2">
@@ -515,7 +530,7 @@ export default function GuestManagement() {
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="edit-email">Email</Label>
+                <Label htmlFor="edit-email">Email (Optional)</Label>
                 <Input
                   id="edit-email"
                   type="email"
@@ -644,7 +659,7 @@ export default function GuestManagement() {
               <Button variant="outline" onClick={() => setIsEditDialogOpen(false)} disabled={isSubmitting}>
                 Cancel
               </Button>
-              <Button onClick={handleUpdateGuest} disabled={isSubmitting}>
+              <Button onClick={handleUpdateGuest} disabled={isSubmitting || !firstName.trim()}>
                 {isSubmitting ? "Saving..." : "Save Changes"}
               </Button>
             </DialogFooter>
