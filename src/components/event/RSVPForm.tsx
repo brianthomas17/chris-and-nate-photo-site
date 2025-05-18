@@ -24,7 +24,7 @@ export default function RSVPForm({
   } = useToast();
   
   // For pending RSVPs, default to null (no selection)
-  const [attending, setAttending] = useState<boolean | null>(guest.attending ?? null);
+  const [attending, setAttending] = useState<string | null>(guest.attending ?? null);
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [hasResponded, setHasResponded] = useState<boolean>(guest.attending !== null);
   const [formError, setFormError] = useState<string | null>(null);
@@ -117,16 +117,16 @@ export default function RSVPForm({
               <div className="space-y-4">
                 
                 <RadioGroup 
-                  value={attending === null ? undefined : attending ? "yes" : "no"} 
-                  onValueChange={v => setAttending(v === "yes")} 
+                  value={attending === null ? undefined : attending} 
+                  onValueChange={v => setAttending(v)} 
                   className="flex flex-col items-center space-y-4"
                 >
                   <div className="flex items-center space-x-3">
-                    <RadioGroupItem value="yes" id="attending-yes" className="border-anniversary-gold" />
+                    <RadioGroupItem value="Yes" id="attending-yes" className="border-anniversary-gold" />
                     <Label htmlFor="attending-yes" className="text-white text-lg">Yes, I'll be there!</Label>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <RadioGroupItem value="no" id="attending-no" className="border-anniversary-gold" />
+                    <RadioGroupItem value="No" id="attending-no" className="border-anniversary-gold" />
                     <Label htmlFor="attending-no" className="text-white text-lg">No, I can't make it</Label>
                   </div>
                 </RadioGroup>

@@ -10,7 +10,7 @@ export interface Guest {
   created_at?: string;
   updated_at?: string;
   party_id?: string | null;
-  attending?: boolean | null;
+  attending?: string | null;
 }
 
 export interface Party {

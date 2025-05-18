@@ -64,7 +64,7 @@ export default function PartyView({ guestId, partyId }: PartyViewProps) {
       return <Badge variant="outline">Pending</Badge>;
     }
     
-    return guest.attending ? 
+    return guest.attending === 'Yes' ? 
       <Badge className="bg-green-500">Attending</Badge> : 
       <Badge variant="destructive">Not Attending</Badge>;
   };

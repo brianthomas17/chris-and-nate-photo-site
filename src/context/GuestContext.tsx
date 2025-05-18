@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Guest, InvitationType, Party } from '../types';
 import { useToast } from '@/hooks/use-toast';
@@ -10,7 +9,7 @@ interface GuestContextType {
   addGuest: (guest: Omit<Guest, 'id'>) => Promise<void>;
   updateGuest: (guest: Guest) => Promise<void>;
   deleteGuest: (id: string) => Promise<void>;
-  updateRSVP: (guestId: string, attending: boolean) => Promise<any>;
+  updateRSVP: (guestId: string, attending: string) => Promise<any>;
   getGuestByEmail: (email: string) => Promise<Guest | undefined>;
   createParty: (name: string) => Promise<string | undefined>;
   updatePartyMembers: (partyId: string, guestIds: string[]) => Promise<void>;
@@ -221,7 +220,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   };
 
-  const updateRSVP = async (guestId: string, attending: boolean) => {
+  const updateRSVP = async (guestId: string, attending: string) => {
     console.log("updateRSVP called with:", { guestId, attending });
     
     try {

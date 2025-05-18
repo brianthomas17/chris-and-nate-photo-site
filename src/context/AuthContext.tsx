@@ -71,7 +71,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           first_name: "Test User",
           email: "test@example.com",
           invitation_type: "main event" as const,
-          attending: true
+          attending: "Yes"
         };
         
         setUser(testUser);

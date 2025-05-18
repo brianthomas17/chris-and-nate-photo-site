@@ -5,7 +5,7 @@ import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Tabl
 import { Badge } from "@/components/ui/badge";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Check, X, Pencil, Trash2, RefreshCw } from "lucide-react";
+import { Check, X, Pencil, Trash2 } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
 import {
   Select,
@@ -29,19 +29,19 @@ export default function RSVPOverview() {
   const { guests, updateRSVP, deleteGuest } = useGuests();
   const [editingGuest, setEditingGuest] = useState<string | null>(null);
   const [formState, setFormState] = useState({
-    attending: false
+    attending: "No"
   });
   const [guestToDelete, setGuestToDelete] = useState<string | null>(null);
   
   // Calculate statistics
   const totalGuests = guests.length;
   const responded = guests.filter(g => g.attending !== null).length;
-  const attending = guests.filter(g => g.attending === true).length;
-  const notAttending = guests.filter(g => g.attending === false).length;
+  const attending = guests.filter(g => g.attending === 'Yes').length;
+  const notAttending = guests.filter(g => g.attending === 'No').length;
   const pendingResponses = totalGuests - responded;
   
-  const attendingFullDay = guests.filter(g => g.invitation_type === 'main event' && g.attending === true).length;
-  const attendingEvening = guests.filter(g => g.invitation_type === 'afterparty' && g.attending === true).length;
+  const attendingFullDay = guests.filter(g => g.invitation_type === 'main event' && g.attending === 'Yes').length;
+  const attendingEvening = guests.filter(g => g.invitation_type === 'afterparty' && g.attending === 'Yes').length;
   
   const totalExpectedGuests = attending;
 
@@ -61,7 +61,7 @@ export default function RSVPOverview() {
     const guest = guests.find(g => g.id === guestId);
     if (guest) {
       setFormState({
-        attending: guest.attending || false
+        attending: guest.attending || "No"
       });
       setEditingGuest(guestId);
     }
@@ -114,7 +114,7 @@ export default function RSVPOverview() {
   const handleStatusChange = (value: string) => {
     setFormState({
       ...formState,
-      attending: value === "attending",
+      attending: value,
     });
   };
 
@@ -181,15 +181,15 @@ export default function RSVPOverview() {
                     <>
                       <TableCell>
                         <Select 
-                          value={formState.attending ? "attending" : "not-attending"} 
+                          value={formState.attending} 
                           onValueChange={handleStatusChange}
                         >
                           <SelectTrigger className="w-[180px]">
                             <SelectValue placeholder="Select status" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="attending">Attending</SelectItem>
-                            <SelectItem value="not-attending">Not Attending</SelectItem>
+                            <SelectItem value="Yes">Attending</SelectItem>
+                            <SelectItem value="No">Not Attending</SelectItem>
                           </SelectContent>
                         </Select>
                       </TableCell>
@@ -215,14 +215,12 @@ export default function RSVPOverview() {
                   ) : (
                     <>
                       <TableCell>
-                        {guest.attending !== null ? (
-                          guest.attending ? (
-                            <Badge className="bg-green-500">Attending</Badge>
-                          ) : (
-                            <Badge variant="destructive">Not Attending</Badge>
-                          )
-                        ) : (
+                        {guest.attending === null ? (
                           <Badge variant="outline">Pending</Badge>
+                        ) : guest.attending === 'Yes' ? (
+                          <Badge className="bg-green-500">Attending</Badge>
+                        ) : (
+                          <Badge variant="destructive">Not Attending</Badge>
                         )}
                       </TableCell>
                       <TableCell className="text-right">
