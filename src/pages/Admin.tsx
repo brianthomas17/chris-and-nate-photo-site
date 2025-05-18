@@ -1,19 +1,20 @@
+
 import AdminLayout from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { seedTestAccounts } from "@/utils/seedTestAccounts";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/context/AuthContext";
+import { useGuests } from "@/context/GuestContext";
 import { Navigate, useNavigate } from "react-router-dom";
+import { RefreshCw } from "lucide-react";
+
 const Admin = () => {
   const [isSeeding, setIsSeeding] = useState(false);
-  const {
-    toast
-  } = useToast();
-  const {
-    currentGuest,
-    isLoading
-  } = useAuth();
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const { toast } = useToast();
+  const { currentGuest, isLoading } = useAuth();
+  const { fetchGuests } = useGuests();
   const navigate = useNavigate();
 
   // Use useEffect for navigation to prevent issues with multiple renders
@@ -47,6 +48,7 @@ const Admin = () => {
   if (!currentGuest || currentGuest.invitation_type !== 'admin') {
     return null;
   }
+  
   const handleSeedTestAccounts = async () => {
     setIsSeeding(true);
     try {
@@ -66,11 +68,44 @@ const Admin = () => {
       setIsSeeding(false);
     }
   };
-  return <>
+  
+  const handleRefreshData = async () => {
+    setIsRefreshing(true);
+    try {
+      await fetchGuests();
+      toast({
+        title: "Data Refreshed",
+        description: "Guest and RSVP data has been refreshed."
+      });
+    } catch (error) {
+      console.error("Error refreshing data:", error);
+      toast({
+        title: "Error",
+        description: "Failed to refresh data.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+  
+  return (
+    <>
       <AdminLayout />
-      <div className="fixed bottom-4 right-4">
-        
+      <div className="fixed bottom-4 right-4 space-x-2">
+        <Button
+          variant="secondary"
+          onClick={handleRefreshData}
+          disabled={isRefreshing}
+          size="sm"
+          className="flex items-center gap-2"
+        >
+          <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+          {isRefreshing ? 'Refreshing...' : 'Refresh Data'}
+        </Button>
       </div>
-    </>;
+    </>
+  );
 };
+
 export default Admin;

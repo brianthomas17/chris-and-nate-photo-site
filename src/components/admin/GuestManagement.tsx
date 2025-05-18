@@ -30,7 +30,7 @@ export default function GuestManagement() {
   const [selectedGuests, setSelectedGuests] = useState<string[]>([]);
   const [selectedParty, setSelectedParty] = useState<string | null>(null);
   
-  // New state for RSVP data
+  // RSVP state
   const [rsvpAttending, setRsvpAttending] = useState<boolean | null>(null);
 
   const resetForm = () => {
@@ -89,6 +89,7 @@ export default function GuestManagement() {
   };
 
   const handleEditClick = (guest: Guest) => {
+    console.log("Editing guest with data:", guest);
     setCurrentGuest(guest);
     setFirstName(guest.first_name);
     setEmail(guest.email);
@@ -98,8 +99,10 @@ export default function GuestManagement() {
     
     // Set RSVP data if available
     if (guest.rsvp) {
+      console.log("Setting RSVP status from guest data:", guest.rsvp);
       setRsvpAttending(guest.rsvp.attending);
     } else {
+      console.log("No RSVP data for this guest");
       setRsvpAttending(null);
     }
     

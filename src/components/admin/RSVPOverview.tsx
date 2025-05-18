@@ -3,9 +3,9 @@ import { useGuests } from "@/context/GuestContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Check, X, Pencil, Trash2 } from "lucide-react";
+import { Check, X, Pencil, Trash2, RefreshCw } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
 import {
   Select,
@@ -33,6 +33,7 @@ export default function RSVPOverview() {
   });
   const [guestToDelete, setGuestToDelete] = useState<string | null>(null);
   
+  // Calculate statistics
   const totalGuests = guests.length;
   const responded = guests.filter(g => g.rsvp).length;
   const attending = guests.filter(g => g.rsvp?.attending).length;
@@ -43,6 +44,18 @@ export default function RSVPOverview() {
   const attendingEvening = guests.filter(g => g.invitation_type === 'afterparty' && g.rsvp?.attending).length;
   
   const totalExpectedGuests = attending;
+
+  // Log RSVP data for debugging
+  useEffect(() => {
+    console.log("RSVPOverview - Current guest data:", guests);
+    console.log("RSVPOverview - RSVP stats:", {
+      totalGuests,
+      responded,
+      attending,
+      notAttending,
+      pendingResponses
+    });
+  }, [guests]);
 
   const handleEdit = (guestId: string) => {
     const guest = guests.find(g => g.id === guestId);
@@ -59,11 +72,24 @@ export default function RSVPOverview() {
   };
 
   const handleSave = async (guestId: string) => {
-    await updateRSVP(
-      guestId,
-      formState.attending
-    );
-    setEditingGuest(null);
+    try {
+      await updateRSVP(
+        guestId,
+        formState.attending
+      );
+      setEditingGuest(null);
+      toast({
+        title: "RSVP Updated",
+        description: "The guest's RSVP status has been updated."
+      });
+    } catch (error) {
+      console.error("Error updating RSVP:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update RSVP status.",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleDeleteClick = (guestId: string) => {
@@ -164,7 +190,6 @@ export default function RSVPOverview() {
                           <SelectContent>
                             <SelectItem value="attending">Attending</SelectItem>
                             <SelectItem value="not-attending">Not Attending</SelectItem>
-                            <SelectItem value="pending">Pending</SelectItem>
                           </SelectContent>
                         </Select>
                       </TableCell>

@@ -40,6 +40,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const fetchGuests = async () => {
     try {
+      console.log("Fetching guests from database...");
       const { data, error } = await supabase
         .from('guests')
         .select(`
@@ -63,6 +64,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
 
       if (data && data.length > 0) {
+        console.log("Raw guest data from database:", data);
         const transformedGuests: Guest[] = data.map((g: any) => {
           const guest: Guest = {
             id: g.id,
@@ -74,14 +76,18 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           };
           
           if (g.rsvps && Array.isArray(g.rsvps) && g.rsvps.length > 0) {
+            console.log(`Guest ${g.first_name} has RSVP:`, g.rsvps[0]);
             guest.rsvp = {
               attending: g.rsvps[0].attending
             };
+          } else {
+            console.log(`Guest ${g.first_name} has no RSVP record`);
           }
           
           return guest;
         });
 
+        console.log("Transformed guests with RSVP data:", transformedGuests);
         setGuests(transformedGuests);
       } else {
         console.log('No guests found in database');
