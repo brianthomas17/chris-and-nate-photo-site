@@ -1,27 +1,33 @@
+
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import ContentSections from "./ContentSections";
 import RSVPForm from "./RSVPForm";
-import PartyView from "./PartyView";
+import PartyList from "./PartyList";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
+
 export default function EventLayout() {
   const {
     currentGuest,
     logout
   } = useAuth();
   const navigate = useNavigate();
+  
   if (!currentGuest) {
     navigate('/');
     return null;
   }
+  
   const handleLogout = () => {
     logout();
     navigate('/');
   };
+  
   const isAdmin = currentGuest.invitation_type === 'admin';
   const hasParty = !!currentGuest.party_id;
+  
   return <div className="min-h-screen">
       <div className="py-2 px-4 border-b border-anniversary-gold/10">
         <div className="container mx-auto flex justify-end">
@@ -110,27 +116,24 @@ export default function EventLayout() {
       <div className="container mx-auto px-4 py-[80px]">
         {/* RSVP Section - First */}
         <section className="mb-16 animate-fade-in">
-          
           <RSVPForm guest={currentGuest} />
         </section>
 
-        {/* Event Details Section - Second */}
+        {/* Party List Section - Second (If user has a party) */}
+        {hasParty && (
+          <section className="mb-16 animate-fade-in">
+            <PartyList 
+              guestId={currentGuest.id} 
+              partyId={currentGuest.party_id} 
+            />
+          </section>
+        )}
+
+        {/* Event Details Section - Third */}
         <section className="mb-16 animate-fade-in">
           <h2 className="text-3xl md:text-54xl font-din text-anniversary-gold text-center mb-8">EVENT DETAILS</h2>
           <ContentSections invitationType={currentGuest.invitation_type} />
         </section>
-
-        {/* Party View Section - Only shown if user has a party */}
-        {hasParty && <section className="mb-16 animate-fade-in">
-            <h2 className="text-2xl font-din text-anniversary-gold text-center mb-8">YOUR PARTY</h2>
-            <PartyView guestId={currentGuest.id} partyId={currentGuest.party_id} />
-          </section>}
-
-        {/* Photo Gallery is hidden for now */}
-        {/* <section className="mb-16 animate-fade-in">
-          <h2 className="text-2xl font-din text-anniversary-gold text-center mb-8">PHOTO GALLERY</h2>
-          <PhotoGallery />
-         </section> */}
       </div>
     </div>;
 }
