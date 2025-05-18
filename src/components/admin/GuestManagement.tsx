@@ -66,7 +66,7 @@ export default function GuestManagement() {
     await addGuest({
       first_name: firstName,
       last_name: lastName || null,
-      email: email || undefined,
+      email: email.trim() || null, // Use null if email is empty
       phone_number: phoneNumber || null,
       address: address || null,
       city: city || null,
@@ -98,7 +98,7 @@ export default function GuestManagement() {
       ...currentGuest,
       first_name: firstName,
       last_name: lastName || null,
-      email: email || undefined,
+      email: email.trim() || null, // Use null if email is empty
       phone_number: phoneNumber || null,
       address: address || null,
       city: city || null,
@@ -279,7 +279,7 @@ export default function GuestManagement() {
               <DialogHeader>
                 <DialogTitle>Add New Guest</DialogTitle>
                 <DialogDescription>
-                  Enter the details of the guest you want to add. Email is optional.
+                  Enter the details of the guest you want to add. Only first name is required.
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
@@ -505,7 +505,7 @@ export default function GuestManagement() {
             <DialogHeader>
               <DialogTitle>Edit Guest</DialogTitle>
               <DialogDescription>
-                Update the details of this guest. Email is optional.
+                Update the details of this guest. Only first name is required.
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
@@ -538,6 +538,7 @@ export default function GuestManagement() {
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
+              
               <div className="space-y-2">
                 <Label htmlFor="edit-phoneNumber">Phone Number</Label>
                 <Input

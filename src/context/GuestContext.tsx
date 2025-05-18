@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Guest, InvitationType, Party } from '../types';
 import { useToast } from '@/hooks/use-toast';
@@ -281,7 +282,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const getGuestByEmail = async (email: string): Promise<Guest | undefined> => {
-    // Skip the check if email is empty
+    // Skip the check if email is empty or null
     if (!email) {
       return undefined;
     }

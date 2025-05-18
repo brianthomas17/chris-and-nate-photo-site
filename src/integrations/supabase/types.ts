@@ -84,7 +84,7 @@ export type Database = {
           attending: string | null
           city: string | null
           created_at: string
-          email: string
+          email: string | null
           first_name: string
           id: string
           invitation_type: Database["public"]["Enums"]["invitation_type"]
@@ -101,7 +101,7 @@ export type Database = {
           attending?: string | null
           city?: string | null
           created_at?: string
-          email: string
+          email?: string | null
           first_name: string
           id?: string
           invitation_type: Database["public"]["Enums"]["invitation_type"]
@@ -118,7 +118,7 @@ export type Database = {
           attending?: string | null
           city?: string | null
           created_at?: string
-          email?: string
+          email?: string | null
           first_name?: string
           id?: string
           invitation_type?: Database["public"]["Enums"]["invitation_type"]

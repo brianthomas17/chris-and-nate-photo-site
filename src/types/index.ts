@@ -5,7 +5,7 @@ export interface Guest {
   id: string;
   first_name: string;
   last_name?: string | null;
-  email?: string;
+  email?: string | null;
   phone_number?: string | null;
   address?: string | null;
   city?: string | null;
