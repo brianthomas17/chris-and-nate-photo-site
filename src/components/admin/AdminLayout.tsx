@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -11,7 +10,6 @@ import { useNavigate } from "react-router-dom";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
-
 export default function AdminLayout() {
   const {
     currentGuest,
@@ -19,7 +17,6 @@ export default function AdminLayout() {
   } = useAuth();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
-  
   const handleLogout = () => {
     logout();
     navigate('/');
@@ -54,14 +51,10 @@ export default function AdminLayout() {
       
       <header className="text-[#C9A95B] p-4 border-b border-[#C9A95B]/30 relative overflow-hidden">
         {/* Top circuit frame - position adjusted to remove gap */}
-        <div className="absolute top-0 left-0 right-0 w-full h-[100px] md:h-[150px] bg-no-repeat bg-contain bg-top" style={{
-          backgroundImage: "url('/lovable-uploads/top.svg')"
-        }}></div>
+        
         
         {/* Bottom circuit frame - position adjusted to remove gap */}
-        <div className="absolute bottom-0 left-0 right-0 w-full h-[100px] md:h-[150px] bg-no-repeat bg-contain bg-bottom" style={{
-          backgroundImage: "url('/lovable-uploads/bottom.svg')"
-        }}></div>
+        
         
         <div className="container mx-auto relative z-10">
           <h1 className="text-3xl font-din uppercase tracking-wide">Anniversary Admin</h1>
