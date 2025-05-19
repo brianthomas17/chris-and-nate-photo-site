@@ -1,3 +1,4 @@
+
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -9,19 +10,23 @@ import MessagesSent from "./MessagesSent";
 import { useNavigate } from "react-router-dom";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
+
 export default function AdminLayout() {
   const {
     currentGuest,
     logout
   } = useAuth();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
+  
   const handleLogout = () => {
     logout();
     navigate('/');
   };
   const isAdmin = currentGuest?.invitation_type === 'admin';
   return <div className="min-h-screen">
-      <div className="py-2 px-4 border-b border-[#C9A95B]/10">
+      <div className="py-1 px-4 border-b border-[#C9A95B]/10">
         <div className="container mx-auto flex justify-end">
           <div className="ml-auto">
             <DropdownMenu>
