@@ -64,15 +64,15 @@ export default function EventLayout() {
       flexDirection: "column",
       justifyContent: "center"
     }}>
-        {/* Top circuit frame - with animation */}
-        <div className="absolute top-0 left-0 right-0 w-full h-[100px] md:h-[150px] bg-no-repeat bg-contain bg-center animate-[fadeIn_1s_ease-out_forwards] z-10" style={{
+        {/* Top circuit frame - adjusted to properly align at top with no gap */}
+        <div className="absolute top-0 left-0 right-0 w-full h-[100px] md:h-[150px] bg-no-repeat bg-contain bg-top animate-[fadeIn_1s_ease-out_forwards] z-10" style={{
         backgroundImage: "url('/lovable-uploads/top.svg')",
         opacity: 0
       }}>
         </div>
         
-        {/* Bottom circuit frame - with animation */}
-        <div className="absolute bottom-0 left-0 right-0 w-full h-[100px] md:h-[150px] bg-no-repeat bg-contain bg-center animate-[fadeIn_1s_ease-out_forwards] z-10" style={{
+        {/* Bottom circuit frame - adjusted to properly align at bottom with no gap */}
+        <div className="absolute bottom-0 left-0 right-0 w-full h-[100px] md:h-[150px] bg-no-repeat bg-contain bg-bottom animate-[fadeIn_1s_ease-out_forwards] z-10" style={{
         backgroundImage: "url('/lovable-uploads/bottom.svg')",
         opacity: 0
       }}>
