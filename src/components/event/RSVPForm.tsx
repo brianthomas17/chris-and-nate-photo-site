@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertCircle } from "lucide-react";
 
 interface RSVPFormProps {
@@ -119,58 +118,54 @@ export default function RSVPForm({
   };
 
   return <div className="max-w-2xl mx-auto">
-      <Card className="backdrop-blur-sm bg-white/10 border border-anniversary-gold/30 shadow-[0_8px_30px_rgb(0,0,0,0.12)] overflow-hidden">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-3xl text-center text-anniversary-gold font-din">
-            WILL YOU JOIN US, {guest.first_name}?
-          </CardTitle>
-        </CardHeader>
+      <div className="px-4 py-6">
+        <h2 className="text-3xl text-center text-anniversary-gold font-din mb-6">
+          WILL YOU JOIN US, {guest.first_name}?
+        </h2>
         
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-8">
-            <div className="space-y-6 pt-4">
-              <div className="space-y-4">
-                
-                <RadioGroup 
-                  value={attending === null ? undefined : attending} 
-                  onValueChange={v => setAttending(v)} 
-                  className="flex flex-col items-center space-y-4"
-                >
-                  <div className="flex items-center space-x-3">
-                    <RadioGroupItem value="Yes" id="attending-yes" className="border-anniversary-gold" />
-                    <Label htmlFor="attending-yes" className="text-white text-lg">Yes, I'll be there!</Label>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <RadioGroupItem value="No" id="attending-no" className="border-anniversary-gold" />
-                    <Label htmlFor="attending-no" className="text-white text-lg">No, I can't make it</Label>
-                  </div>
-                </RadioGroup>
-              </div>
-            </div>
-            
-            {formError && (
-              <div className="text-red-500 text-sm text-center bg-red-100/20 p-2 rounded-md flex items-center gap-2 justify-center">
-                <AlertCircle className="w-4 h-4" />
-                <span>Error: {formError}</span>
-              </div>
-            )}
-            
-            <CardFooter className="flex justify-center px-0">
-              <div className="flex flex-col items-center space-y-4">
-                <div className="text-sm text-white/70">
-                  {hasResponded ? "You can update your response until the deadline." : ""}
+        <form onSubmit={handleSubmit} className="space-y-8">
+          <div className="space-y-6 pt-4">
+            <div className="space-y-4">
+              
+              <RadioGroup 
+                value={attending === null ? undefined : attending} 
+                onValueChange={v => setAttending(v)} 
+                className="flex flex-col items-center space-y-4"
+              >
+                <div className="flex items-center space-x-3">
+                  <RadioGroupItem value="Yes" id="attending-yes" className="border-anniversary-gold" />
+                  <Label htmlFor="attending-yes" className="text-white text-lg">Yes, I'll be there!</Label>
                 </div>
-                <Button 
-                  type="submit" 
-                  className="bg-anniversary-gold hover:bg-anniversary-gold/90 text-black text-lg px-8 py-2 font-medium" 
-                  disabled={submitting}
-                >
-                  {submitting ? "Submitting..." : hasResponded ? "Update Response" : "Submit RSVP"}
-                </Button>
+                <div className="flex items-center space-x-3">
+                  <RadioGroupItem value="No" id="attending-no" className="border-anniversary-gold" />
+                  <Label htmlFor="attending-no" className="text-white text-lg">No, I can't make it</Label>
+                </div>
+              </RadioGroup>
+            </div>
+          </div>
+          
+          {formError && (
+            <div className="text-red-500 text-sm text-center bg-red-100/20 p-2 rounded-md flex items-center gap-2 justify-center">
+              <AlertCircle className="w-4 h-4" />
+              <span>Error: {formError}</span>
+            </div>
+          )}
+          
+          <div className="flex justify-center px-0">
+            <div className="flex flex-col items-center space-y-4">
+              <div className="text-sm text-white/70">
+                {hasResponded ? "You can update your response until the deadline." : ""}
               </div>
-            </CardFooter>
-          </form>
-        </CardContent>
-      </Card>
+              <Button 
+                type="submit" 
+                className="bg-anniversary-gold hover:bg-anniversary-gold/90 text-black text-lg px-8 py-2 font-medium" 
+                disabled={submitting}
+              >
+                {submitting ? "Submitting..." : hasResponded ? "Update Response" : "Submit RSVP"}
+              </Button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>;
 }
