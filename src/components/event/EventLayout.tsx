@@ -60,7 +60,7 @@ export default function EventLayout() {
       {/* Hero Section with circuit pattern frames */}
       <div className="px-4 py-3 md:py-6">
         <header className="text-[#C9A95B] relative rounded-xl shadow-lg border border-[#C9A95B]/20 bg-anniversary-darkPurple/50 backdrop-blur-sm mx-auto max-w-[800px]" style={{
-          minHeight: isMobile ? "450px" : "600px",
+          minHeight: isMobile ? "450px" : "720px",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center"
