@@ -1,7 +1,13 @@
 
-export default function SectionSeparator() {
+import React from 'react';
+
+interface SectionSeparatorProps {
+  className?: string;
+}
+
+export default function SectionSeparator({ className = '' }: SectionSeparatorProps) {
   return (
-    <div className="flex justify-center my-8 md:my-12">
+    <div className={`flex justify-center my-8 md:my-12 ${className}`}>
       <img 
         src="/lovable-uploads/separator.svg" 
         alt="" 
