@@ -82,7 +82,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return;
       }
       
-      // Check if the email exists in our guest list
+      // Check if the email exists in our guest list - using ilike for case-insensitive matching
       const { data: guestData, error: guestError } = await supabase
         .from('guests')
         .select(`
@@ -94,7 +94,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           party_id,
           attending
         `)
-        .eq('email', email.toLowerCase())
+        .ilike('email', email)
         .maybeSingle();
       
       if (guestError) {
