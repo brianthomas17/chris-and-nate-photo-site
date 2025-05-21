@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -130,10 +129,10 @@ export default function EventLayout() {
 
       {/* NEW SECTION: Large white italic text between hero and RSVP */}
       <div className="container mx-auto px-4 py-12 md:py-16 relative z-10">
-        <div className="max-w-[800px] mx-auto text-center">
-          <p className="text-white text-xl md:text-3xl italic font-bicyclette leading-relaxed animate-[fadeIn_1.2s_ease-out_forwards]">
-            There are parties, and then there are nights that define a decade…<br/>
-            Join us for an evening you'll never forget as we celebrate ten years of Chris and Nate.
+        <div className="max-w-[600px] mx-auto text-center">
+          <p className="text-white text-lg md:text-2xl italic font-bicyclette leading-relaxed animate-[fadeIn_1.2s_ease-out_forwards] uppercase">
+            THERE ARE PARTIES, AND THEN THERE ARE NIGHTS THAT DEFINE A DECADE…<br/>
+            JOIN US FOR AN EVENING YOU'LL NEVER FORGET AS WE CELEBRATE TEN YEARS OF CHRIS AND NATE.
           </p>
         </div>
       </div>
