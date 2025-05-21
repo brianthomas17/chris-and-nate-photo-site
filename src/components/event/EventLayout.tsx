@@ -127,10 +127,10 @@ export default function EventLayout() {
         </header>
       </div>
 
-      {/* NEW SECTION: Large white italic text between hero and RSVP */}
+      {/* NEW SECTION: Large gold italic text between hero and RSVP */}
       <div className="container mx-auto px-4 py-12 md:py-16 relative z-10">
         <div className="max-w-[600px] mx-auto text-center">
-          <p className="text-white text-lg md:text-2xl italic font-bicyclette leading-relaxed animate-[fadeIn_1.2s_ease-out_forwards] uppercase">
+          <p className="text-anniversary-gold text-lg md:text-2xl italic font-bicyclette leading-relaxed animate-[fadeIn_1.2s_ease-out_forwards] uppercase">
             THERE ARE PARTIES, AND THEN THERE ARE NIGHTS THAT DEFINE A DECADE…<br/>
             JOIN US FOR AN EVENING YOU'LL NEVER FORGET AS WE CELEBRATE TEN YEARS OF CHRIS AND NATE.
           </p>
