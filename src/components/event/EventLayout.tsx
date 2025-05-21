@@ -6,6 +6,7 @@ import ContentSections from "./ContentSections";
 import RSVPForm from "./RSVPForm";
 import PartyList from "./PartyList";
 import ConfirmedAttendees from "./ConfirmedAttendees";
+import SectionSeparator from "./SectionSeparator";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -135,22 +136,24 @@ export default function EventLayout() {
 
         {/* Party List Section - Second (If user has a party) */}
         {hasParty && (
-          <section className="mb-12 md:mb-16 animate-fade-in">
+          <section className="animate-fade-in">
             <PartyList 
               guestId={currentGuest.id} 
               partyId={currentGuest.party_id} 
             />
+            <SectionSeparator />
           </section>
         )}
 
         {/* Event Details Section - Third */}
-        <section className="mb-12 md:mb-16 animate-fade-in">
+        <section className="animate-fade-in">
           <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-6 md:mb-8">EVENT DETAILS</h2>
           <ContentSections invitationType={currentGuest.invitation_type} />
+          <SectionSeparator />
         </section>
         
         {/* Confirmed Attendees Section - Fourth */}
-        <section className="mb-12 md:mb-16 animate-fade-in">
+        <section className="animate-fade-in">
           <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-6 md:mb-8">CONFIRMED ATTENDEES</h2>
           <div className="max-w-[800px] mx-auto">
             <ConfirmedAttendees />
