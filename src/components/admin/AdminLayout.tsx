@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+
 export default function AdminLayout() {
   const {
     currentGuest,
@@ -50,8 +51,8 @@ export default function AdminLayout() {
         </div>
       </div>
       
-      <div className="px-4 py-6 md:py-8">
-        <header className="text-[#C9A95B] p-4 border-b border-[#C9A95B]/30 relative overflow-hidden rounded-xl shadow-lg border border-[#C9A95B]/20 bg-anniversary-darkPurple/50 backdrop-blur-sm">
+      <div className="px-4 py-3 md:py-6">
+        <header className="text-[#C9A95B] p-4 border-b border-[#C9A95B]/30 relative overflow-hidden rounded-xl shadow-lg border border-[#C9A95B]/20 bg-anniversary-darkPurple/50 backdrop-blur-sm mx-auto max-w-[800px]">
           {/* Top circuit frame - position adjusted to remove gap */}
           
           

@@ -58,9 +58,9 @@ export default function EventLayout() {
       </div>
       
       {/* Hero Section with circuit pattern frames */}
-      <div className="px-4 py-6 md:py-12">
-        <header className="text-[#C9A95B] relative rounded-xl shadow-lg border border-[#C9A95B]/20 bg-anniversary-darkPurple/50 backdrop-blur-sm mx-auto max-w-7xl" style={{
-          minHeight: isMobile ? "580px" : "780px",
+      <div className="px-4 py-3 md:py-6">
+        <header className="text-[#C9A95B] relative rounded-xl shadow-lg border border-[#C9A95B]/20 bg-anniversary-darkPurple/50 backdrop-blur-sm mx-auto max-w-[800px]" style={{
+          minHeight: isMobile ? "450px" : "600px",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center"
@@ -79,7 +79,7 @@ export default function EventLayout() {
           }}>
           </div>
           
-          <div className="container mx-auto text-center relative z-0 px-4 py-[130px] md:py-[180px]">
+          <div className="container mx-auto text-center relative z-0 px-4 py-[80px] md:py-[100px]">
             <div className="max-w-[800px] mx-auto">
               <h3 className="text-xl md:text-3xl font-bicyclette mb-6 md:mb-10 text-[#C9A95B] animate-[fadeIn_1.2s_ease-out_0.8s_forwards]" style={{
                 opacity: 0
