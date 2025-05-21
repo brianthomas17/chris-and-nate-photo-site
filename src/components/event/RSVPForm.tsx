@@ -119,7 +119,7 @@ export default function RSVPForm({
 
   return <div className="max-w-2xl mx-auto">
       <div className="px-4 py-6">
-        <h2 className="text-3xl text-center text-anniversary-gold font-din mb-6">
+        <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-6 md:mb-8">
           WILL YOU JOIN US, {guest.first_name}?
         </h2>
         
