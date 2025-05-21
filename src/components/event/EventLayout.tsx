@@ -32,28 +32,26 @@ export default function EventLayout() {
   
   return <div className="min-h-screen">
       <div className="py-1 px-4 border-b border-anniversary-gold/10">
-        <div className="container mx-auto flex justify-end">
-          <div className="ml-auto">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex items-center gap-1 text-[#C9A95B] hover:text-[#C9A95B]/80 hover:bg-[#C9A95B]/20 h-8 px-2">
-                  {currentGuest.first_name}
-                  <ChevronDown size={16} />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="bg-anniversary-purple border border-[#C9A95B]/30 text-[#C9A95B]">
-                {isAdmin && <>
-                    <DropdownMenuItem onClick={() => navigate('/admin')} className="cursor-pointer hover:bg-[#C9A95B]/20 hover:text-[#C9A95B]/80">
-                      Admin Console
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator className="bg-[#C9A95B]/20" />
-                  </>}
-                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer hover:bg-[#C9A95B]/20 hover:text-[#C9A95B]/80">
-                  Logout
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+        <div className="container mx-auto flex justify-center">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="flex items-center gap-1 text-[#C9A95B] hover:text-[#C9A95B]/80 hover:bg-[#C9A95B]/20 h-8 px-2">
+                {currentGuest.first_name}
+                <ChevronDown size={16} />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="center" className="bg-anniversary-purple border border-[#C9A95B]/30 text-[#C9A95B]">
+              {isAdmin && <>
+                  <DropdownMenuItem onClick={() => navigate('/admin')} className="cursor-pointer hover:bg-[#C9A95B]/20 hover:text-[#C9A95B]/80">
+                    Admin Console
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator className="bg-[#C9A95B]/20" />
+                </>}
+              <DropdownMenuItem onClick={handleLogout} className="cursor-pointer hover:bg-[#C9A95B]/20 hover:text-[#C9A95B]/80">
+                Logout
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
       
