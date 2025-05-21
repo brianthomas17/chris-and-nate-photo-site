@@ -78,10 +78,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         localStorage.setItem('eventUser', JSON.stringify(testUser));
         
         setLoading(false);
-        toast({
-          title: "Test Login Successful",
-          description: "You are now logged in as a test user.",
-        });
+        // Removed success toast here
         return;
       }
       
@@ -123,10 +120,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(guest);
       localStorage.setItem('eventUser', JSON.stringify(guest));
       
-      toast({
-        title: "Login Successful",
-        description: `Welcome, ${guest.first_name}!`,
-      });
+      // Removed login success toast here
     } catch (err: any) {
       console.error('Login error:', err);
       setError(err.message);
