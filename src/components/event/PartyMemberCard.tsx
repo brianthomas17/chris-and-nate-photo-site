@@ -127,10 +127,7 @@ export default function PartyMemberCard({ guest, currentUserId }: PartyMemberCar
               </div>
             </RadioGroup>
             
-            <div className="flex justify-end gap-3">
-              <Button variant="outline" onClick={() => setIsModalOpen(false)}>
-                Cancel
-              </Button>
+            <div className="flex justify-end">
               <Button 
                 className="bg-anniversary-gold hover:bg-anniversary-gold/90 text-black" 
                 onClick={handleRSVPUpdate}
