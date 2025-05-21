@@ -146,14 +146,14 @@ export default function EventLayout() {
         )}
 
         {/* Event Details Section - Third */}
-        <section className="animate-fade-in">
+        <section className="animate-fade-in pt-24">
           <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-6 md:mb-8">EVENT DETAILS</h2>
           <ContentSections invitationType={currentGuest.invitation_type} />
           <SectionSeparator />
         </section>
         
         {/* Confirmed Attendees Section - Fourth */}
-        <section className="animate-fade-in">
+        <section className="animate-fade-in pt-24">
           <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-6 md:mb-8">CONFIRMED ATTENDEES</h2>
           <div className="max-w-[800px] mx-auto">
             <ConfirmedAttendees />
