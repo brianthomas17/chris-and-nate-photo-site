@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -156,7 +155,7 @@ export default function EventLayout() {
         
         {/* Confirmed Attendees Section - Fourth */}
         <section className="animate-fade-in pt-20">
-          <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-6 md:mb-8">CONFIRMED ATTENDEES</h2>
+          <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-6 md:mb-8 pb-4">CONFIRMED ATTENDEES</h2>
           <div className="max-w-[800px] mx-auto">
             <ConfirmedAttendees />
           </div>
