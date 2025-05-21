@@ -53,7 +53,7 @@ export default function PartyList({ guestId, partyId }: PartyListProps) {
   return (
     <div className="max-w-2xl mx-auto">
       <div className="px-4 py-6">
-        <h2 className="text-xl text-center text-anniversary-gold font-din mb-2">
+        <h2 className="text-3xl text-center text-anniversary-gold font-din mb-6">
           YOUR PARTY
         </h2>
         <p className="text-center text-gray-300 mb-6">
