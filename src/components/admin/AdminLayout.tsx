@@ -1,3 +1,4 @@
+
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -36,7 +37,7 @@ export default function AdminLayout() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="bg-anniversary-purple border border-[#C9A95B]/30 text-[#C9A95B]">
                 {isAdmin && <>
-                    <DropdownMenuItem onClick={() => navigate('/rsvp')} className="cursor-pointer hover:bg-[#C9A95B]/20 hover:text-[#C9A95B]/80">
+                    <DropdownMenuItem onClick={() => navigate('/')} className="cursor-pointer hover:bg-[#C9A95B]/20 hover:text-[#C9A95B]/80">
                       Main Event Page
                     </DropdownMenuItem>
                     <DropdownMenuSeparator className="bg-[#C9A95B]/20" />
