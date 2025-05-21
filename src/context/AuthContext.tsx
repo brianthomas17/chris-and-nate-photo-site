@@ -64,8 +64,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setLoading(true);
       setError(null);
       
+      // Normalize email by converting to lowercase
+      const normalizedEmail = email.trim().toLowerCase();
+      console.log('Attempting login with normalized email:', normalizedEmail);
+      
       // For development/testing, allow a special test user login
-      if (process.env.NODE_ENV === 'development' && email === 'test@example.com') {
+      if (process.env.NODE_ENV === 'development' && normalizedEmail === 'test@example.com') {
         const testUser = {
           id: "test-user-id",
           first_name: "Test User",
@@ -82,7 +86,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return;
       }
       
-      // Check if the email exists in our guest list - using ilike for case-insensitive matching
+      // Check if the email exists in our guest list - using direct equality since we normalized the email
+      // and the database now stores all emails in lowercase
       const { data: guestData, error: guestError } = await supabase
         .from('guests')
         .select(`
@@ -94,7 +99,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           party_id,
           attending
         `)
-        .ilike('email', email)
+        .eq('email', normalizedEmail)
         .maybeSingle();
       
       if (guestError) {

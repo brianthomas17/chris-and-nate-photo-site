@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Guest, InvitationType, Party } from '../types';
 import { useToast } from '@/hooks/use-toast';
@@ -293,7 +292,7 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       const { data, error } = await supabase
         .from('guests')
         .select()
-        .ilike('email', normalizedEmail)
+        .eq('email', normalizedEmail)
         .limit(1)
         .maybeSingle();
 
