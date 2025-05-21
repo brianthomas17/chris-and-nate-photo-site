@@ -1,3 +1,4 @@
+
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -37,7 +38,7 @@ export default function EventLayout() {
         <img 
           src="/lovable-uploads/background.svg" 
           alt="" 
-          className="max-w-[50vw] w-auto h-auto opacity-20"
+          className="max-w-[50vw] w-auto h-auto"
           aria-hidden="true"
         />
       </div>

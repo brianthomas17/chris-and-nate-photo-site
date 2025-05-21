@@ -55,7 +55,7 @@ const Index = () => {
         <img 
           src="/lovable-uploads/background.svg" 
           alt="" 
-          className="max-w-[50vw] w-auto h-auto opacity-20"
+          className="max-w-[50vw] w-auto h-auto"
           aria-hidden="true"
         />
       </div>
