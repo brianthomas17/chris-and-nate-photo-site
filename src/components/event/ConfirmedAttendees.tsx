@@ -48,7 +48,7 @@ export default function ConfirmedAttendees() {
   if (isLoading) {
     return (
       <div className="space-y-2">
-        <div className="grid grid-cols-2 gap-x-8 gap-y-2">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-2 max-w-[600px] mx-auto">
           {Array.from({ length: 8 }).map((_, i) => (
             <Skeleton key={i} className="h-4 w-full bg-anniversary-gold/20" />
           ))}
@@ -62,11 +62,11 @@ export default function ConfirmedAttendees() {
   }
   
   return (
-    <div className="grid grid-cols-2 gap-x-8 gap-y-2 md:gap-x-12 md:gap-y-3">
+    <div className="grid grid-cols-2 gap-x-4 gap-y-2 md:gap-x-6 md:gap-y-3 max-w-[600px] mx-auto">
       {attendees.map((guest, index) => (
         <div 
           key={index} 
-          className="text-white text-sm md:text-base font-bicyclette"
+          className="text-white text-xs md:text-sm font-bicyclette text-center uppercase"
         >
           {guest.first_name} {guest.last_name}
         </div>
