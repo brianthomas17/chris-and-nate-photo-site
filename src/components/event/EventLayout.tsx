@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -31,8 +30,19 @@ export default function EventLayout() {
   const isAdmin = currentGuest.invitation_type === 'admin';
   const hasParty = !!currentGuest.party_id;
   
-  return <div className="min-h-screen">
-      <div className="py-1 px-4 border-b border-anniversary-gold/10">
+  return (
+    <div className="min-h-screen relative">
+      {/* Background SVG - positioned in the center with max-width 50% */}
+      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
+        <img 
+          src="/lovable-uploads/background.svg" 
+          alt="" 
+          className="max-w-[50vw] w-auto h-auto opacity-20"
+          aria-hidden="true"
+        />
+      </div>
+      
+      <div className="py-1 px-4 border-b border-anniversary-gold/10 relative z-10">
         <div className="container mx-auto flex justify-center">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -56,8 +66,8 @@ export default function EventLayout() {
         </div>
       </div>
       
-      {/* Hero Section with circuit pattern frames */}
-      <div className="px-4 py-3 md:py-6">
+      {/* Hero Section with circuit pattern frames - z-index to display above background SVG */}
+      <div className="px-4 py-3 md:py-6 relative z-10">
         <header className="text-[#C9A95B] relative rounded-xl shadow-lg border border-[#C9A95B]/20 bg-anniversary-darkPurple/50 backdrop-blur-sm mx-auto max-w-[800px]" style={{
           minHeight: isMobile ? "450px" : "768px",
           display: "flex",
@@ -116,7 +126,7 @@ export default function EventLayout() {
         </header>
       </div>
 
-      <div className="container mx-auto px-4 py-[60px] md:py-[80px]">
+      <div className="container mx-auto px-4 py-[60px] md:py-[80px] relative z-10">
         {/* RSVP Section - First */}
         <section className="mb-12 md:mb-16 animate-fade-in">
           <RSVPForm guest={currentGuest} />
@@ -146,5 +156,6 @@ export default function EventLayout() {
           </div>
         </section>
       </div>
-    </div>;
+    </div>
+  );
 }

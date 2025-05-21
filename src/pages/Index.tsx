@@ -49,31 +49,43 @@ const Index = () => {
   const isDevelopment = process.env.NODE_ENV === 'development';
 
   return (
-    <>
-      {currentGuest ? <EventLayout /> : <AuthForm />}
-      
-      {!currentGuest && isDevelopment && (
-        <div className="fixed bottom-4 right-4">
-          <Button 
-            variant="outline" 
-            size="sm"
-            className="text-xs bg-white/80 hover:bg-white"
-            onClick={handleSeedTestAccounts}
-            disabled={seedingStatus === 'loading'}
-          >
-            {seedingStatus === 'loading' ? (
-              <span className="flex items-center">
-                <Loader2 className="mr-2 h-3 w-3 animate-spin" /> Creating Accounts...
-              </span>
-            ) : seedingStatus === 'success' ? (
-              "Accounts Created!"
-            ) : (
-              "Seed Test Accounts"
-            )}
-          </Button>
-        </div>
-      )}
-    </>
+    <div className="relative min-h-screen">
+      {/* Background SVG - positioned in the center with max-width 50% */}
+      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
+        <img 
+          src="/lovable-uploads/background.svg" 
+          alt="" 
+          className="max-w-[50vw] w-auto h-auto opacity-20"
+          aria-hidden="true"
+        />
+      </div>
+
+      <div className="relative z-10">
+        {currentGuest ? <EventLayout /> : <AuthForm />}
+        
+        {!currentGuest && isDevelopment && (
+          <div className="fixed bottom-4 right-4">
+            <Button 
+              variant="outline" 
+              size="sm"
+              className="text-xs bg-white/80 hover:bg-white"
+              onClick={handleSeedTestAccounts}
+              disabled={seedingStatus === 'loading'}
+            >
+              {seedingStatus === 'loading' ? (
+                <span className="flex items-center">
+                  <Loader2 className="mr-2 h-3 w-3 animate-spin" /> Creating Accounts...
+                </span>
+              ) : seedingStatus === 'success' ? (
+                "Accounts Created!"
+              ) : (
+                "Seed Test Accounts"
+              )}
+            </Button>
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 
