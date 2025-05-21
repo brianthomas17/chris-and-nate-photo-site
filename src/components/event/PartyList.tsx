@@ -61,7 +61,7 @@ export default function PartyList({ guestId, partyId }: PartyListProps) {
             ? `You have ${partyMembers.length} guests in your party` 
             : "You are the only guest in your party"}
         </p>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="flex flex-col space-y-4 max-w-md mx-auto">
           {partyMembers.map(guest => (
             <PartyMemberCard
               key={guest.id}
