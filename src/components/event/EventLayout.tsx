@@ -58,62 +58,64 @@ export default function EventLayout() {
       </div>
       
       {/* Hero Section with circuit pattern frames */}
-      <header className="text-[#C9A95B] relative" style={{
-      minHeight: isMobile ? "600px" : "800px",
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center"
-    }}>
-        {/* Top circuit frame - adjusted to properly align at top with no gap */}
-        <div className="absolute top-0 left-0 right-0 w-full h-[100px] md:h-[150px] bg-no-repeat bg-contain bg-top animate-[fadeIn_1s_ease-out_forwards] z-10" style={{
-        backgroundImage: "url('/lovable-uploads/top.svg')",
-        opacity: 0
-      }}>
-        </div>
-        
-        {/* Bottom circuit frame - adjusted to properly align at bottom with no gap */}
-        <div className="absolute bottom-0 left-0 right-0 w-full h-[100px] md:h-[150px] bg-no-repeat bg-contain bg-bottom animate-[fadeIn_1s_ease-out_forwards] z-10" style={{
-        backgroundImage: "url('/lovable-uploads/bottom.svg')",
-        opacity: 0
-      }}>
-        </div>
-        
-        <div className="container mx-auto text-center relative z-0 px-4 py-[150px] md:py-[200px]">
-          <div className="max-w-[800px] mx-auto">
-            <h3 className="text-xl md:text-3xl font-bicyclette mb-6 md:mb-10 text-[#C9A95B] animate-[fadeIn_1.2s_ease-out_0.8s_forwards]" style={{
+      <div className="px-4 py-6 md:py-12">
+        <header className="text-[#C9A95B] relative rounded-xl shadow-lg border border-[#C9A95B]/20 bg-anniversary-darkPurple/50 backdrop-blur-sm mx-auto max-w-7xl" style={{
+          minHeight: isMobile ? "580px" : "780px",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center"
+        }}>
+          {/* Top circuit frame - adjusted to properly align at top */}
+          <div className="absolute top-0 left-0 right-0 w-full h-[100px] md:h-[150px] bg-no-repeat bg-contain bg-top animate-[fadeIn_1s_ease-out_forwards] z-10" style={{
+            backgroundImage: "url('/lovable-uploads/top.svg')",
             opacity: 0
           }}>
-              CHRIS & NATE INVITE YOU TO
-            </h3>
-            <h1 className="text-3xl md:text-6xl font-din tracking-wide mb-4 uppercase text-[#C9A95B] animate-[fadeIn_1.2s_ease-out_1s_forwards]" style={{
+          </div>
+          
+          {/* Bottom circuit frame - adjusted to properly align at bottom */}
+          <div className="absolute bottom-0 left-0 right-0 w-full h-[100px] md:h-[150px] bg-no-repeat bg-contain bg-bottom animate-[fadeIn_1s_ease-out_forwards] z-10" style={{
+            backgroundImage: "url('/lovable-uploads/bottom.svg')",
             opacity: 0
           }}>
-              A Decade of Determination, Disruption & Dinner Dilemmas
-            </h1>
-            <p className="text-lg md:text-xl text-[#C9A95B] font-bicyclette mb-6 md:mb-8 animate-[fadeIn_1.2s_ease-out_1.2s_forwards]" style={{
-            opacity: 0
-          }}>
-              THIS ONE'S DIFFERENT...
-            </p>
-            <h2 className="text-2xl md:text-5xl font-din mb-4 md:mb-6 text-[#C9A95B] animate-[fadeIn_1.2s_ease-out_1.4s_forwards]" style={{
-            opacity: 0
-          }}>
-              8.16.25
-            </h2>
-            <p className="text-lg md:text-2xl font-bicyclette mb-6 md:mb-8 text-[#C9A95B] animate-[fadeIn_1.2s_ease-out_1.6s_forwards]" style={{
-            opacity: 0
-          }}>
-              MORE THAN AN EVENT — IT'S A MOMENT
-            </p>
-            <div className="text-[#C9A95B] animate-[fadeIn_1.2s_ease-out_1.8s_forwards]" style={{
-            opacity: 0
-          }}>
-              <p className="font-bicyclette text-sm md:text-base">SAINT JOSEPH'S ARTS SOCIETY</p>
-              <p className="font-bicyclette text-sm md:text-base">1401 HOWARD STREET, SAN FRANCISCO</p>
+          </div>
+          
+          <div className="container mx-auto text-center relative z-0 px-4 py-[130px] md:py-[180px]">
+            <div className="max-w-[800px] mx-auto">
+              <h3 className="text-xl md:text-3xl font-bicyclette mb-6 md:mb-10 text-[#C9A95B] animate-[fadeIn_1.2s_ease-out_0.8s_forwards]" style={{
+                opacity: 0
+              }}>
+                CHRIS & NATE INVITE YOU TO
+              </h3>
+              <h1 className="text-3xl md:text-6xl font-din tracking-wide mb-4 uppercase text-[#C9A95B] animate-[fadeIn_1.2s_ease-out_1s_forwards]" style={{
+                opacity: 0
+              }}>
+                A Decade of Determination, Disruption & Dinner Dilemmas
+              </h1>
+              <p className="text-lg md:text-xl text-[#C9A95B] font-bicyclette mb-6 md:mb-8 animate-[fadeIn_1.2s_ease-out_1.2s_forwards]" style={{
+                opacity: 0
+              }}>
+                THIS ONE'S DIFFERENT...
+              </p>
+              <h2 className="text-2xl md:text-5xl font-din mb-4 md:mb-6 text-[#C9A95B] animate-[fadeIn_1.2s_ease-out_1.4s_forwards]" style={{
+                opacity: 0
+              }}>
+                8.16.25
+              </h2>
+              <p className="text-lg md:text-2xl font-bicyclette mb-6 md:mb-8 text-[#C9A95B] animate-[fadeIn_1.2s_ease-out_1.6s_forwards]" style={{
+                opacity: 0
+              }}>
+                MORE THAN AN EVENT — IT'S A MOMENT
+              </p>
+              <div className="text-[#C9A95B] animate-[fadeIn_1.2s_ease-out_1.8s_forwards]" style={{
+                opacity: 0
+              }}>
+                <p className="font-bicyclette text-sm md:text-base">SAINT JOSEPH'S ARTS SOCIETY</p>
+                <p className="font-bicyclette text-sm md:text-base">1401 HOWARD STREET, SAN FRANCISCO</p>
+              </div>
             </div>
           </div>
-        </div>
-      </header>
+        </header>
+      </div>
 
       <div className="container mx-auto px-4 py-[60px] md:py-[80px]">
         {/* RSVP Section - First */}

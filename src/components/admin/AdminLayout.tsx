@@ -1,3 +1,4 @@
+
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -49,17 +50,19 @@ export default function AdminLayout() {
         </div>
       </div>
       
-      <header className="text-[#C9A95B] p-4 border-b border-[#C9A95B]/30 relative overflow-hidden">
-        {/* Top circuit frame - position adjusted to remove gap */}
-        
-        
-        {/* Bottom circuit frame - position adjusted to remove gap */}
-        
-        
-        <div className="container mx-auto relative z-10">
-          <h1 className="text-3xl font-din uppercase tracking-wide">Anniversary Admin</h1>
-        </div>
-      </header>
+      <div className="px-4 py-6 md:py-8">
+        <header className="text-[#C9A95B] p-4 border-b border-[#C9A95B]/30 relative overflow-hidden rounded-xl shadow-lg border border-[#C9A95B]/20 bg-anniversary-darkPurple/50 backdrop-blur-sm">
+          {/* Top circuit frame - position adjusted to remove gap */}
+          
+          
+          {/* Bottom circuit frame - position adjusted to remove gap */}
+          
+          
+          <div className="container mx-auto relative z-10">
+            <h1 className="text-3xl font-din uppercase tracking-wide">Anniversary Admin</h1>
+          </div>
+        </header>
+      </div>
 
       <main className="container mx-auto py-8 px-4">
         <Tabs defaultValue="guests" className="w-full">
