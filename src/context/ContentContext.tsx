@@ -8,7 +8,7 @@ interface ContentContextType {
   addContentSection: (section: Omit<ContentSection, 'id'>) => Promise<void>;
   updateContentSection: (section: ContentSection) => Promise<void>;
   deleteContentSection: (id: string) => Promise<void>;
-  getVisibleSections: (invitationType: InvitationType) => ContentSection[];
+  getVisibleSections: (invitationType: InvitationType, fridayDinner?: boolean, sundayBrunch?: boolean) => ContentSection[];
 }
 
 const ContentContext = createContext<ContentContextType | undefined>(undefined);
@@ -46,7 +46,9 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         visible_to: section.visible_to,
         order_index: section.order_index,
         created_at: section.created_at,
-        updated_at: section.updated_at
+        updated_at: section.updated_at,
+        visible_to_friday_dinner: section.visible_to_friday_dinner,
+        visible_to_sunday_brunch: section.visible_to_sunday_brunch
       }));
 
       setContentSections(transformedSections);
@@ -63,7 +65,9 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
           title: section.title,
           content: section.content,
           visible_to: section.visible_to,
-          order_index: section.order_index
+          order_index: section.order_index,
+          visible_to_friday_dinner: section.visible_to_friday_dinner,
+          visible_to_sunday_brunch: section.visible_to_sunday_brunch
         });
 
       if (error) {
@@ -86,7 +90,9 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
           content: section.content,
           visible_to: section.visible_to,
           order_index: section.order_index,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
+          visible_to_friday_dinner: section.visible_to_friday_dinner,
+          visible_to_sunday_brunch: section.visible_to_sunday_brunch
         })
         .eq('id', section.id);
 
@@ -119,9 +125,21 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   };
 
-  const getVisibleSections = (invitationType: InvitationType) => {
+  const getVisibleSections = (invitationType: InvitationType, fridayDinner: boolean = false, sundayBrunch: boolean = false) => {
     return contentSections
-      .filter(section => section.visible_to.includes(invitationType))
+      .filter(section => {
+        // Basic invitation type filtering
+        const visibleForInvitationType = section.visible_to.includes(invitationType);
+        
+        // Special event filters
+        const visibleForFridayDinner = section.visible_to_friday_dinner ? fridayDinner : true;
+        const visibleForSundayBrunch = section.visible_to_sunday_brunch ? sundayBrunch : true;
+        
+        // Section is visible if it matches the invitation type AND 
+        // (it's not specifically for Friday dinner OR user is attending Friday dinner) AND
+        // (it's not specifically for Sunday brunch OR user is attending Sunday brunch)
+        return visibleForInvitationType && visibleForFridayDinner && visibleForSundayBrunch;
+      })
       .sort((a, b) => a.order_index - b.order_index);
   };
 

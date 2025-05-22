@@ -36,6 +36,8 @@ export interface ContentSection {
   order_index: number;
   created_at?: string;
   updated_at?: string;
+  visible_to_friday_dinner?: boolean;
+  visible_to_sunday_brunch?: boolean;
 }
 
 export interface Photo {

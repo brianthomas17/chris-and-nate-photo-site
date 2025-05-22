@@ -22,6 +22,8 @@ export default function ContentManagement() {
   const [visibleToFullDay, setVisibleToFullDay] = useState(true);
   const [visibleToEvening, setVisibleToEvening] = useState(true);
   const [visibleToAdmin, setVisibleToAdmin] = useState(true);
+  const [visibleToFridayDinner, setVisibleToFridayDinner] = useState(false);
+  const [visibleToSundayBrunch, setVisibleToSundayBrunch] = useState(false);
   const [orderIndex, setOrderIndex] = useState(0);
   
   const [currentSection, setCurrentSection] = useState<ContentSection | null>(null);
@@ -33,6 +35,8 @@ export default function ContentManagement() {
     setVisibleToFullDay(true);
     setVisibleToEvening(true);
     setVisibleToAdmin(true);
+    setVisibleToFridayDinner(false);
+    setVisibleToSundayBrunch(false);
     setOrderIndex(0);
     setCurrentSection(null);
   };
@@ -49,6 +53,8 @@ export default function ContentManagement() {
       content,
       visible_to: visibleTo,
       order_index: orderIndex || contentSections.length + 1,
+      visible_to_friday_dinner: visibleToFridayDinner,
+      visible_to_sunday_brunch: visibleToSundayBrunch
     });
     
     setIsSubmitting(false);
@@ -71,6 +77,8 @@ export default function ContentManagement() {
       content,
       visible_to: visibleTo,
       order_index: orderIndex || currentSection.order_index,
+      visible_to_friday_dinner: visibleToFridayDinner,
+      visible_to_sunday_brunch: visibleToSundayBrunch
     });
     
     setIsSubmitting(false);
@@ -85,6 +93,8 @@ export default function ContentManagement() {
     setVisibleToFullDay(section.visible_to.includes("main event"));
     setVisibleToEvening(section.visible_to.includes("afterparty"));
     setVisibleToAdmin(section.visible_to.includes("admin"));
+    setVisibleToFridayDinner(section.visible_to_friday_dinner || false);
+    setVisibleToSundayBrunch(section.visible_to_sunday_brunch || false);
     setOrderIndex(section.order_index);
     setIsEditDialogOpen(true);
   };
@@ -93,6 +103,27 @@ export default function ContentManagement() {
     if (confirm("Are you sure you want to delete this content section?")) {
       await deleteContentSection(id);
     }
+  };
+
+  // Helper function to format section visibility for display
+  const formatVisibility = (section: ContentSection) => {
+    const parts = [];
+    
+    // Add invitation types
+    if (section.visible_to.length > 0) {
+      parts.push(section.visible_to.join(", "));
+    }
+    
+    // Add special event visibility
+    if (section.visible_to_friday_dinner) {
+      parts.push("Friday Dinner");
+    }
+    
+    if (section.visible_to_sunday_brunch) {
+      parts.push("Sunday Brunch");
+    }
+    
+    return parts.join(", ");
   };
 
   return (
@@ -143,7 +174,7 @@ export default function ContentManagement() {
                 />
               </div>
               <div className="space-y-2">
-                <Label>Visible To:</Label>
+                <Label>Visible To Guest Types:</Label>
                 <div className="flex flex-col gap-2 mt-2">
                   <div className="flex items-center space-x-2">
                     <Checkbox 
@@ -177,6 +208,31 @@ export default function ContentManagement() {
                   </div>
                 </div>
               </div>
+              <div className="space-y-2 pt-4 border-t">
+                <Label>Special Event Visibility:</Label>
+                <div className="flex flex-col gap-2 mt-2">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="friday-dinner" 
+                      checked={visibleToFridayDinner} 
+                      onCheckedChange={(checked) => setVisibleToFridayDinner(!!checked)} 
+                    />
+                    <label htmlFor="friday-dinner" className="text-sm font-medium leading-none cursor-pointer">
+                      Only show to Friday Dinner attendees
+                    </label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="sunday-brunch" 
+                      checked={visibleToSundayBrunch} 
+                      onCheckedChange={(checked) => setVisibleToSundayBrunch(!!checked)} 
+                    />
+                    <label htmlFor="sunday-brunch" className="text-sm font-medium leading-none cursor-pointer">
+                      Only show to Sunday Brunch attendees
+                    </label>
+                  </div>
+                </div>
+              </div>
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setIsAddDialogOpen(false)} disabled={isSubmitting}>
@@ -205,7 +261,7 @@ export default function ContentManagement() {
               <TableRow key={section.id}>
                 <TableCell>{section.order_index}</TableCell>
                 <TableCell>{section.title}</TableCell>
-                <TableCell>{section.visible_to.join(", ")}</TableCell>
+                <TableCell>{formatVisibility(section)}</TableCell>
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">
                     <Button variant="outline" size="sm" onClick={() => handleEditClick(section)}>
@@ -261,7 +317,7 @@ export default function ContentManagement() {
                 />
               </div>
               <div className="space-y-2">
-                <Label>Visible To:</Label>
+                <Label>Visible To Guest Types:</Label>
                 <div className="flex flex-col gap-2 mt-2">
                   <div className="flex items-center space-x-2">
                     <Checkbox 
@@ -291,6 +347,31 @@ export default function ContentManagement() {
                     />
                     <label htmlFor="edit-admin" className="text-sm font-medium leading-none cursor-pointer">
                       Admins
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-2 pt-4 border-t">
+                <Label>Special Event Visibility:</Label>
+                <div className="flex flex-col gap-2 mt-2">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="edit-friday-dinner" 
+                      checked={visibleToFridayDinner} 
+                      onCheckedChange={(checked) => setVisibleToFridayDinner(!!checked)} 
+                    />
+                    <label htmlFor="edit-friday-dinner" className="text-sm font-medium leading-none cursor-pointer">
+                      Only show to Friday Dinner attendees
+                    </label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="edit-sunday-brunch" 
+                      checked={visibleToSundayBrunch} 
+                      onCheckedChange={(checked) => setVisibleToSundayBrunch(!!checked)} 
+                    />
+                    <label htmlFor="edit-sunday-brunch" className="text-sm font-medium leading-none cursor-pointer">
+                      Only show to Sunday Brunch attendees
                     </label>
                   </div>
                 </div>

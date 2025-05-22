@@ -4,11 +4,24 @@ import { InvitationType } from "@/types";
 
 interface ContentSectionsProps {
   invitationType: InvitationType;
+  fridayDinner?: boolean;
+  sundayBrunch?: boolean;
 }
 
-export default function ContentSections({ invitationType }: ContentSectionsProps) {
+export default function ContentSections({ 
+  invitationType,
+  fridayDinner = false,
+  sundayBrunch = false
+}: ContentSectionsProps) {
   const { getVisibleSections } = useContent();
-  const visibleSections = getVisibleSections(invitationType);
+  const visibleSections = getVisibleSections(invitationType, fridayDinner, sundayBrunch);
+
+  console.log("Content sections rendering with:", {
+    invitationType,
+    fridayDinner,
+    sundayBrunch,
+    visibleSectionsCount: visibleSections.length
+  });
 
   if (visibleSections.length === 0) {
     return (
