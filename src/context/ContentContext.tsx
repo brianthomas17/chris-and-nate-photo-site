@@ -83,6 +83,16 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const updateContentSection = async (section: ContentSection) => {
     try {
+      console.log('Updating section with data:', {
+        title: section.title,
+        content: section.content,
+        visible_to: section.visible_to,
+        order_index: section.order_index,
+        updated_at: new Date().toISOString(),
+        visible_to_friday_dinner: section.visible_to_friday_dinner,
+        visible_to_sunday_brunch: section.visible_to_sunday_brunch
+      });
+      
       const { error } = await supabase
         .from('content_sections')
         .update({
