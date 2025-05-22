@@ -33,8 +33,19 @@ export default function EventLayout() {
   
   const isAdmin = currentGuest.invitation_type === 'admin';
   const hasParty = !!currentGuest.party_id;
+  
+  // Explicitly check if these values are true, not just truthy
   const showFridayDinner = currentGuest.friday_dinner === true;
   const showSundayBrunch = currentGuest.sunday_brunch === true;
+  
+  console.log("Guest data in EventLayout:", {
+    id: currentGuest.id,
+    name: currentGuest.first_name,
+    friday_dinner: currentGuest.friday_dinner,
+    sunday_brunch: currentGuest.sunday_brunch,
+    showFridayDinner,
+    showSundayBrunch
+  });
   
   return (
     <div className="min-h-screen relative">
