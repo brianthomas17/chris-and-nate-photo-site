@@ -16,6 +16,8 @@ export interface Guest {
   updated_at?: string;
   party_id?: string | null;
   attending?: string | null;
+  friday_dinner?: boolean | null;
+  sunday_brunch?: boolean | null;
 }
 
 export interface Party {

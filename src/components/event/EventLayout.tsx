@@ -7,6 +7,8 @@ import RSVPForm from "./RSVPForm";
 import PartyList from "./PartyList";
 import ConfirmedAttendees from "./ConfirmedAttendees";
 import SectionSeparator from "./SectionSeparator";
+import FridayDinnerSection from "./FridayDinnerSection";
+import SundayBrunchSection from "./SundayBrunchSection";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -31,6 +33,8 @@ export default function EventLayout() {
   
   const isAdmin = currentGuest.invitation_type === 'admin';
   const hasParty = !!currentGuest.party_id;
+  const showFridayDinner = currentGuest.friday_dinner === true;
+  const showSundayBrunch = currentGuest.sunday_brunch === true;
   
   return (
     <div className="min-h-screen relative">
@@ -155,7 +159,14 @@ export default function EventLayout() {
           </section>
         )}
 
-        {/* Event Details Section - Third */}
+        {/* Friday Dinner Section - Shown conditionally */}
+        {showFridayDinner && (
+          <section className="animate-fade-in pt-16">
+            <FridayDinnerSection />
+          </section>
+        )}
+
+        {/* Event Details Section */}
         <section className="animate-fade-in pt-20">
           <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-6 md:mb-8">EVENT DETAILS</h2>
           <ContentSections invitationType={currentGuest.invitation_type} />
@@ -164,7 +175,14 @@ export default function EventLayout() {
           </div>
         </section>
         
-        {/* Confirmed Attendees Section - Fourth */}
+        {/* Sunday Brunch Section - Shown conditionally */}
+        {showSundayBrunch && (
+          <section className="animate-fade-in">
+            <SundayBrunchSection />
+          </section>
+        )}
+        
+        {/* Confirmed Attendees Section */}
         <section className="animate-fade-in pt-20">
           <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-6 md:mb-8 pb-4">CONFIRMED ATTENDEES</h2>
           <div className="max-w-[800px] mx-auto">

@@ -34,6 +34,8 @@ export default function GuestManagement() {
   const [selectedGuests, setSelectedGuests] = useState<string[]>([]);
   const [selectedParty, setSelectedParty] = useState<string | null>(null);
   const [rsvpAttending, setRsvpAttending] = useState<string | null>(null);
+  const [fridayDinner, setFridayDinner] = useState<boolean>(false);
+  const [sundayBrunch, setSundayBrunch] = useState<boolean>(false);
 
   const resetForm = () => {
     setFirstName("");
@@ -51,6 +53,8 @@ export default function GuestManagement() {
     setSelectedGuests([]);
     setSelectedParty(null);
     setRsvpAttending(null);
+    setFridayDinner(false);
+    setSundayBrunch(false);
   };
 
   const handleAddGuest = async () => {
@@ -74,7 +78,9 @@ export default function GuestManagement() {
       zip_code: zipCode || null,
       invitation_type: invitationType,
       party_id: partyId,
-      attending: rsvpAttending
+      attending: rsvpAttending,
+      friday_dinner: rsvpAttending === "Yes" ? fridayDinner : null,
+      sunday_brunch: rsvpAttending === "Yes" ? sundayBrunch : null
     });
     
     setIsSubmitting(false);
@@ -106,7 +112,9 @@ export default function GuestManagement() {
       zip_code: zipCode || null,
       invitation_type: invitationType,
       party_id: partyId,
-      attending: rsvpAttending
+      attending: rsvpAttending,
+      friday_dinner: rsvpAttending === "Yes" ? fridayDinner : null,
+      sunday_brunch: rsvpAttending === "Yes" ? sundayBrunch : null
     });
     
     setIsSubmitting(false);
@@ -119,7 +127,7 @@ export default function GuestManagement() {
     setCurrentGuest(guest);
     setFirstName(guest.first_name);
     setLastName(guest.last_name || "");
-    setEmail(guest.email);
+    setEmail(guest.email || "");
     setPhoneNumber(guest.phone_number || "");
     setAddress(guest.address || "");
     setCity(guest.city || "");
@@ -131,6 +139,8 @@ export default function GuestManagement() {
     // Set RSVP data if available
     console.log("Setting RSVP status from guest data:", guest.attending);
     setRsvpAttending(guest.attending);
+    setFridayDinner(guest.friday_dinner || false);
+    setSundayBrunch(guest.sunday_brunch || false);
     
     setIsEditDialogOpen(true);
   };
@@ -423,6 +433,28 @@ export default function GuestManagement() {
                     </SelectContent>
                   </Select>
                 </div>
+                
+                {rsvpAttending === "Yes" && (
+                  <div className="space-y-3 border-t pt-3">
+                    <h4 className="font-medium">Additional Events</h4>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="add-friday-dinner" 
+                        checked={fridayDinner} 
+                        onCheckedChange={(checked) => setFridayDinner(checked === true)}
+                      />
+                      <Label htmlFor="add-friday-dinner">Friday Family Dinner</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="add-sunday-brunch" 
+                        checked={sundayBrunch}
+                        onCheckedChange={(checked) => setSundayBrunch(checked === true)}
+                      />
+                      <Label htmlFor="add-sunday-brunch">Sunday Brunch</Label>
+                    </div>
+                  </div>
+                )}
               </div>
               <DialogFooter>
                 <Button variant="outline" onClick={() => setIsAddDialogOpen(false)} disabled={isSubmitting}>
@@ -444,11 +476,9 @@ export default function GuestManagement() {
               <TableHead>First Name</TableHead>
               <TableHead>Last Name</TableHead>
               <TableHead>Email</TableHead>
-              <TableHead>Phone</TableHead>
-              <TableHead>Address</TableHead>
-              <TableHead>Invitation Type</TableHead>
-              <TableHead>Party</TableHead>
               <TableHead>RSVP Status</TableHead>
+              <TableHead>Friday Dinner</TableHead>
+              <TableHead>Sunday Brunch</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -458,18 +488,6 @@ export default function GuestManagement() {
                 <TableCell>{guest.first_name}</TableCell>
                 <TableCell>{guest.last_name || "-"}</TableCell>
                 <TableCell>{guest.email || "-"}</TableCell>
-                <TableCell>{guest.phone_number || "-"}</TableCell>
-                <TableCell>
-                  {guest.address ? (
-                    <>
-                      {guest.address}<br />
-                      {guest.city && guest.state ? `${guest.city}, ${guest.state}` : guest.city || guest.state}{' '}
-                      {guest.zip_code}
-                    </>
-                  ) : "-"}
-                </TableCell>
-                <TableCell className="capitalize">{guest.invitation_type}</TableCell>
-                <TableCell>{getPartyName(guest.party_id)}</TableCell>
                 <TableCell>
                   {guest.attending !== null ? (
                     guest.attending === "Yes" ? (
@@ -479,6 +497,20 @@ export default function GuestManagement() {
                     )
                   ) : (
                     <Badge variant="outline">Pending</Badge>
+                  )}
+                </TableCell>
+                <TableCell>
+                  {guest.attending === "Yes" && guest.friday_dinner ? (
+                    <Badge className="bg-blue-500">Yes</Badge>
+                  ) : (
+                    <Badge variant="outline">No</Badge>
+                  )}
+                </TableCell>
+                <TableCell>
+                  {guest.attending === "Yes" && guest.sunday_brunch ? (
+                    <Badge className="bg-purple-500">Yes</Badge>
+                  ) : (
+                    <Badge variant="outline">No</Badge>
                   )}
                 </TableCell>
                 <TableCell className="text-right">
@@ -653,6 +685,28 @@ export default function GuestManagement() {
                       </SelectContent>
                     </Select>
                   </div>
+                  
+                  {rsvpAttending === "Yes" && (
+                    <div className="space-y-3 pt-3">
+                      <h4 className="font-medium">Additional Events</h4>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox 
+                          id="edit-friday-dinner" 
+                          checked={fridayDinner} 
+                          onCheckedChange={(checked) => setFridayDinner(checked === true)}
+                        />
+                        <Label htmlFor="edit-friday-dinner">Friday Family Dinner</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox 
+                          id="edit-sunday-brunch" 
+                          checked={sundayBrunch}
+                          onCheckedChange={(checked) => setSundayBrunch(checked === true)}
+                        />
+                        <Label htmlFor="edit-sunday-brunch">Sunday Brunch</Label>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

@@ -86,6 +86,7 @@ export type Database = {
           created_at: string
           email: string | null
           first_name: string
+          friday_dinner: boolean | null
           id: string
           invitation_type: Database["public"]["Enums"]["invitation_type"]
           last_name: string | null
@@ -93,6 +94,7 @@ export type Database = {
           party_name: string | null
           phone_number: string | null
           state: string | null
+          sunday_brunch: boolean | null
           updated_at: string
           zip_code: string | null
         }
@@ -103,6 +105,7 @@ export type Database = {
           created_at?: string
           email?: string | null
           first_name: string
+          friday_dinner?: boolean | null
           id?: string
           invitation_type: Database["public"]["Enums"]["invitation_type"]
           last_name?: string | null
@@ -110,6 +113,7 @@ export type Database = {
           party_name?: string | null
           phone_number?: string | null
           state?: string | null
+          sunday_brunch?: boolean | null
           updated_at?: string
           zip_code?: string | null
         }
@@ -120,6 +124,7 @@ export type Database = {
           created_at?: string
           email?: string | null
           first_name?: string
+          friday_dinner?: boolean | null
           id?: string
           invitation_type?: Database["public"]["Enums"]["invitation_type"]
           last_name?: string | null
@@ -127,6 +132,7 @@ export type Database = {
           party_name?: string | null
           phone_number?: string | null
           state?: string | null
+          sunday_brunch?: boolean | null
           updated_at?: string
           zip_code?: string | null
         }

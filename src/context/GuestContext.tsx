@@ -9,7 +9,7 @@ interface GuestContextType {
   addGuest: (guest: Omit<Guest, 'id'>) => Promise<void>;
   updateGuest: (guest: Guest) => Promise<void>;
   deleteGuest: (id: string) => Promise<void>;
-  updateRSVP: (guestId: string, attending: string) => Promise<any>;
+  updateRSVP: (guestId: string, attending: string, fridayDinner?: boolean, sundayBrunch?: boolean) => Promise<any>;
   getGuestByEmail: (email: string) => Promise<Guest | undefined>;
   createParty: (name: string) => Promise<string | undefined>;
   updatePartyMembers: (partyId: string, guestIds: string[]) => Promise<void>;
@@ -55,7 +55,9 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           zip_code,
           invitation_type,
           party_id,
-          attending
+          attending,
+          friday_dinner,
+          sunday_brunch
         `);
 
       if (error) {
@@ -174,7 +176,9 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           zip_code: guest.zip_code,
           invitation_type: guest.invitation_type,
           party_id: guest.party_id,
-          attending: guest.attending
+          attending: guest.attending,
+          friday_dinner: guest.friday_dinner,
+          sunday_brunch: guest.sunday_brunch
         })
         .eq('id', guest.id);
 
@@ -235,8 +239,8 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   };
 
-  const updateRSVP = async (guestId: string, attending: string) => {
-    console.log("updateRSVP called with:", { guestId, attending });
+  const updateRSVP = async (guestId: string, attending: string, fridayDinner: boolean = false, sundayBrunch: boolean = false) => {
+    console.log("updateRSVP called with:", { guestId, attending, fridayDinner, sundayBrunch });
     
     try {
       // Update the attending status directly on the guests table
@@ -244,6 +248,8 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         .from('guests')
         .update({
           attending,
+          friday_dinner: attending === "Yes" ? fridayDinner : null,
+          sunday_brunch: attending === "Yes" ? sundayBrunch : null,
           updated_at: new Date().toISOString()
         })
         .eq('id', guestId)
@@ -262,7 +268,9 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           g.id === guestId 
             ? { 
                 ...g, 
-                attending
+                attending,
+                friday_dinner: attending === "Yes" ? fridayDinner : null,
+                sunday_brunch: attending === "Yes" ? sundayBrunch : null
               } 
             : g
         )

@@ -5,6 +5,7 @@ import { Guest } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { AlertCircle } from "lucide-react";
 
@@ -24,6 +25,8 @@ export default function RSVPForm({
   
   // Ensure we correctly initialize the state from the guest prop
   const [attending, setAttending] = useState<string | null>(guest?.attending || null);
+  const [fridayDinner, setFridayDinner] = useState<boolean>(guest?.friday_dinner || false);
+  const [sundayBrunch, setSundayBrunch] = useState<boolean>(guest?.sunday_brunch || false);
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [hasResponded, setHasResponded] = useState<boolean>(guest?.attending !== null);
   const [formError, setFormError] = useState<string | null>(null);
@@ -34,6 +37,8 @@ export default function RSVPForm({
       console.log("Guest data updated:", guest);
       console.log("Guest attending status:", guest.attending);
       setAttending(guest.attending || null);
+      setFridayDinner(guest.friday_dinner || false);
+      setSundayBrunch(guest.sunday_brunch || false);
       setHasResponded(guest.attending !== null);
     }
   }, [guest]);
@@ -45,13 +50,15 @@ export default function RSVPForm({
     console.log("Guest has RSVP:", guest.attending !== null);
     console.log("Current attending state:", attending);
     console.log("Current hasResponded state:", hasResponded);
+    console.log("Friday dinner:", fridayDinner);
+    console.log("Sunday brunch:", sundayBrunch);
     
     if (guest.attending !== null) {
       console.log("RSVP details:", { 
         attending: guest.attending
       });
     }
-  }, [guest, attending, hasResponded]);
+  }, [guest, attending, hasResponded, fridayDinner, sundayBrunch]);
 
   // Validate if the guest ID is a valid UUID format
   const isValidUUID = (id: string): boolean => {
@@ -63,7 +70,7 @@ export default function RSVPForm({
     e.preventDefault();
     setFormError(null);
     
-    console.log("RSVP form submitted with values:", { attending });
+    console.log("RSVP form submitted with values:", { attending, fridayDinner, sundayBrunch });
     
     // Ensure a selection has been made before submitting
     if (attending === null) {
@@ -91,11 +98,13 @@ export default function RSVPForm({
       
       console.log("Calling updateRSVP with:", {
         guestId: guest.id,
-        attending
+        attending,
+        fridayDinner,
+        sundayBrunch
       });
       
       // Call updateRSVP function with direct connection to Supabase
-      const result = await updateRSVP(guest.id, attending);
+      const result = await updateRSVP(guest.id, attending, fridayDinner, sundayBrunch);
       console.log("RSVP update result:", result);
       
       setHasResponded(true);
@@ -141,6 +150,36 @@ export default function RSVPForm({
                   <Label htmlFor="attending-no" className="text-white text-lg">No, I can't make it</Label>
                 </div>
               </RadioGroup>
+
+              {attending === "Yes" && (
+                <div className="pt-8 flex flex-col items-center space-y-6">
+                  <p className="text-anniversary-gold text-center text-base md:text-lg font-bicyclette">
+                    Would you also like to join us for these other events?
+                  </p>
+                  <div className="flex flex-col space-y-4">
+                    <div className="flex items-center space-x-3">
+                      <Checkbox 
+                        id="friday-dinner" 
+                        checked={fridayDinner} 
+                        onCheckedChange={(checked) => setFridayDinner(checked === true)} 
+                      />
+                      <Label htmlFor="friday-dinner" className="text-white text-lg">
+                        Friday Family Dinner (Aug 15)
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <Checkbox 
+                        id="sunday-brunch" 
+                        checked={sundayBrunch} 
+                        onCheckedChange={(checked) => setSundayBrunch(checked === true)} 
+                      />
+                      <Label htmlFor="sunday-brunch" className="text-white text-lg">
+                        Sunday Dim Sum Brunch (Aug 17)
+                      </Label>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
           
