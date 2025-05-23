@@ -43,8 +43,8 @@ export default function ContentSections({
     return html
       .replace(/<h1(.*?)>/g, '<h1$1 class="font-din text-anniversary-gold text-4xl mb-4 uppercase">')
       .replace(/<h2(.*?)>/g, '<h2$1 class="font-din text-anniversary-gold text-3xl mb-3 uppercase">')
-      .replace(/<h3(.*?)>/g, '<h3$1 class="font-din text-anniversary-gold text-2xl mb-2 uppercase">')
-      .replace(/<h4(.*?)>/g, '<h4$1 class="font-din text-anniversary-gold text-xl mb-2 uppercase">')
+      .replace(/<h3(.*?)>/g, '<h3$1 class="font-bicyclette text-anniversary-gold text-2xl mb-2 uppercase">')
+      .replace(/<h4(.*?)>/g, '<h4$1 class="font-bicyclette text-anniversary-gold text-xl mb-2 uppercase">')
       .replace(/<h5(.*?)>/g, '<h5$1 class="font-din text-anniversary-gold text-lg mb-1 uppercase">')
       .replace(/<h6(.*?)>/g, '<h6$1 class="font-din text-anniversary-gold text-base mb-1 uppercase">');
   };

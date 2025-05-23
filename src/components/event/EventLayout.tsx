@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -177,9 +176,8 @@ export default function EventLayout() {
           </section>
         )}
 
-        {/* Event Details Section */}
+        {/* Event Details Section - Removed "EVENT DETAILS" heading */}
         <section className="animate-fade-in pt-20">
-          <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-6 md:mb-8">EVENT DETAILS</h2>
           <div className="max-w-[450px] mx-auto">
             <ContentSections 
               invitationType={currentGuest.invitation_type} 
