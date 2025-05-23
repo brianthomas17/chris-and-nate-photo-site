@@ -1,47 +1,47 @@
 
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
-import { seedTestAccounts } from "@/utils/seedTestAccounts";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/context/AuthContext";
 import { useGuests } from "@/context/GuestContext";
-import { Navigate, useNavigate } from "react-router-dom";
 import { RefreshCw } from "lucide-react";
 
 const Admin = () => {
-  const [isSeeding, setIsSeeding] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { toast } = useToast();
   const { currentGuest, isLoading } = useAuth();
   const { fetchGuests } = useGuests();
   const navigate = useNavigate();
 
-  // Use useEffect for navigation to prevent issues with multiple renders
   useEffect(() => {
+    console.log("Admin page - Current Guest:", currentGuest, "Is Loading:", isLoading);
+    
     // Make sure auth is loaded before checking
     if (!isLoading) {
       // Redirect if not logged in
       if (!currentGuest) {
-        navigate('/', {
-          replace: true
-        });
+        console.log("No current guest, redirecting to home");
+        navigate('/', { replace: true });
         return;
       }
 
       // Redirect if not admin
       if (currentGuest.invitation_type !== 'admin') {
-        navigate('/', {
-          replace: true
-        });
+        console.log("Not an admin, redirecting to event page");
+        navigate('/event', { replace: true });
         return;
       }
     }
   }, [currentGuest, isLoading, navigate]);
 
-  // If still loading auth, show nothing
+  // If still loading auth, show loading indicator
   if (isLoading) {
-    return null;
+    return <div className="flex items-center justify-center min-h-screen">
+      <div className="w-16 h-16 border-t-4 border-anniversary-gold rounded-full animate-spin"></div>
+    </div>;
   }
 
   // If not admin or not logged in (before redirect happens), don't render

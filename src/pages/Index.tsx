@@ -1,7 +1,8 @@
 
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import AuthForm from "@/components/AuthForm";
-import EventLayout from "@/components/event/EventLayout";
 import { seedTestAccounts } from "@/utils/seedTestAccounts";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -12,6 +13,20 @@ const Index = () => {
   const { currentGuest, isLoading } = useAuth();
   const [seedingStatus, setSeedingStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const { toast } = useToast();
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    // If user is authenticated, redirect based on invitation type
+    if (currentGuest && !isLoading) {
+      console.log("User authenticated:", currentGuest);
+      
+      if (currentGuest.invitation_type === 'admin') {
+        navigate('/admin', { replace: true });
+      } else {
+        navigate('/event', { replace: true });
+      }
+    }
+  }, [currentGuest, isLoading, navigate]);
 
   if (isLoading) {
     return (
@@ -48,6 +63,7 @@ const Index = () => {
   // Show seed button only in development mode
   const isDevelopment = process.env.NODE_ENV === 'development';
 
+  // Only show the auth form if not authenticated and not loading
   return (
     <div className="relative min-h-screen">
       {/* Background SVG - positioned in the center with max-width 50% */}
@@ -61,9 +77,9 @@ const Index = () => {
       </div>
 
       <div className="relative z-10">
-        {currentGuest ? <EventLayout /> : <AuthForm />}
+        <AuthForm />
         
-        {!currentGuest && isDevelopment && (
+        {isDevelopment && (
           <div className="fixed bottom-4 right-4">
             <Button 
               variant="outline" 
