@@ -31,10 +31,13 @@ export default function EventLayout() {
 
   const isAdmin = currentGuest.invitation_type === 'admin';
   const hasParty = !!currentGuest.party_id;
-
+  
   // Ensure boolean values are properly handled with strict equality
   const showFridayDinner = currentGuest.friday_dinner === true;
   const showSundayBrunch = currentGuest.sunday_brunch === true;
+  // Explicitly check if the user has main_event access
+  const hasMainEventAccess = currentGuest.main_event === true || isAdmin;
+  
   console.log("Guest data in EventLayout:", {
     id: currentGuest.id,
     name: currentGuest.first_name,
@@ -181,13 +184,15 @@ export default function EventLayout() {
           </div>
         </section>
         
-        {/* Confirmed Attendees Section */}
-        <section className="animate-fade-in pt-20">
-          <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-6 md:mb-8 pb-4">CONFIRMED ATTENDEES</h2>
-          <div className="max-w-[800px] mx-auto">
-            <ConfirmedAttendees />
-          </div>
-        </section>
+        {/* Confirmed Attendees Section - Only shown to guests with main_event access */}
+        {hasMainEventAccess && (
+          <section className="animate-fade-in pt-20">
+            <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-6 md:mb-8 pb-4">CONFIRMED ATTENDEES</h2>
+            <div className="max-w-[800px] mx-auto">
+              <ConfirmedAttendees />
+            </div>
+          </section>
+        )}
       </div>
     </div>;
 }
