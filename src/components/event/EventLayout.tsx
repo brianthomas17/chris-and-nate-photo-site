@@ -140,30 +140,7 @@ export default function EventLayout() {
         </header>
       </div>
 
-      {/* Intro Text Section */}
-      <div className="container mx-auto px-4 py-16 md:py-20 relative z-10">
-        <div className="max-w-[500px] mx-auto text-center">
-          <p className="text-anniversary-gold text-base md:text-lg italic font-light leading-relaxed animate-[fadeIn_1.2s_ease-out_forwards]">
-            There are parties, and then there are nights that define a decade…
-          </p>
-      
-          <p className="text-anniversary-gold text-base md:text-lg italic font-light leading-relaxed animate-[fadeIn_1.2s_ease-out_forwards] mt-6">
-            Join us for an evening you'll never forget as we celebrate ten years of Chris and Nate.
-          </p>
-      
-          <p className="text-anniversary-gold text-base md:text-lg italic font-light leading-relaxed animate-[fadeIn_1.2s_ease-out_forwards] mt-6">
-            Ten years ago Chris and Nate married at San Francisco City Hall with only family in attendance. At the time, Nate was busy building Lever and Chris was re-entering the tech world. They didn't have the time or money to throw the wedding they wanted, so they decided if they made it to ten years of marriage, they would throw the most epic party.
-          </p>
-      
-          <p className="text-anniversary-gold text-base md:text-lg italic font-light leading-relaxed animate-[fadeIn_1.2s_ease-out_forwards] mt-6">
-            This is that party. You are invited. It will be like nothing anyone has ever seen.
-          </p>
-        </div>
-      </div>
-
-      <div className="container mx-auto px-4 relative z-10">
-        <SectionSeparator />
-      </div>
+      <SectionSeparator />
 
       <div className="container mx-auto px-4 py-16 md:py-20 relative z-10">
         {/* RSVP Section */}
@@ -178,20 +155,14 @@ export default function EventLayout() {
           </section>
         )}
 
-        {/* Separator before Event Details */}
-        <div className="mt-16 mb-16">
-          <SectionSeparator />
-        </div>
+        <SectionSeparator />
 
         {/* Event Details Header Section */}
         <section className="mb-16 md:mb-20 animate-fade-in">
           <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-6 md:mb-8">EVENT DETAILS</h2>
         </section>
 
-        {/* Separator after Event Details header */}
-        <div className="mt-16 mb-16">
-          <SectionSeparator />
-        </div>
+        <SectionSeparator />
 
         {/* Content Sections */}
         <section className="mb-16 md:mb-20 animate-fade-in">
@@ -203,9 +174,7 @@ export default function EventLayout() {
         {/* Confirmed Attendees Section - Only shown to guests with main_event access */}
         {hasMainEventAccess && (
           <>
-            <div className="mt-16 mb-16">
-              <SectionSeparator />
-            </div>
+            <SectionSeparator />
             <section className="animate-fade-in mb-16 md:mb-20">
               <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-6 md:mb-8 pb-4">CONFIRMED ATTENDEES</h2>
               <div className="max-w-[800px] mx-auto">
@@ -215,10 +184,9 @@ export default function EventLayout() {
           </>
         )}
 
+        <SectionSeparator />
+        
         {/* Questions Section - Now visible to all users */}
-        <div className="mt-16 mb-16">
-          <SectionSeparator />
-        </div>
         <section className="animate-fade-in">
           <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-6 md:mb-8">QUESTIONS</h2>
           <div className="max-w-[450px] mx-auto text-center">

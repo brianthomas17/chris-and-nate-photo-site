@@ -1,4 +1,3 @@
-
 import { useContent } from "@/context/ContentContext";
 import { InvitationType } from "@/types";
 import { useAuth } from "@/context/AuthContext";
@@ -126,7 +125,7 @@ export default function ContentSections({
   };
 
   return (
-    <div className="space-y-16">
+    <div className="space-y-0">
       {visibleSections.map((section, index) => (
         <div key={section.id}>
           <div className="text-center">
@@ -138,9 +137,7 @@ export default function ContentSections({
           
           {/* Add SectionSeparator between sections, but not after the last one */}
           {index < visibleSections.length - 1 && (
-            <div className="mt-16 mb-16">
-              <SectionSeparator />
-            </div>
+            <SectionSeparator />
           )}
         </div>
       ))}
