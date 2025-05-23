@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect, useReducer } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Guest } from '../types';
@@ -126,7 +127,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     navigate('/');
   };
 
-  const refreshSession: async () => {
+  const refreshSession = async () => {
     try {
       const { data, error } = await supabase
         .from('guests')
@@ -144,19 +145,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .eq('email', state.currentEmail)
         .maybeSingle();
       
-    if (error) {
-      console.error('Error refreshing session:', error);
-      return;
-    }
+      if (error) {
+        console.error('Error refreshing session:', error);
+        return;
+      }
 
-    if (data) {
-      dispatch({ type: 'SET_GUEST', payload: data });
-      console.log("Session refreshed, updated guest data:", data);
+      if (data) {
+        dispatch({ type: 'SET_GUEST', payload: data });
+        console.log("Session refreshed, updated guest data:", data);
+      }
+    } catch (error) {
+      console.error('Error refreshing session:', error);
     }
-  } catch (error) {
-    console.error('Error refreshing session:', error);
-  }
-},
+  };
 
   return (
     <AuthContext.Provider value={{ state, login, logout, refreshSession }}>
