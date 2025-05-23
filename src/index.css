@@ -87,6 +87,18 @@
     letter-spacing: 0.03em;
   }
   
+  /* Added global link styling */
+  a {
+    color: #D4AF37;
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+  }
+  
+  a:hover {
+    color: #e5c161;
+    text-decoration: underline;
+  }
+  
   /* Circuit pattern for background - used in various components */
   .circuit-pattern {
     background-image: url('/circuit-pattern.svg');
@@ -179,4 +191,15 @@
 .body-text {
   font-family: 'Bicyclette-Light', sans-serif !important;
   line-height: 1.6;
+}
+
+/* Added gold link variants */
+.link-gold {
+  color: #D4AF37;
+  transition: color 0.2s ease;
+}
+
+.link-gold:hover {
+  color: #e5c161;
+  text-decoration: underline;
 }
