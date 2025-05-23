@@ -1,8 +1,7 @@
 
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import AuthForm from "@/components/AuthForm";
+import EventLayout from "@/components/event/EventLayout";
 import { seedTestAccounts } from "@/utils/seedTestAccounts";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -13,29 +12,6 @@ const Index = () => {
   const { currentGuest, isLoading } = useAuth();
   const [seedingStatus, setSeedingStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const { toast } = useToast();
-  const navigate = useNavigate();
-  
-  useEffect(() => {
-    console.log("Index page - current guest:", currentGuest, "isLoading:", isLoading);
-    
-    // Only redirect if user is authenticated and not loading
-    if (currentGuest && !isLoading) {
-      console.log("User authenticated on Index page:", currentGuest);
-      
-      // Give the system some time to fully load before redirecting
-      const timer = setTimeout(() => {
-        if (currentGuest.invitation_type === 'admin') {
-          console.log("Redirecting admin to /admin page");
-          navigate('/admin', { replace: true });
-        } else {
-          console.log("Redirecting regular user to /event page");
-          navigate('/event', { replace: true });
-        }
-      }, 100);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [currentGuest, isLoading, navigate]);
 
   if (isLoading) {
     return (
@@ -43,18 +19,6 @@ const Index = () => {
         <div className="text-center">
           <div className="w-16 h-16 border-t-4 border-anniversary-gold rounded-full animate-spin mx-auto"></div>
           <p className="mt-4 text-muted-foreground">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-  
-  // If user is already authenticated, show a loading screen while redirecting
-  if (currentGuest) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-anniversary-cream">
-        <div className="text-center">
-          <div className="w-16 h-16 border-t-4 border-anniversary-gold rounded-full animate-spin mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">Redirecting to {currentGuest.invitation_type === 'admin' ? 'Admin' : 'Event'} page...</p>
         </div>
       </div>
     );
@@ -84,7 +48,6 @@ const Index = () => {
   // Show seed button only in development mode
   const isDevelopment = process.env.NODE_ENV === 'development';
 
-  // Only show the auth form if not authenticated and not loading
   return (
     <div className="relative min-h-screen">
       {/* Background SVG - positioned in the center with max-width 50% */}
@@ -98,9 +61,9 @@ const Index = () => {
       </div>
 
       <div className="relative z-10">
-        <AuthForm />
+        {currentGuest ? <EventLayout /> : <AuthForm />}
         
-        {isDevelopment && (
+        {!currentGuest && isDevelopment && (
           <div className="fixed bottom-4 right-4">
             <Button 
               variant="outline" 

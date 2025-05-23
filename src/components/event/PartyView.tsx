@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useGuests } from '@/context/GuestContext';
 import { Guest } from '@/types';
@@ -10,7 +11,7 @@ interface PartyViewProps {
   partyId: string | null | undefined;
 }
 
-export default function PartyView({ partyId, guestId }: PartyViewProps) {
+export default function PartyView({ guestId, partyId }: PartyViewProps) {
   const { getPartyMembers, getPartyById } = useGuests();
   const [partyMembers, setPartyMembers] = useState<Guest[]>([]);
   const [partyName, setPartyName] = useState<string>('Your Party');

@@ -1,48 +1,47 @@
 
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { seedTestAccounts } from "@/utils/seedTestAccounts";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/context/AuthContext";
 import { useGuests } from "@/context/GuestContext";
+import { Navigate, useNavigate } from "react-router-dom";
 import { RefreshCw } from "lucide-react";
 
 const Admin = () => {
+  const [isSeeding, setIsSeeding] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { toast } = useToast();
   const { currentGuest, isLoading } = useAuth();
   const { fetchGuests } = useGuests();
   const navigate = useNavigate();
 
+  // Use useEffect for navigation to prevent issues with multiple renders
   useEffect(() => {
-    console.log("Admin page - Current Guest:", currentGuest, "Is Loading:", isLoading);
-    
     // Make sure auth is loaded before checking
     if (!isLoading) {
       // Redirect if not logged in
       if (!currentGuest) {
-        console.log("No current guest, redirecting to home");
-        navigate('/', { replace: true });
+        navigate('/', {
+          replace: true
+        });
         return;
       }
 
-      // Only redirect if user is explicitly not an admin
+      // Redirect if not admin
       if (currentGuest.invitation_type !== 'admin') {
-        console.log("Not an admin, redirecting to event page");
-        navigate('/event', { replace: true });
-      } else {
-        console.log("Admin access granted, staying on admin page");
+        navigate('/', {
+          replace: true
+        });
+        return;
       }
     }
   }, [currentGuest, isLoading, navigate]);
 
-  // If still loading auth, show loading indicator
+  // If still loading auth, show nothing
   if (isLoading) {
-    return <div className="flex items-center justify-center min-h-screen">
-      <div className="w-16 h-16 border-t-4 border-anniversary-gold rounded-full animate-spin"></div>
-    </div>;
+    return null;
   }
 
   // If not admin or not logged in (before redirect happens), don't render

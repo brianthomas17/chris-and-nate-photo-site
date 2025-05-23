@@ -1,8 +1,10 @@
 
 import { Toaster } from "@/components/ui/toaster";
+// Remove the Sonner import if it's causing the duplicate toasts
+// import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { ContentProvider } from "./context/ContentContext";
 import { GuestProvider } from "./context/GuestContext";
@@ -16,32 +18,30 @@ import EventLayout from "./components/event/EventLayout";
 
 const queryClient = new QueryClient();
 
-const App = () => {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <BrowserRouter>
-          <AuthProvider>
-            <GuestProvider>
-              <ContentProvider>
-                <PhotoProvider>
-                  {/* Only include one toaster component */}
-                  <Toaster />
-                  <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/admin" element={<Admin />} />
-                    <Route path="/rsvp" element={<RSVP />} />
-                    <Route path="/event" element={<EventLayout />} />
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </PhotoProvider>
-              </ContentProvider>
-            </GuestProvider>
-          </AuthProvider>
-        </BrowserRouter>
-      </TooltipProvider>
-    </QueryClientProvider>
-  );
-};
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <AuthProvider>
+        <GuestProvider>
+          <ContentProvider>
+            <PhotoProvider>
+              {/* Only include one toaster component */}
+              <Toaster />
+              <BrowserRouter>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/admin" element={<Admin />} />
+                  <Route path="/rsvp" element={<RSVP />} />
+                  <Route path="/event" element={<EventLayout />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </BrowserRouter>
+            </PhotoProvider>
+          </ContentProvider>
+        </GuestProvider>
+      </AuthProvider>
+    </TooltipProvider>
+  </QueryClientProvider>
+);
 
 export default App;
