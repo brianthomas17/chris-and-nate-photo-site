@@ -212,27 +212,27 @@ export default function EventLayout() {
                 <ConfirmedAttendees />
               </div>
             </section>
-            
-            {/* Questions Section */}
-            <div className="mt-16 mb-16">
-              <SectionSeparator />
-            </div>
-            <section className="animate-fade-in">
-              <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-6 md:mb-8">QUESTIONS</h2>
-              <div className="max-w-[450px] mx-auto text-center">
-                <p className="text-anniversary-gold text-base md:text-lg font-bicyclette leading-relaxed">
-                  Please contact our planner Hunter at{" "}
-                  <a 
-                    href="mailto:hunter@shiftalt.events" 
-                    className="text-anniversary-gold hover:text-anniversary-lightgold underline transition-colors"
-                  >
-                    hunter@shiftalt.events
-                  </a>
-                </p>
-              </div>
-            </section>
           </>
         )}
+
+        {/* Questions Section - Now visible to all users */}
+        <div className="mt-16 mb-16">
+          <SectionSeparator />
+        </div>
+        <section className="animate-fade-in">
+          <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-6 md:mb-8">QUESTIONS</h2>
+          <div className="max-w-[450px] mx-auto text-center">
+            <p className="text-anniversary-gold text-base md:text-lg font-bicyclette leading-relaxed">
+              Please contact our planner Hunter at{" "}
+              <a 
+                href="mailto:hunter@shiftalt.events" 
+                className="text-anniversary-gold hover:text-anniversary-lightgold underline transition-colors"
+              >
+                hunter@shiftalt.events
+              </a>
+            </p>
+          </div>
+        </section>
       </div>
     </div>;
 }
