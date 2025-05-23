@@ -179,9 +179,7 @@ export default function EventLayout() {
         )}
 
         {/* Separator before Event Details */}
-        <div className="mt-16 mb-16">
-          <SectionSeparator />
-        </div>
+        <SectionSeparator />
 
         {/* Event Details Header Section */}
         <section className="mb-16 md:mb-20 animate-fade-in">
@@ -189,9 +187,7 @@ export default function EventLayout() {
         </section>
 
         {/* Separator after Event Details header */}
-        <div className="mt-16 mb-16">
-          <SectionSeparator />
-        </div>
+        <SectionSeparator />
 
         {/* Content Sections */}
         <section className="mb-16 md:mb-20 animate-fade-in">
@@ -203,9 +199,7 @@ export default function EventLayout() {
         {/* Confirmed Attendees Section - Only shown to guests with main_event access */}
         {hasMainEventAccess && (
           <>
-            <div className="mt-16 mb-16">
-              <SectionSeparator />
-            </div>
+            <SectionSeparator />
             <section className="animate-fade-in mb-16 md:mb-20">
               <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-6 md:mb-8 pb-4">CONFIRMED ATTENDEES</h2>
               <div className="max-w-[800px] mx-auto">
@@ -216,9 +210,7 @@ export default function EventLayout() {
         )}
 
         {/* Questions Section - Now visible to all users */}
-        <div className="mt-16 mb-16">
-          <SectionSeparator />
-        </div>
+        <SectionSeparator />
         <section className="animate-fade-in">
           <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-6 md:mb-8">QUESTIONS</h2>
           <div className="max-w-[450px] mx-auto text-center">
