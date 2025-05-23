@@ -136,19 +136,28 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   const getVisibleSections = (invitationType: InvitationType, fridayDinner: boolean = false, sundayBrunch: boolean = false) => {
+    console.log("getVisibleSections called with:", { invitationType, fridayDinner, sundayBrunch });
+    
     return contentSections
       .filter(section => {
-        // Basic invitation type filtering
-        const visibleForInvitationType = section.visible_to.includes(invitationType);
+        // First check if the section matches the invitation type
+        const matchesInvitationType = section.visible_to.includes(invitationType);
+        if (!matchesInvitationType) return false;
         
-        // Special event filters
-        const visibleForFridayDinner = section.visible_to_friday_dinner ? fridayDinner : true;
-        const visibleForSundayBrunch = section.visible_to_sunday_brunch ? sundayBrunch : true;
+        // For sections specific to Friday dinner
+        if (section.visible_to_friday_dinner === true) {
+          // Only show if user is attending Friday dinner
+          if (!fridayDinner) return false;
+        }
         
-        // Section is visible if it matches the invitation type AND 
-        // (it's not specifically for Friday dinner OR user is attending Friday dinner) AND
-        // (it's not specifically for Sunday brunch OR user is attending Sunday brunch)
-        return visibleForInvitationType && visibleForFridayDinner && visibleForSundayBrunch;
+        // For sections specific to Sunday brunch
+        if (section.visible_to_sunday_brunch === true) {
+          // Only show if user is attending Sunday brunch
+          if (!sundayBrunch) return false;
+        }
+        
+        // If we've passed all checks, show the section
+        return true;
       })
       .sort((a, b) => a.order_index - b.order_index);
   };
