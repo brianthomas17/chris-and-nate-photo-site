@@ -1,191 +1,210 @@
 
-import React, { useState, useEffect } from 'react';
-import { useGuests } from '@/context/GuestContext';
-import { Guest } from '@/types';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { useToast } from '@/hooks/use-toast';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
+import { useState, useEffect } from "react";
+import { useGuests } from "@/context/GuestContext";
+import { Guest } from "@/types";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useToast } from "@/hooks/use-toast";
+import { AlertCircle } from "lucide-react";
 
 interface RSVPFormProps {
   guest: Guest;
-  onComplete: () => void;
 }
 
-const formSchema = z.object({
-  attending: z.enum(["Yes", "No", "Maybe"]),
-  fridayDinner: z.boolean().optional(),
-  sundayBrunch: z.boolean().optional(),
-});
+export default function RSVPForm({
+  guest
+}: RSVPFormProps) {
+  const {
+    updateRSVP
+  } = useGuests();
+  const {
+    toast
+  } = useToast();
+  
+  // Ensure we correctly initialize the state from the guest prop
+  const [attending, setAttending] = useState<string | null>(guest?.attending || null);
+  const [fridayDinner, setFridayDinner] = useState<boolean>(guest?.friday_dinner || false);
+  const [sundayBrunch, setSundayBrunch] = useState<boolean>(guest?.sunday_brunch || false);
+  const [submitting, setSubmitting] = useState<boolean>(false);
+  const [hasResponded, setHasResponded] = useState<boolean>(guest?.attending !== null);
+  const [formError, setFormError] = useState<string | null>(null);
 
-const RSVPForm: React.FC<RSVPFormProps> = ({ guest, onComplete }) => {
-  const { updateRSVP } = useGuests();
-  const { toast } = useToast();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  
-  // Set up form with default values from guest data
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      attending: guest.attending as "Yes" | "No" | "Maybe" || "Maybe",
-      fridayDinner: guest.friday_dinner || false,
-      sundayBrunch: guest.sunday_brunch || false,
-    },
-  });
-  
-  // Handle form submission
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    setIsSubmitting(true);
+  // Update local state whenever the guest prop changes
+  useEffect(() => {
+    if (guest) {
+      console.log("Guest data updated:", guest);
+      console.log("Guest attending status:", guest.attending);
+      setAttending(guest.attending || null);
+      setFridayDinner(guest.friday_dinner || false);
+      setSundayBrunch(guest.sunday_brunch || false);
+      setHasResponded(guest.attending !== null);
+    }
+  }, [guest]);
+
+  // Log guest info for debugging
+  useEffect(() => {
+    console.log("RSVPForm mounted with guest:", guest);
+    console.log("Guest ID:", guest.id);
+    console.log("Guest has RSVP:", guest.attending !== null);
+    console.log("Current attending state:", attending);
+    console.log("Current hasResponded state:", hasResponded);
+    console.log("Friday dinner:", fridayDinner);
+    console.log("Sunday brunch:", sundayBrunch);
+    
+    if (guest.attending !== null) {
+      console.log("RSVP details:", { 
+        attending: guest.attending
+      });
+    }
+  }, [guest, attending, hasResponded, fridayDinner, sundayBrunch]);
+
+  // Validate if the guest ID is a valid UUID format
+  const isValidUUID = (id: string): boolean => {
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    return uuidRegex.test(id);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormError(null);
+    
+    console.log("RSVP form submitted with values:", { attending, fridayDinner, sundayBrunch });
+    
+    // Ensure a selection has been made before submitting
+    if (attending === null) {
+      const errorMessage = "Please select whether you will attend or not.";
+      console.error(errorMessage);
+      setFormError(errorMessage);
+      toast({
+        title: "Selection Required",
+        description: errorMessage,
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    setSubmitting(true);
+    
     try {
-      await updateRSVP(
-        guest.id, 
-        values.attending, 
-        values.fridayDinner, 
-        values.sundayBrunch
-      );
+      // Check if the guest ID is a valid UUID before submitting
+      if (!isValidUUID(guest.id)) {
+        const errorMessage = "Invalid guest ID format. Please contact support.";
+        console.error(errorMessage, guest.id);
+        setFormError(errorMessage);
+        throw new Error(errorMessage);
+      }
+      
+      console.log("Calling updateRSVP with:", {
+        guestId: guest.id,
+        attending,
+        fridayDinner,
+        sundayBrunch
+      });
+      
+      // Call updateRSVP function with direct connection to Supabase
+      const result = await updateRSVP(guest.id, attending, fridayDinner, sundayBrunch);
+      console.log("RSVP update result:", result);
+      
+      setHasResponded(true);
       
       toast({
         title: "RSVP Updated",
-        description: `Thank you for your response, ${guest.first_name}!`,
+        description: `Thank you, ${guest.first_name}! Your RSVP has been recorded.`
       });
-      
-      onComplete();
     } catch (error) {
-      console.error("Error updating RSVP:", error);
+      console.error("Error submitting RSVP:", error);
+      setFormError(error instanceof Error ? error.message : "Unknown error occurred");
       toast({
-        title: "Error",
-        description: "There was a problem updating your RSVP. Please try again.",
+        title: "RSVP Error",
+        description: error instanceof Error ? error.message : "There was a problem submitting your RSVP. Please try again.",
         variant: "destructive"
       });
     } finally {
-      setIsSubmitting(false);
+      setSubmitting(false);
     }
   };
 
-  return (
-    <Card className="w-full max-w-md mx-auto">
-      <CardHeader>
-        <CardTitle className="text-center">
-          {guest.first_name}'s RSVP
-        </CardTitle>
-      </CardHeader>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <CardContent>
-            <div className="space-y-6">
-              <FormField
-                control={form.control}
-                name="attending"
-                render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel>Will you be attending?</FormLabel>
-                    <FormControl>
-                      <RadioGroup 
-                        onValueChange={field.onChange} 
-                        defaultValue={field.value}
-                        className="flex flex-col space-y-1"
-                      >
-                        <FormItem className="flex items-center space-x-3 space-y-0">
-                          <FormControl>
-                            <RadioGroupItem value="Yes" />
-                          </FormControl>
-                          <FormLabel className="font-normal">
-                            Yes, I will attend
-                          </FormLabel>
-                        </FormItem>
-                        <FormItem className="flex items-center space-x-3 space-y-0">
-                          <FormControl>
-                            <RadioGroupItem value="No" />
-                          </FormControl>
-                          <FormLabel className="font-normal">
-                            No, I cannot attend
-                          </FormLabel>
-                        </FormItem>
-                        <FormItem className="flex items-center space-x-3 space-y-0">
-                          <FormControl>
-                            <RadioGroupItem value="Maybe" />
-                          </FormControl>
-                          <FormLabel className="font-normal">
-                            I'm not sure yet
-                          </FormLabel>
-                        </FormItem>
-                      </RadioGroup>
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
+  return <div className="max-w-2xl mx-auto">
+      <div className="px-4 py-6">
+        <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-6 md:mb-8">
+          WILL YOU JOIN US, {guest.first_name}?
+        </h2>
+        
+        <form onSubmit={handleSubmit} className="space-y-8">
+          <div className="space-y-6 pt-4">
+            <div className="space-y-4">
               
-              {/* Only show these options if attending is set to Yes */}
-              {form.watch("attending") === "Yes" && (
-                <div className="space-y-4 border-t pt-4">
-                  <FormField
-                    control={form.control}
-                    name="fridayDinner"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                        <FormControl>
-                          <Checkbox
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                          />
-                        </FormControl>
-                        <div className="space-y-1 leading-none">
-                          <FormLabel>
-                            I will attend the Friday dinner
-                          </FormLabel>
-                          <FormDescription>
-                            Join us for a pre-event dinner on Friday evening
-                          </FormDescription>
-                        </div>
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <FormField
-                    control={form.control}
-                    name="sundayBrunch"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                        <FormControl>
-                          <Checkbox
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                          />
-                        </FormControl>
-                        <div className="space-y-1 leading-none">
-                          <FormLabel>
-                            I will attend the Sunday brunch
-                          </FormLabel>
-                          <FormDescription>
-                            Join us for a farewell brunch on Sunday morning
-                          </FormDescription>
-                        </div>
-                      </FormItem>
-                    )}
-                  />
+              <RadioGroup 
+                value={attending === null ? undefined : attending} 
+                onValueChange={v => setAttending(v)} 
+                className="flex flex-col items-center space-y-4"
+              >
+                <div className="flex items-center space-x-3">
+                  <RadioGroupItem value="Yes" id="attending-yes" className="border-anniversary-gold" />
+                  <Label htmlFor="attending-yes" className="text-white text-lg">Yes, I'll be there!</Label>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <RadioGroupItem value="No" id="attending-no" className="border-anniversary-gold" />
+                  <Label htmlFor="attending-no" className="text-white text-lg">No, I can't make it</Label>
+                </div>
+              </RadioGroup>
+
+              {attending === "Yes" && (
+                <div className="pt-8 flex flex-col items-center space-y-6">
+                  <p className="text-anniversary-gold text-center text-base md:text-lg font-bicyclette">
+                    Would you also like to join us for these other events?
+                  </p>
+                  <div className="flex flex-col space-y-4">
+                    <div className="flex items-center space-x-3">
+                      <Checkbox 
+                        id="friday-dinner" 
+                        checked={fridayDinner} 
+                        onCheckedChange={(checked) => setFridayDinner(checked === true)} 
+                      />
+                      <Label htmlFor="friday-dinner" className="text-white text-lg">
+                        Friday Family Dinner (Aug 15)
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <Checkbox 
+                        id="sunday-brunch" 
+                        checked={sundayBrunch} 
+                        onCheckedChange={(checked) => setSundayBrunch(checked === true)} 
+                      />
+                      <Label htmlFor="sunday-brunch" className="text-white text-lg">
+                        Sunday Dim Sum Brunch (Aug 17)
+                      </Label>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
-          </CardContent>
-          <CardFooter>
-            <Button 
-              className="w-full bg-anniversary-gold hover:bg-anniversary-gold/90 text-black" 
-              type="submit"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Saving..." : "Save RSVP"}
-            </Button>
-          </CardFooter>
+          </div>
+          
+          {formError && (
+            <div className="text-red-500 text-sm text-center bg-red-100/20 p-2 rounded-md flex items-center gap-2 justify-center">
+              <AlertCircle className="w-4 h-4" />
+              <span>Error: {formError}</span>
+            </div>
+          )}
+          
+          <div className="flex justify-center px-0">
+            <div className="flex flex-col items-center space-y-4">
+              <div className="text-sm text-white/70">
+                {hasResponded ? "You can update your response until the deadline." : ""}
+              </div>
+              <Button 
+                type="submit" 
+                className="bg-anniversary-gold hover:bg-anniversary-gold/90 text-black text-lg px-8 py-2 font-medium" 
+                disabled={submitting}
+              >
+                {submitting ? "Submitting..." : hasResponded ? "Update Response" : "Submit RSVP"}
+              </Button>
+            </div>
+          </div>
         </form>
-      </Form>
-    </Card>
-  );
-};
-
-export default RSVPForm;
+      </div>
+    </div>;
+}
