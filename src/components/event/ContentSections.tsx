@@ -28,6 +28,23 @@ export default function ContentSections({
     );
   }
 
+  // Ensure boolean values are properly handled
+  const mainEvent = currentGuest.main_event === true;
+  const afterparty = currentGuest.afterparty === true;
+  const fridayDinner = currentGuest.friday_dinner === true;
+  const sundayBrunch = currentGuest.sunday_brunch === true;
+  
+  console.log("Explicitly converted boolean values:", {
+    main_event: mainEvent,
+    afterparty: afterparty,
+    friday_dinner: fridayDinner,
+    sunday_brunch: sundayBrunch,
+    raw_main_event: currentGuest.main_event,
+    raw_afterparty: currentGuest.afterparty,
+    raw_friday_dinner: currentGuest.friday_dinner,
+    raw_sunday_brunch: currentGuest.sunday_brunch
+  });
+
   // Simplified approach: Directly determine which content sections to show
   const visibleSections = contentSections.filter(section => {
     // Admin users see all content
@@ -35,28 +52,28 @@ export default function ContentSections({
       return true;
     }
     
-    // For non-admin users, check permissions directly from the current guest object
+    // For non-admin users, check permissions directly with our explicit booleans
     let hasAccess = true;
     
     // Only check conditions where the section has a restriction
-    if (section.visible_to_main_event === true && currentGuest.main_event !== true) {
+    if (section.visible_to_main_event === true && !mainEvent) {
       hasAccess = false;
-      console.log(`Section "${section.title}" requires main_event access, guest has: ${currentGuest.main_event}`);
+      console.log(`Section "${section.title}" requires main_event access, guest has: ${mainEvent}`);
     }
     
-    if (section.visible_to_afterparty === true && currentGuest.afterparty !== true) {
+    if (section.visible_to_afterparty === true && !afterparty) {
       hasAccess = false;
-      console.log(`Section "${section.title}" requires afterparty access, guest has: ${currentGuest.afterparty}`);
+      console.log(`Section "${section.title}" requires afterparty access, guest has: ${afterparty}`);
     }
     
-    if (section.visible_to_friday_dinner === true && currentGuest.friday_dinner !== true) {
+    if (section.visible_to_friday_dinner === true && !fridayDinner) {
       hasAccess = false;
-      console.log(`Section "${section.title}" requires friday_dinner access, guest has: ${currentGuest.friday_dinner}`);
+      console.log(`Section "${section.title}" requires friday_dinner access, guest has: ${fridayDinner}`);
     }
     
-    if (section.visible_to_sunday_brunch === true && currentGuest.sunday_brunch !== true) {
+    if (section.visible_to_sunday_brunch === true && !sundayBrunch) {
       hasAccess = false;
-      console.log(`Section "${section.title}" requires sunday_brunch access, guest has: ${currentGuest.sunday_brunch}`);
+      console.log(`Section "${section.title}" requires sunday_brunch access, guest has: ${sundayBrunch}`);
     }
     
     console.log(`Section "${section.title}" ${hasAccess ? 'is' : 'is not'} visible to ${currentGuest.first_name}`);
@@ -66,10 +83,10 @@ export default function ContentSections({
   console.log("Content sections visibility:", {
     guestName: currentGuest.first_name,
     invitationType: currentGuest.invitation_type,
-    main_event: currentGuest.main_event,
-    afterparty: currentGuest.afterparty,
-    friday_dinner: currentGuest.friday_dinner,
-    sunday_brunch: currentGuest.sunday_brunch,
+    mainEvent,
+    afterparty,
+    fridayDinner,
+    sundayBrunch,
     visibleSectionsCount: visibleSections.length,
     allSectionsCount: contentSections.length,
     visibleSections: visibleSections.map(s => s.title)
