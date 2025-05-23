@@ -148,34 +148,39 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     console.log("Total content sections:", contentSections.length);
     
     const filteredSections = contentSections.filter(section => {
-      // Use the new direct boolean columns for main event and afterparty visibility
-      let isVisible = false;
-      
       // Admin can see everything
       if (invitationType === 'admin') {
-        isVisible = true;
+        return true;
       }
-      // Main event guest
-      else if (invitationType === 'main event' && section.visible_to_main_event === true) {
-        isVisible = true;
-      }
-      // Afterparty guest
-      else if (invitationType === 'afterparty' && section.visible_to_afterparty === true) {
+      
+      // Check if section should be visible based on the guest's type and the section's visibility settings
+      let isVisible = false;
+      
+      // Check main event visibility
+      if (invitationType === 'main event' && section.visible_to_main_event) {
         isVisible = true;
       }
       
-      // If the section is not visible based on invitation type, return false
+      // Check afterparty visibility
+      if (invitationType === 'afterparty' && section.visible_to_afterparty) {
+        isVisible = true;
+      }
+      
+      // If the section is not visible based on the basic event type checks, return false
       if (!isVisible) {
         console.log(`Section "${section.title}" filtered out because it's not visible to ${invitationType} guests`);
         return false;
       }
       
-      // Additional checks for special events
+      // For special events, all the conditions must be met
+      
+      // If section requires Friday dinner attendance but guest doesn't have it
       if (section.visible_to_friday_dinner === true && fridayDinner !== true) {
         console.log(`Section "${section.title}" filtered out because it requires Friday dinner but user has fridayDinner=${fridayDinner}`);
         return false;
       }
       
+      // If section requires Sunday brunch attendance but guest doesn't have it
       if (section.visible_to_sunday_brunch === true && sundayBrunch !== true) {
         console.log(`Section "${section.title}" filtered out because it requires Sunday brunch but user has sundayBrunch=${sundayBrunch}`);
         return false;
