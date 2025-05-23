@@ -20,6 +20,7 @@ export default function ContentSections({
   const { getVisibleSections } = useContent();
   
   // Ensure boolean values by converting any undefined to proper booleans
+  // This will work regardless of whether the value is a boolean or an object
   const hasFridayDinner = fridayDinner === true;
   const hasSundayBrunch = sundayBrunch === true;
   const hasMainEvent = mainEvent !== false; // Default to true if undefined

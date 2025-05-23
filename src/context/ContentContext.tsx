@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { ContentSection, InvitationType } from '../types';
 import { supabase } from "@/integrations/supabase/client";
@@ -166,11 +167,11 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         return true;
       }
       
-      // Convert any undefined/null values to boolean
-      const hasFridayDinner = !!fridayDinner;
-      const hasSundayBrunch = !!sundayBrunch;
+      // Strict boolean check against boolean true
+      const hasFridayDinner = fridayDinner === true;
+      const hasSundayBrunch = sundayBrunch === true;
       const hasMainEvent = mainEvent !== false; // Default to true if undefined/null
-      const hasAfterparty = !!afterparty;
+      const hasAfterparty = afterparty === true;
       
       // Check for each visibility requirement
       if (section.visible_to_main_event && !hasMainEvent) {
