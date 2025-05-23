@@ -114,7 +114,7 @@ export default function ContentSections({
   };
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-16">
       {visibleSections.map((section, index) => (
         <div key={section.id}>
           <div className="text-center">
@@ -126,7 +126,7 @@ export default function ContentSections({
           
           {/* Add SectionSeparator between sections, but not after the last one */}
           {index < visibleSections.length - 1 && (
-            <div className="mb-16 md:mb-20">
+            <div className="mt-16 mb-16">
               <SectionSeparator />
             </div>
           )}
