@@ -1,3 +1,4 @@
+
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -176,9 +177,9 @@ export default function EventLayout() {
           </section>
         )}
 
-        {/* Event Details Section - Added heading with 24px space below */}
-        <section className="animate-fade-in pt-20">
-          <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-6">EVENT DETAILS</h2>
+        {/* Event Details Section - Added heading with updated margins */}
+        <section className="animate-fade-in pt-10">
+          <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-8">EVENT DETAILS</h2>
           <div className="max-w-[450px] mx-auto">
             <ContentSections 
               invitationType={currentGuest.invitation_type} 
@@ -209,3 +210,4 @@ export default function EventLayout() {
     </div>
   );
 }
+
