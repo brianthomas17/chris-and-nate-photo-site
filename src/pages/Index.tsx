@@ -16,15 +16,22 @@ const Index = () => {
   const navigate = useNavigate();
   
   useEffect(() => {
-    // If user is authenticated, redirect based on invitation type
+    // Only redirect if user is authenticated and not loading
     if (currentGuest && !isLoading) {
-      console.log("User authenticated:", currentGuest);
+      console.log("User authenticated on Index page:", currentGuest);
       
-      if (currentGuest.invitation_type === 'admin') {
-        navigate('/admin', { replace: true });
-      } else {
-        navigate('/event', { replace: true });
-      }
+      // Give the system some time to fully load before redirecting
+      const timer = setTimeout(() => {
+        if (currentGuest.invitation_type === 'admin') {
+          console.log("Redirecting admin to /admin page");
+          navigate('/admin', { replace: true });
+        } else {
+          console.log("Redirecting regular user to /event page");
+          navigate('/event', { replace: true });
+        }
+      }, 100);
+      
+      return () => clearTimeout(timer);
     }
   }, [currentGuest, isLoading, navigate]);
 
@@ -34,6 +41,18 @@ const Index = () => {
         <div className="text-center">
           <div className="w-16 h-16 border-t-4 border-anniversary-gold rounded-full animate-spin mx-auto"></div>
           <p className="mt-4 text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+  
+  // If user is already authenticated, show a loading screen while redirecting
+  if (currentGuest) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-anniversary-cream">
+        <div className="text-center">
+          <div className="w-16 h-16 border-t-4 border-anniversary-gold rounded-full animate-spin mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Redirecting to {currentGuest.invitation_type === 'admin' ? 'Admin' : 'Event'} page...</p>
         </div>
       </div>
     );

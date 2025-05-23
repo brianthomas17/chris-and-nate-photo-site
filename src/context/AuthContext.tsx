@@ -39,18 +39,14 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   }
 };
 
-// Update the context type to expose state properties directly at the top level
 interface AuthContextType {
-  // Direct access to state properties
   isLoading: boolean;
   isAuthenticated: boolean;
   currentGuest: Guest | null;
   currentEmail: string | null;
-  // Functions
   login: (email: string) => Promise<void>;
   logout: () => void;
   refreshSession: () => Promise<void>;
-  // Also include the full state object for backward compatibility
   state: AuthState;
 }
 
@@ -91,6 +87,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     dispatch({ type: 'SET_EMAIL', payload: email });
 
     try {
+      console.log("Attempting login with email:", email);
       const { data, error } = await supabase
         .from('guests')
         .select(`
@@ -114,16 +111,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       if (data) {
-        dispatch({ type: 'SET_GUEST', payload: data });
         console.log("Login successful, guest data:", data);
-        navigate('/');
+        dispatch({ type: 'SET_GUEST', payload: data });
+        
+        // Let the page components handle the routing based on user type
+        // Don't navigate here to avoid conflicts with component-level navigation
       } else {
         console.log('No guest found with this email');
-        dispatch({ type: 'SET_LOADING', payload: false });
       }
     } catch (error) {
       console.error('Error during login:', error);
-      dispatch({ type: 'SET_LOADING', payload: false });
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false });
     }
@@ -132,7 +129,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = () => {
     localStorage.removeItem('currentEmail');
     dispatch({ type: 'LOGOUT' });
-    navigate('/');
+    navigate('/', { replace: true });
   };
 
   const refreshSession = async () => {
@@ -167,19 +164,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  // Expose both state properties directly and the full state object
   return (
     <AuthContext.Provider value={{ 
-      // Expose state properties directly
       isLoading: state.isLoading,
       isAuthenticated: state.isAuthenticated,
       currentGuest: state.currentGuest,
       currentEmail: state.currentEmail,
-      // Include functions
       login, 
       logout, 
       refreshSession,
-      // Include full state for backward compatibility
       state
     }}>
       {children}

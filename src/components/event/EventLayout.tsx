@@ -24,11 +24,10 @@ const EventLayout = () => {
       return;
     }
     
-    // Redirect admins to admin page if they try to access /event directly
+    // Redirect admins to admin page only when they are accessing /event directly
     if (currentGuest?.invitation_type === 'admin' && window.location.pathname === '/event') {
       console.log("Admin trying to access event page directly, redirecting to admin");
       navigate('/admin', { replace: true });
-      return;
     }
   }, [currentGuest, isLoading, navigate]);
 

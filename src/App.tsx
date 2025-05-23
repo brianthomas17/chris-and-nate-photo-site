@@ -16,27 +16,6 @@ import EventLayout from "./components/event/EventLayout";
 
 const queryClient = new QueryClient();
 
-// Add a protected route component
-const ProtectedRoute = ({ 
-  element, 
-  redirectPath = '/', 
-  isAuthenticated,
-  isAllowed = true,
-  loading = false
-}) => {
-  if (loading) {
-    return <div className="min-h-screen flex items-center justify-center bg-anniversary-purple">
-      <div className="w-16 h-16 border-t-4 border-anniversary-gold rounded-full animate-spin mx-auto"></div>
-    </div>;
-  }
-  
-  if (!isAuthenticated || !isAllowed) {
-    return <Navigate to={redirectPath} replace />;
-  }
-
-  return element;
-};
-
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
