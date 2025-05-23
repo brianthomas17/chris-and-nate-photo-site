@@ -141,8 +141,8 @@ export default function EventLayout() {
         </header>
       </div>
 
-      {/* UPDATED SECTION: Gold italic text with smaller font size, thinner weight, and reduced max-width */}
-      <div className="container mx-auto px-4 pt-48 pb-12 md:py-16 relative z-10">
+      {/* Intro Text Section */}
+      <div className="container mx-auto px-4 py-16 md:py-20 relative z-10">
         <div className="max-w-[500px] mx-auto text-center">
           <p className="text-anniversary-gold text-base md:text-lg italic font-light leading-relaxed animate-[fadeIn_1.2s_ease-out_forwards]">
             There are parties, and then there are nights that define a decade…
@@ -162,41 +162,48 @@ export default function EventLayout() {
         </div>
       </div>
 
-      {/* NEW SECTION: Added between text section and RSVP */}
-      <div className="container mx-auto px-4 pb-12 relative z-10">
+      <div className="container mx-auto px-4 relative z-10">
         <SectionSeparator />
       </div>
 
-      <div className="container mx-auto px-4 py-[60px] md:py-[80px] relative z-10">
-        {/* RSVP Section - First */}
-        <section className="mb-12 md:mb-16 animate-fade-in">
+      <div className="container mx-auto px-4 py-16 md:py-20 relative z-10">
+        {/* RSVP Section */}
+        <section className="mb-16 md:mb-20 animate-fade-in">
           <RSVPForm guest={currentGuest} />
         </section>
 
-        {/* Party List Section - Second (If user has a party) */}
-        {hasParty && <section className="animate-fade-in">
-            <PartyList guestId={currentGuest.id} partyId={currentGuest.party_id} />
-            <SectionSeparator />
-          </section>}
+        {/* Party List Section (If user has a party) */}
+        {hasParty && (
+          <>
+            <section className="mb-16 md:mb-20 animate-fade-in">
+              <PartyList guestId={currentGuest.id} partyId={currentGuest.party_id} />
+            </section>
+            <div className="mb-16 md:mb-20">
+              <SectionSeparator />
+            </div>
+          </>
+        )}
 
         {/* Event Details Section */}
-        <section className="animate-fade-in pt-10">
+        <section className="mb-16 md:mb-20 animate-fade-in">
           <div className="max-w-[450px] mx-auto">
             <ContentSections invitationType={currentGuest.invitation_type} />
-          </div>
-          <div className="pt-20">
-            <SectionSeparator />
           </div>
         </section>
         
         {/* Confirmed Attendees Section - Only shown to guests with main_event access */}
         {hasMainEventAccess && (
-          <section className="animate-fade-in pt-20">
-            <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-6 md:mb-8 pb-4">CONFIRMED ATTENDEES</h2>
-            <div className="max-w-[800px] mx-auto">
-              <ConfirmedAttendees />
+          <>
+            <div className="mb-16 md:mb-20">
+              <SectionSeparator />
             </div>
-          </section>
+            <section className="animate-fade-in">
+              <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-6 md:mb-8 pb-4">CONFIRMED ATTENDEES</h2>
+              <div className="max-w-[800px] mx-auto">
+                <ConfirmedAttendees />
+              </div>
+            </section>
+          </>
         )}
       </div>
     </div>;
