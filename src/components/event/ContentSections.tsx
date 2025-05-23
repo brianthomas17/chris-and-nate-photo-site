@@ -18,19 +18,7 @@ export default function ContentSections({
   const { contentSections } = useContent();
   const { currentGuest } = useAuth();
   
-  console.log("ContentSections rendering with:", {
-    contentSectionsCount: contentSections.length,
-    currentGuest: currentGuest?.first_name,
-    invitationType
-  });
-  
-  console.log("All content sections:", contentSections.map(s => ({
-    title: s.title,
-    visible_to_main_event: s.visible_to_main_event,
-    visible_to_afterparty: s.visible_to_afterparty,
-    visible_to_friday_dinner: s.visible_to_friday_dinner,
-    visible_to_sunday_brunch: s.visible_to_sunday_brunch
-  })));
+  console.log("Current guest in ContentSections:", currentGuest);
   
   if (!currentGuest) {
     console.log("No current guest found");
@@ -47,19 +35,22 @@ export default function ContentSections({
   const fridayDinner = currentGuest.friday_dinner === true;
   const sundayBrunch = currentGuest.sunday_brunch === true;
   
-  console.log("Guest permissions:", {
+  console.log("Explicitly converted boolean values:", {
     main_event: mainEvent,
     afterparty: afterparty,
     friday_dinner: fridayDinner,
-    sunday_brunch: sundayBrunch
+    sunday_brunch: sundayBrunch,
+    raw_main_event: currentGuest.main_event,
+    raw_afterparty: currentGuest.afterparty,
+    raw_friday_dinner: currentGuest.friday_dinner,
+    raw_sunday_brunch: currentGuest.sunday_brunch
   });
 
-  // Updated visibility logic: Show ALL sections to ALL users
-  // Only hide sections if they have specific restrictions AND the user doesn't meet them
+  // Improved visibility logic: A section is visible if the user has access to ANY of the required events
+  // OR if the section has no specific event restrictions (all visibility flags are false)
   const visibleSections = contentSections.filter(section => {
     // Admin users see all content
     if (invitationType === 'admin') {
-      console.log(`Admin: Section "${section.title}" is visible`);
       return true;
     }
     
@@ -68,13 +59,6 @@ export default function ContentSections({
     const hasAfterpartyRestriction = section.visible_to_afterparty === true;
     const hasFridayDinnerRestriction = section.visible_to_friday_dinner === true;
     const hasSundayBrunchRestriction = section.visible_to_sunday_brunch === true;
-    
-    console.log(`Section "${section.title}" restrictions:`, {
-      hasMainEventRestriction,
-      hasAfterpartyRestriction,
-      hasFridayDinnerRestriction,
-      hasSundayBrunchRestriction
-    });
     
     // If the section has no specific restrictions, it's visible to everyone
     if (!hasMainEventRestriction && !hasAfterpartyRestriction && !hasFridayDinnerRestriction && !hasSundayBrunchRestriction) {
@@ -109,14 +93,23 @@ export default function ContentSections({
     return hasAccess;
   }).sort((a, b) => a.order_index - b.order_index);
 
-  console.log("Final visible sections:", visibleSections.map(s => s.title));
+  console.log("Content sections visibility:", {
+    guestName: currentGuest.first_name,
+    invitationType: currentGuest.invitation_type,
+    mainEvent,
+    afterparty,
+    fridayDinner,
+    sundayBrunch,
+    visibleSectionsCount: visibleSections.length,
+    allSectionsCount: contentSections.length,
+    visibleSections: visibleSections.map(s => s.title)
+  });
 
   if (visibleSections.length === 0) {
     console.log("No visible sections found for this user");
     return (
       <div className="text-center p-8">
         <p className="text-white text-xl">No content sections available yet.</p>
-        <p className="text-white text-sm mt-2">Debug: {contentSections.length} total sections in database</p>
       </div>
     );
   }
@@ -133,7 +126,7 @@ export default function ContentSections({
   };
 
   return (
-    <div className="space-y-0">
+    <div className="space-y-16">
       {visibleSections.map((section, index) => (
         <div key={section.id}>
           <div className="text-center">
@@ -145,7 +138,9 @@ export default function ContentSections({
           
           {/* Add SectionSeparator between sections, but not after the last one */}
           {index < visibleSections.length - 1 && (
-            <SectionSeparator />
+            <div className="mt-16 mb-16">
+              <SectionSeparator />
+            </div>
           )}
         </div>
       ))}
