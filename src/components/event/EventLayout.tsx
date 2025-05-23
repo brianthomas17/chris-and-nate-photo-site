@@ -33,23 +33,11 @@ export default function EventLayout() {
   const isAdmin = currentGuest.invitation_type === 'admin';
   const hasParty = !!currentGuest.party_id;
   
-  // Fix the boolean values by correctly interpreting DB values
-  // Handle any data format by ensuring we have proper boolean values
-  const showFridayDinner = typeof currentGuest.friday_dinner === 'boolean' 
-    ? currentGuest.friday_dinner 
-    : currentGuest.friday_dinner === true;
-    
-  const showSundayBrunch = typeof currentGuest.sunday_brunch === 'boolean' 
-    ? currentGuest.sunday_brunch 
-    : currentGuest.sunday_brunch === true;
-    
-  const hasMainEvent = typeof currentGuest.main_event === 'boolean' 
-    ? currentGuest.main_event !== false 
-    : currentGuest.main_event !== false; // Default to true if not boolean or undefined
-    
-  const hasAfterparty = typeof currentGuest.afterparty === 'boolean' 
-    ? currentGuest.afterparty 
-    : currentGuest.afterparty === true;
+  // Convert all values to proper booleans using Boolean()
+  const showFridayDinner = Boolean(currentGuest.friday_dinner); 
+  const showSundayBrunch = Boolean(currentGuest.sunday_brunch);
+  const hasMainEvent = currentGuest.main_event !== false ? Boolean(currentGuest.main_event) : true; // Default to true
+  const hasAfterparty = Boolean(currentGuest.afterparty);
   
   console.log("Guest data in EventLayout:", {
     id: currentGuest.id,

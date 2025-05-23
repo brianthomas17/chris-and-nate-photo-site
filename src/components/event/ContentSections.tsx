@@ -19,14 +19,13 @@ export default function ContentSections({
 }: ContentSectionsProps) {
   const { getVisibleSections } = useContent();
   
-  // Ensure boolean values by converting any undefined to proper booleans
-  // This will work regardless of whether the value is a boolean or an object
-  const hasFridayDinner = fridayDinner === true;
-  const hasSundayBrunch = sundayBrunch === true;
-  const hasMainEvent = mainEvent !== false; // Default to true if undefined
-  const hasAfterparty = afterparty === true;
+  // Convert all values to proper booleans using Boolean() constructor
+  const hasFridayDinner = Boolean(fridayDinner);
+  const hasSundayBrunch = Boolean(sundayBrunch);
+  const hasMainEvent = mainEvent !== false ? Boolean(mainEvent) : true; // Default to true if undefined
+  const hasAfterparty = Boolean(afterparty);
   
-  // Pass all the event access parameters to determine which content sections to show
+  // Pass all the event access parameters as proper booleans
   const visibleSections = getVisibleSections(
     invitationType, 
     hasFridayDinner, 

@@ -157,7 +157,11 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     afterparty: boolean = false
   ) => {
     console.log("getVisibleSections called with:", { 
-      invitationType, fridayDinner, sundayBrunch, mainEvent, afterparty 
+      invitationType, 
+      fridayDinner: Boolean(fridayDinner), 
+      sundayBrunch: Boolean(sundayBrunch), 
+      mainEvent: Boolean(mainEvent), 
+      afterparty: Boolean(afterparty) 
     });
     console.log("Total content sections:", contentSections.length);
     
@@ -167,11 +171,11 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         return true;
       }
       
-      // Strict boolean check against boolean true
-      const hasFridayDinner = fridayDinner === true;
-      const hasSundayBrunch = sundayBrunch === true;
-      const hasMainEvent = mainEvent !== false; // Default to true if undefined/null
-      const hasAfterparty = afterparty === true;
+      // Convert to proper boolean values - use Boolean() to ensure true boolean type
+      const hasFridayDinner = Boolean(fridayDinner);
+      const hasSundayBrunch = Boolean(sundayBrunch);
+      const hasMainEvent = mainEvent !== false ? Boolean(mainEvent) : true; // Default to true if undefined
+      const hasAfterparty = Boolean(afterparty);
       
       // Check for each visibility requirement
       if (section.visible_to_main_event && !hasMainEvent) {
