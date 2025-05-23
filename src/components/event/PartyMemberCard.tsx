@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Guest } from '@/types';
 import { Card, CardContent } from '@/components/ui/card';
@@ -9,21 +8,24 @@ import { Label } from '@/components/ui/label';
 import { useGuests } from '@/context/GuestContext';
 import { useToast } from '@/hooks/use-toast';
 import { Check, UserCheck, UserX } from 'lucide-react';
-
 interface PartyMemberCardProps {
   guest: Guest;
   currentUserId: string;
 }
-
-export default function PartyMemberCard({ guest, currentUserId }: PartyMemberCardProps) {
+export default function PartyMemberCard({
+  guest,
+  currentUserId
+}: PartyMemberCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [attending, setAttending] = useState<string | null>(guest.attending || null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { updateRSVP } = useGuests();
-  const { toast } = useToast();
-
+  const {
+    updateRSVP
+  } = useGuests();
+  const {
+    toast
+  } = useToast();
   const isSelf = guest.id === currentUserId;
-  
   const handleRSVPUpdate = async () => {
     if (!attending) {
       toast({
@@ -33,13 +35,12 @@ export default function PartyMemberCard({ guest, currentUserId }: PartyMemberCar
       });
       return;
     }
-    
     setIsSubmitting(true);
     try {
       await updateRSVP(guest.id, attending);
       toast({
         title: "RSVP Updated",
-        description: `${guest.first_name}'s RSVP has been updated.`,
+        description: `${guest.first_name}'s RSVP has been updated.`
       });
       setIsModalOpen(false);
     } catch (error) {
@@ -71,13 +72,8 @@ export default function PartyMemberCard({ guest, currentUserId }: PartyMemberCar
     }
     return null;
   };
-
-  return (
-    <>
-      <Card 
-        className={`cursor-pointer hover:shadow-md transition-all border-anniversary-gold/30 bg-white/10 ${getCardStyles()}`}
-        onClick={() => setIsModalOpen(true)}
-      >
+  return <>
+      <Card className={`cursor-pointer hover:shadow-md transition-all border-anniversary-gold/30 bg-white/10 ${getCardStyles()}`} onClick={() => setIsModalOpen(true)}>
         <CardContent className="p-4">
           <div className="flex justify-between items-center">
             <div className="flex flex-col">
@@ -86,9 +82,7 @@ export default function PartyMemberCard({ guest, currentUserId }: PartyMemberCar
                 {isSelf && <span className="ml-2 text-xs text-gray-400">(you)</span>}
               </h3>
               <p className="text-sm text-gray-300">
-                {guest.attending 
-                  ? (guest.attending === 'Yes' ? 'Attending' : 'Not Attending') 
-                  : 'No Response Yet'}
+                {guest.attending ? guest.attending === 'Yes' ? 'Attending' : 'Not Attending' : 'No Response Yet'}
               </p>
             </div>
             <div className="flex items-center">
@@ -104,19 +98,11 @@ export default function PartyMemberCard({ guest, currentUserId }: PartyMemberCar
             <DialogTitle className="text-anniversary-gold">
               Update RSVP for {guest.first_name}
             </DialogTitle>
-            <DialogDescription className="text-gray-300">
-              {isSelf 
-                ? "Update your own attendance status."
-                : "Update the attendance status for this guest."}
-            </DialogDescription>
+            
           </DialogHeader>
           
           <div className="space-y-6">
-            <RadioGroup 
-              value={attending || undefined} 
-              onValueChange={v => setAttending(v)} 
-              className="flex flex-col space-y-3"
-            >
+            <RadioGroup value={attending || undefined} onValueChange={v => setAttending(v)} className="flex flex-col space-y-3">
               <div className="flex items-center space-x-3">
                 <RadioGroupItem value="Yes" id={`attending-yes-${guest.id}`} className="border-anniversary-gold" />
                 <Label htmlFor={`attending-yes-${guest.id}`} className="text-white">Will Attend</Label>
@@ -128,23 +114,14 @@ export default function PartyMemberCard({ guest, currentUserId }: PartyMemberCar
             </RadioGroup>
             
             <div className="flex justify-end">
-              <Button 
-                className="bg-anniversary-gold hover:bg-anniversary-gold/90 text-black" 
-                onClick={handleRSVPUpdate}
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? (
-                  <span className="flex items-center">Saving...</span>
-                ) : (
-                  <span className="flex items-center gap-1">
+              <Button className="bg-anniversary-gold hover:bg-anniversary-gold/90 text-black" onClick={handleRSVPUpdate} disabled={isSubmitting}>
+                {isSubmitting ? <span className="flex items-center">Saving...</span> : <span className="flex items-center gap-1">
                     <Check className="w-4 h-4" /> Save
-                  </span>
-                )}
+                  </span>}
               </Button>
             </div>
           </div>
         </DialogContent>
       </Dialog>
-    </>
-  );
+    </>;
 }
