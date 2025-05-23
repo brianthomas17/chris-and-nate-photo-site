@@ -457,6 +457,22 @@ export default function GuestManagement() {
                     />
                     <Label htmlFor="add-afterparty">Afterparty</Label>
                   </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="add-friday-dinner" 
+                      checked={fridayDinner} 
+                      onCheckedChange={(checked) => setFridayDinner(checked === true)}
+                    />
+                    <Label htmlFor="add-friday-dinner">Friday Family Dinner</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="add-sunday-brunch" 
+                      checked={sundayBrunch}
+                      onCheckedChange={(checked) => setSundayBrunch(checked === true)}
+                    />
+                    <Label htmlFor="add-sunday-brunch">Sunday Brunch</Label>
+                  </div>
                 </div>
                 
                 <div className="space-y-2">
