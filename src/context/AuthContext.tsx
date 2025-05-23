@@ -93,11 +93,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .select(`
           id, 
           first_name, 
+          last_name,
           email, 
           phone_number,
           invitation_type,
           party_id,
-          attending
+          attending,
+          friday_dinner,
+          sunday_brunch,
+          main_event,
+          afterparty
         `)
         .eq('email', normalizedEmail)
         .maybeSingle();
@@ -110,16 +115,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         throw new Error('Email not found in guest list');
       }
       
+      console.log("Guest data retrieved:", guestData);
+      
       // Transform the data to match our Guest interface
+      // Explicitly ensure boolean values are handled correctly
       const guest: Guest = {
         id: guestData.id,
         first_name: guestData.first_name,
+        last_name: guestData.last_name,
         email: guestData.email,
         phone_number: guestData.phone_number,
         invitation_type: guestData.invitation_type,
         party_id: guestData.party_id,
-        attending: guestData.attending
+        attending: guestData.attending,
+        // Explicitly convert to boolean using === true for strict comparison
+        friday_dinner: guestData.friday_dinner === true,
+        sunday_brunch: guestData.sunday_brunch === true,
+        main_event: guestData.main_event === true,
+        afterparty: guestData.afterparty === true
       };
+      
+      console.log("Guest data updated:", guest);
+      console.log("Guest attending status:", guest.attending);
       
       // Store the user in state and localStorage
       setUser(guest);
