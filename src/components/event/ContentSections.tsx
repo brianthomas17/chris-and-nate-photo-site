@@ -2,6 +2,7 @@
 import { useContent } from "@/context/ContentContext";
 import { InvitationType } from "@/types";
 import { useAuth } from "@/context/AuthContext";
+import SectionSeparator from "./SectionSeparator";
 
 interface ContentSectionsProps {
   invitationType: InvitationType;
@@ -114,12 +115,19 @@ export default function ContentSections({
 
   return (
     <div className="space-y-12">
-      {visibleSections.map((section) => (
-        <div key={section.id} className="text-center">
-          <div
-            className="prose prose-headings:font-din prose-headings:text-anniversary-gold prose-p:text-white prose-li:text-white prose-strong:text-white prose-p:text-lg prose-li:text-lg max-w-[450px] mx-auto text-white"
-            dangerouslySetInnerHTML={{ __html: processContent(section.content) }}
-          />
+      {visibleSections.map((section, index) => (
+        <div key={section.id}>
+          <div className="text-center">
+            <div
+              className="prose prose-headings:font-din prose-headings:text-anniversary-gold prose-p:text-white prose-li:text-white prose-strong:text-white prose-p:text-lg prose-li:text-lg max-w-[450px] mx-auto text-white"
+              dangerouslySetInnerHTML={{ __html: processContent(section.content) }}
+            />
+          </div>
+          
+          {/* Add SectionSeparator between sections, but not after the last one */}
+          {index < visibleSections.length - 1 && (
+            <SectionSeparator className="mt-12 mb-12" />
+          )}
         </div>
       ))}
     </div>

@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -170,7 +169,7 @@ export default function EventLayout() {
           </section>}
 
         {/* Friday Dinner Section - Shown conditionally */}
-        {showFridayDinner}
+        {showFridayDinner && <FridayDinnerSection />}
 
         {/* Event Details Section */}
         <section className="animate-fade-in pt-10">
