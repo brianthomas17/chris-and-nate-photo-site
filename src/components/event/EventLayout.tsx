@@ -174,22 +174,28 @@ export default function EventLayout() {
 
         {/* Party List Section (If user has a party) */}
         {hasParty && (
-          <>
-            <section className="mb-16 md:mb-20 animate-fade-in">
-              <PartyList guestId={currentGuest.id} partyId={currentGuest.party_id} />
-            </section>
-            <div className="mb-16 md:mb-20">
-              <SectionSeparator />
-            </div>
-          </>
+          <section className="mb-16 md:mb-20 animate-fade-in">
+            <PartyList guestId={currentGuest.id} partyId={currentGuest.party_id} />
+          </section>
         )}
 
-        {/* Event Details Section */}
+        {/* Separator before Event Details */}
+        <div className="mb-16 md:mb-20">
+          <SectionSeparator />
+        </div>
+
+        {/* Event Details Header Section */}
         <section className="mb-16 md:mb-20 animate-fade-in">
           <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-6 md:mb-8">EVENT DETAILS</h2>
-          <div className="mb-8 md:mb-12">
-            <SectionSeparator />
-          </div>
+        </section>
+
+        {/* Separator after Event Details header */}
+        <div className="mb-16 md:mb-20">
+          <SectionSeparator />
+        </div>
+
+        {/* Content Sections */}
+        <section className="mb-16 md:mb-20 animate-fade-in">
           <div className="max-w-[450px] mx-auto">
             <ContentSections invitationType={currentGuest.invitation_type} />
           </div>
