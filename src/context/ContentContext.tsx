@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { ContentSection, InvitationType } from '../types';
 import { supabase } from "@/integrations/supabase/client";
@@ -52,10 +53,10 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         order_index: section.order_index,
         created_at: section.created_at,
         updated_at: section.updated_at,
-        visible_to_friday_dinner: section.visible_to_friday_dinner,
-        visible_to_sunday_brunch: section.visible_to_sunday_brunch,
-        visible_to_main_event: section.visible_to_main_event,
-        visible_to_afterparty: section.visible_to_afterparty
+        visible_to_friday_dinner: section.visible_to_friday_dinner === true,
+        visible_to_sunday_brunch: section.visible_to_sunday_brunch === true,
+        visible_to_main_event: section.visible_to_main_event === true,
+        visible_to_afterparty: section.visible_to_afterparty === true
       }));
 
       setContentSections(transformedSections);
@@ -99,10 +100,10 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         visible_to: section.visible_to,
         order_index: section.order_index,
         updated_at: new Date().toISOString(),
-        visible_to_friday_dinner: section.visible_to_friday_dinner,
-        visible_to_sunday_brunch: section.visible_to_sunday_brunch,
-        visible_to_main_event: section.visible_to_main_event,
-        visible_to_afterparty: section.visible_to_afterparty
+        visible_to_friday_dinner: section.visible_to_friday_dinner === true,
+        visible_to_sunday_brunch: section.visible_to_sunday_brunch === true,
+        visible_to_main_event: section.visible_to_main_event === true,
+        visible_to_afterparty: section.visible_to_afterparty === true
       });
       
       const { error } = await supabase
@@ -156,21 +157,30 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     mainEvent: boolean = false, 
     afterparty: boolean = false
   ) => {
-    console.log("getVisibleSections called with:", { 
+    // Log input values exactly as received
+    console.log("getVisibleSections input values:", { 
       invitationType, 
-      fridayDinner: Boolean(fridayDinner), 
-      sundayBrunch: Boolean(sundayBrunch), 
-      mainEvent: Boolean(mainEvent), 
-      afterparty: Boolean(afterparty) 
+      fridayDinner, 
+      sundayBrunch, 
+      mainEvent, 
+      afterparty 
     });
+    
+    // Ensure strict boolean values (true is true only)
+    const hasFridayDinner = fridayDinner === true;
+    const hasSundayBrunch = sundayBrunch === true;
+    const hasMainEvent = mainEvent === true;
+    const hasAfterparty = afterparty === true;
+    
+    console.log("getVisibleSections processed booleans:", {
+      hasFridayDinner,
+      hasSundayBrunch,
+      hasMainEvent,
+      hasAfterparty
+    });
+    
     console.log("Total content sections:", contentSections.length);
     
-    // Convert inputs to proper boolean values
-    const hasFridayDinner = Boolean(fridayDinner);
-    const hasSundayBrunch = Boolean(sundayBrunch);
-    const hasMainEvent = Boolean(mainEvent);
-    const hasAfterparty = Boolean(afterparty);
-
     // For debugging
     contentSections.forEach(section => {
       console.log(`Content section "${section.title}":`, {
@@ -181,10 +191,8 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
       });
     });
     
-    // SIMPLIFIED LOGIC:
     // 1. For admin users: Show all content sections
     // 2. For regular users: Show content that matches their access permissions
-
     const filteredSections = contentSections.filter(section => {
       // Admin users see all content
       if (invitationType === 'admin') {
@@ -195,21 +203,25 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
       // For non-admin users, check event access permissions
       let hasAccess = true;
       
-      // Check if the user has access to required events
-      if (section.visible_to_main_event && !hasMainEvent) {
+      // Only check conditions where the section has a restriction
+      if (section.visible_to_main_event === true && !hasMainEvent) {
         hasAccess = false;
+        console.log(`Section "${section.title}" requires main_event access, user has: ${hasMainEvent}`);
       }
       
-      if (section.visible_to_afterparty && !hasAfterparty) {
+      if (section.visible_to_afterparty === true && !hasAfterparty) {
         hasAccess = false;
+        console.log(`Section "${section.title}" requires afterparty access, user has: ${hasAfterparty}`);
       }
       
-      if (section.visible_to_friday_dinner && !hasFridayDinner) {
+      if (section.visible_to_friday_dinner === true && !hasFridayDinner) {
         hasAccess = false;
+        console.log(`Section "${section.title}" requires friday_dinner access, user has: ${hasFridayDinner}`);
       }
       
-      if (section.visible_to_sunday_brunch && !hasSundayBrunch) {
+      if (section.visible_to_sunday_brunch === true && !hasSundayBrunch) {
         hasAccess = false;
+        console.log(`Section "${section.title}" requires sunday_brunch access, user has: ${hasSundayBrunch}`);
       }
       
       console.log(`Regular user: Section "${section.title}" ${hasAccess ? 'is' : 'is not'} visible`);

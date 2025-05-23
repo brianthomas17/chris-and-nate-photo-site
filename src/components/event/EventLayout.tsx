@@ -1,3 +1,4 @@
+
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -33,11 +34,11 @@ export default function EventLayout() {
   const isAdmin = currentGuest.invitation_type === 'admin';
   const hasParty = !!currentGuest.party_id;
   
-  // Convert all values to proper booleans using Boolean()
-  const showFridayDinner = Boolean(currentGuest.friday_dinner); 
-  const showSundayBrunch = Boolean(currentGuest.sunday_brunch);
-  const hasMainEvent = Boolean(currentGuest.main_event);
-  const hasAfterparty = Boolean(currentGuest.afterparty);
+  // Use strict equality for boolean values
+  const showFridayDinner = currentGuest.friday_dinner === true; 
+  const showSundayBrunch = currentGuest.sunday_brunch === true;
+  const hasMainEvent = currentGuest.main_event === true;
+  const hasAfterparty = currentGuest.afterparty === true;
   
   console.log("Guest data in EventLayout:", {
     id: currentGuest.id,

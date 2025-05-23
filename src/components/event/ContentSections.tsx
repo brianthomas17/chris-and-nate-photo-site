@@ -20,10 +20,11 @@ export default function ContentSections({
   const { getVisibleSections, contentSections } = useContent();
   
   // Convert all values to proper booleans using Boolean() constructor
-  const hasFridayDinner = Boolean(fridayDinner);
-  const hasSundayBrunch = Boolean(sundayBrunch);
-  const hasMainEvent = Boolean(mainEvent);
-  const hasAfterparty = Boolean(afterparty);
+  // For database values, false can be false, null, undefined, 0, "", etc.
+  const hasFridayDinner = fridayDinner === true;
+  const hasSundayBrunch = sundayBrunch === true;
+  const hasMainEvent = mainEvent === true;
+  const hasAfterparty = afterparty === true;
   
   // Pass all the event access parameters as proper booleans
   const visibleSections = getVisibleSections(
@@ -36,10 +37,14 @@ export default function ContentSections({
 
   console.log("Content sections rendering with:", {
     invitationType,
-    fridayDinner: hasFridayDinner,
-    sundayBrunch: hasSundayBrunch,
-    mainEvent: hasMainEvent,
-    afterparty: hasAfterparty,
+    fridayDinner,
+    sundayBrunch,
+    mainEvent,
+    afterparty,
+    hasFridayDinner,
+    hasSundayBrunch,
+    hasMainEvent,
+    hasAfterparty,
     visibleSectionsCount: visibleSections.length,
     allSectionsCount: contentSections.length,
     visibleSections: visibleSections.map(s => s.title)
