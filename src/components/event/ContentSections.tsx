@@ -1,3 +1,4 @@
+
 import { useContent } from "@/context/ContentContext";
 import { InvitationType } from "@/types";
 import { useAuth } from "@/context/AuthContext";
@@ -53,8 +54,8 @@ export default function ContentSections({
     sunday_brunch: sundayBrunch
   });
 
-  // Improved visibility logic: A section is visible if the user has access to ANY of the required events
-  // OR if the section has no specific event restrictions (all visibility flags are false)
+  // Updated visibility logic: Show ALL sections to ALL users
+  // Only hide sections if they have specific restrictions AND the user doesn't meet them
   const visibleSections = contentSections.filter(section => {
     // Admin users see all content
     if (invitationType === 'admin') {
