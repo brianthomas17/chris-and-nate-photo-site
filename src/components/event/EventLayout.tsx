@@ -186,6 +186,7 @@ export default function EventLayout() {
 
         {/* Event Details Section */}
         <section className="mb-16 md:mb-20 animate-fade-in">
+          <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-6 md:mb-8">EVENT DETAILS</h2>
           <div className="max-w-[450px] mx-auto">
             <ContentSections invitationType={currentGuest.invitation_type} />
           </div>
