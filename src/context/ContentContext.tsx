@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { ContentSection, InvitationType } from '../types';
 import { supabase } from "@/integrations/supabase/client";
@@ -153,7 +152,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     invitationType: InvitationType, 
     fridayDinner: boolean = false, 
     sundayBrunch: boolean = false,
-    mainEvent: boolean = false, // Changed default to false - require explicit permission
+    mainEvent: boolean = false, // Default to false - require explicit permission
     afterparty: boolean = false
   ) => {
     console.log("getVisibleSections called with:", { 
@@ -166,17 +165,37 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     console.log("Total content sections:", contentSections.length);
     
     const filteredSections = contentSections.filter(section => {
-      // Admin can still see everything
-      if (invitationType === 'admin') {
-        return true;
-      }
-      
       // Convert to proper boolean values
       const hasFridayDinner = Boolean(fridayDinner);
       const hasSundayBrunch = Boolean(sundayBrunch);
-      const hasMainEvent = Boolean(mainEvent); // Default to false now - require explicit true
+      const hasMainEvent = Boolean(mainEvent);
       const hasAfterparty = Boolean(afterparty);
       
+      // For admin users: only show content that's explicitly marked for them
+      // or content that they have specific access to based on their permissions
+      if (invitationType === 'admin') {
+        // Check if admin has the necessary event access permissions
+        if (section.visible_to_main_event && !hasMainEvent) {
+          return false;
+        }
+        
+        if (section.visible_to_afterparty && !hasAfterparty) {
+          return false;
+        }
+        
+        if (section.visible_to_friday_dinner && !hasFridayDinner) {
+          return false;
+        }
+        
+        if (section.visible_to_sunday_brunch && !hasSundayBrunch) {
+          return false;
+        }
+        
+        // Admin has the necessary permissions for this content
+        return true;
+      }
+      
+      // Non-admin users - require explicit permission for each content type
       // By default, show no content unless explicitly allowed
       let shouldShow = false;
       
