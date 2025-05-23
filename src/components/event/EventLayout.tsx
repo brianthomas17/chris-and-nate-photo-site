@@ -53,7 +53,7 @@ const EventLayout = () => {
       {/* Party members section, if the guest is in a party */}
       {currentGuest.party_id && (
         <>
-          <PartyView partyId={currentGuest.party_id} currentGuestId={currentGuest.id} />
+          <PartyView partyId={currentGuest.party_id} guestId={currentGuest.id} />
           <SectionSeparator />
         </>
       )}

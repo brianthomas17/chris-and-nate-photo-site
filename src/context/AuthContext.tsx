@@ -39,11 +39,19 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   }
 };
 
+// Update the context type to expose state properties directly at the top level
 interface AuthContextType {
-  state: AuthState;
+  // Direct access to state properties
+  isLoading: boolean;
+  isAuthenticated: boolean;
+  currentGuest: Guest | null;
+  currentEmail: string | null;
+  // Functions
   login: (email: string) => Promise<void>;
   logout: () => void;
   refreshSession: () => Promise<void>;
+  // Also include the full state object for backward compatibility
+  state: AuthState;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -159,8 +167,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  // Expose both state properties directly and the full state object
   return (
-    <AuthContext.Provider value={{ state, login, logout, refreshSession }}>
+    <AuthContext.Provider value={{ 
+      // Expose state properties directly
+      isLoading: state.isLoading,
+      isAuthenticated: state.isAuthenticated,
+      currentGuest: state.currentGuest,
+      currentEmail: state.currentEmail,
+      // Include functions
+      login, 
+      logout, 
+      refreshSession,
+      // Include full state for backward compatibility
+      state
+    }}>
       {children}
     </AuthContext.Provider>
   );
