@@ -1,3 +1,4 @@
+
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -6,11 +7,10 @@ import RSVPForm from "./RSVPForm";
 import PartyList from "./PartyList";
 import ConfirmedAttendees from "./ConfirmedAttendees";
 import SectionSeparator from "./SectionSeparator";
-import FridayDinnerSection from "./FridayDinnerSection";
-import SundayBrunchSection from "./SundayBrunchSection";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+
 export default function EventLayout() {
   const {
     currentGuest,
@@ -18,14 +18,17 @@ export default function EventLayout() {
   } = useAuth();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+
   if (!currentGuest) {
     navigate('/');
     return null;
   }
+
   const handleLogout = () => {
     logout();
     navigate('/');
   };
+
   const isAdmin = currentGuest.invitation_type === 'admin';
   const hasParty = !!currentGuest.party_id;
 
@@ -44,6 +47,7 @@ export default function EventLayout() {
     // Log raw value
     rawAfterparty: JSON.stringify(currentGuest.afterparty) // Log raw value
   });
+
   return <div className="min-h-screen relative">
       {/* Background SVG - positioned in the center with max-width 50% */}
       <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
@@ -155,7 +159,6 @@ export default function EventLayout() {
         </div>
       </div>
 
-
       <div className="container mx-auto px-4 py-[60px] md:py-[80px] relative z-10">
         {/* RSVP Section - First */}
         <section className="mb-12 md:mb-16 animate-fade-in">
@@ -168,12 +171,8 @@ export default function EventLayout() {
             <SectionSeparator />
           </section>}
 
-        {/* Friday Dinner Section - Shown conditionally */}
-        {showFridayDinner && <FridayDinnerSection />}
-
         {/* Event Details Section */}
         <section className="animate-fade-in pt-10">
-          
           <div className="max-w-[450px] mx-auto">
             <ContentSections invitationType={currentGuest.invitation_type} />
           </div>
@@ -181,9 +180,6 @@ export default function EventLayout() {
             <SectionSeparator />
           </div>
         </section>
-        
-        {/* Sunday Brunch Section - Shown conditionally */}
-        {showSundayBrunch && <SundayBrunchSection />}
         
         {/* Confirmed Attendees Section */}
         <section className="animate-fade-in pt-20">
