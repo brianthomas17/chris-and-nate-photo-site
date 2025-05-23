@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { ContentSection, InvitationType } from '../types';
 import { supabase } from "@/integrations/supabase/client";
@@ -36,6 +35,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const fetchContentSections = async () => {
     try {
+      console.log("Fetching content sections from database...");
       const { data, error } = await supabase
         .from('content_sections')
         .select('*');
@@ -45,6 +45,14 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         return;
       }
 
+      if (!data || data.length === 0) {
+        console.log('No content sections found in database');
+        setContentSections([]);
+        return;
+      }
+
+      console.log("Raw content sections data:", data);
+      
       const transformedSections: ContentSection[] = data.map((section: any) => ({
         id: section.id,
         title: section.title,
@@ -53,6 +61,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         order_index: section.order_index,
         created_at: section.created_at,
         updated_at: section.updated_at,
+        // Ensure boolean values are properly handled
         visible_to_friday_dinner: section.visible_to_friday_dinner === true,
         visible_to_sunday_brunch: section.visible_to_sunday_brunch === true,
         visible_to_main_event: section.visible_to_main_event === true,
@@ -60,7 +69,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
       }));
 
       setContentSections(transformedSections);
-      console.log("Fetched content sections:", transformedSections);
+      console.log("Transformed content sections:", transformedSections);
     } catch (error) {
       console.error('Error fetching content sections:', error);
     }
@@ -75,10 +84,10 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
           content: section.content,
           visible_to: section.visible_to,
           order_index: section.order_index,
-          visible_to_friday_dinner: section.visible_to_friday_dinner,
-          visible_to_sunday_brunch: section.visible_to_sunday_brunch,
-          visible_to_main_event: section.visible_to_main_event,
-          visible_to_afterparty: section.visible_to_afterparty
+          visible_to_friday_dinner: section.visible_to_friday_dinner === true,
+          visible_to_sunday_brunch: section.visible_to_sunday_brunch === true,
+          visible_to_main_event: section.visible_to_main_event === true,
+          visible_to_afterparty: section.visible_to_afterparty === true
         });
 
       if (error) {
@@ -114,10 +123,10 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
           visible_to: section.visible_to,
           order_index: section.order_index,
           updated_at: new Date().toISOString(),
-          visible_to_friday_dinner: section.visible_to_friday_dinner,
-          visible_to_sunday_brunch: section.visible_to_sunday_brunch,
-          visible_to_main_event: section.visible_to_main_event,
-          visible_to_afterparty: section.visible_to_afterparty
+          visible_to_friday_dinner: section.visible_to_friday_dinner === true,
+          visible_to_sunday_brunch: section.visible_to_sunday_brunch === true,
+          visible_to_main_event: section.visible_to_main_event === true,
+          visible_to_afterparty: section.visible_to_afterparty === true
         })
         .eq('id', section.id);
 
@@ -150,6 +159,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   };
 
+  // Keep this method for backward compatibility, but our primary approach now uses the ContentSections component directly
   const getVisibleSections = (
     invitationType: InvitationType, 
     fridayDinner: boolean = false, 

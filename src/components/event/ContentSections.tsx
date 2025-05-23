@@ -1,6 +1,7 @@
 
 import { useContent } from "@/context/ContentContext";
 import { InvitationType } from "@/types";
+import { useAuth } from "@/context/AuthContext";
 
 interface ContentSectionsProps {
   invitationType: InvitationType;
@@ -11,40 +12,64 @@ interface ContentSectionsProps {
 }
 
 export default function ContentSections({ 
-  invitationType,
-  fridayDinner = false,
-  sundayBrunch = false,
-  mainEvent = false,
-  afterparty = false
+  invitationType
 }: ContentSectionsProps) {
-  const { getVisibleSections, contentSections } = useContent();
+  const { contentSections } = useContent();
+  const { currentGuest } = useAuth();
   
-  // Convert all values to proper booleans using strict equality
-  // For database values, only true is true, everything else is false
-  const hasFridayDinner = fridayDinner === true;
-  const hasSundayBrunch = sundayBrunch === true;
-  const hasMainEvent = mainEvent === true;
-  const hasAfterparty = afterparty === true;
+  console.log("Current guest in ContentSections:", currentGuest);
   
-  // Pass all the event access parameters as proper booleans
-  const visibleSections = getVisibleSections(
-    invitationType, 
-    hasFridayDinner, 
-    hasSundayBrunch, 
-    hasMainEvent, 
-    hasAfterparty
-  );
+  if (!currentGuest) {
+    console.log("No current guest found");
+    return (
+      <div className="text-center p-8">
+        <p className="text-white text-xl">Please log in to view content.</p>
+      </div>
+    );
+  }
 
-  console.log("Content sections rendering with:", {
-    invitationType,
-    fridayDinner,
-    sundayBrunch,
-    mainEvent,
-    afterparty,
-    hasFridayDinner,
-    hasSundayBrunch,
-    hasMainEvent,
-    hasAfterparty,
+  // Simplified approach: Directly determine which content sections to show
+  const visibleSections = contentSections.filter(section => {
+    // Admin users see all content
+    if (invitationType === 'admin') {
+      return true;
+    }
+    
+    // For non-admin users, check permissions directly from the current guest object
+    let hasAccess = true;
+    
+    // Only check conditions where the section has a restriction
+    if (section.visible_to_main_event === true && currentGuest.main_event !== true) {
+      hasAccess = false;
+      console.log(`Section "${section.title}" requires main_event access, guest has: ${currentGuest.main_event}`);
+    }
+    
+    if (section.visible_to_afterparty === true && currentGuest.afterparty !== true) {
+      hasAccess = false;
+      console.log(`Section "${section.title}" requires afterparty access, guest has: ${currentGuest.afterparty}`);
+    }
+    
+    if (section.visible_to_friday_dinner === true && currentGuest.friday_dinner !== true) {
+      hasAccess = false;
+      console.log(`Section "${section.title}" requires friday_dinner access, guest has: ${currentGuest.friday_dinner}`);
+    }
+    
+    if (section.visible_to_sunday_brunch === true && currentGuest.sunday_brunch !== true) {
+      hasAccess = false;
+      console.log(`Section "${section.title}" requires sunday_brunch access, guest has: ${currentGuest.sunday_brunch}`);
+    }
+    
+    console.log(`Section "${section.title}" ${hasAccess ? 'is' : 'is not'} visible to ${currentGuest.first_name}`);
+    return hasAccess;
+  }).sort((a, b) => a.order_index - b.order_index);
+
+  console.log("Content sections visibility:", {
+    guestName: currentGuest.first_name,
+    invitationType: currentGuest.invitation_type,
+    main_event: currentGuest.main_event,
+    afterparty: currentGuest.afterparty,
+    friday_dinner: currentGuest.friday_dinner,
+    sunday_brunch: currentGuest.sunday_brunch,
     visibleSectionsCount: visibleSections.length,
     allSectionsCount: contentSections.length,
     visibleSections: visibleSections.map(s => s.title)

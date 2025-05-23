@@ -34,14 +34,9 @@ export default function EventLayout() {
   const isAdmin = currentGuest.invitation_type === 'admin';
   const hasParty = !!currentGuest.party_id;
   
-  // Convert database values to actual booleans using strict equality
-  const showFridayDinner = currentGuest.friday_dinner === true; 
+  // Ensure boolean values are properly handled with strict equality
+  const showFridayDinner = currentGuest.friday_dinner === true;
   const showSundayBrunch = currentGuest.sunday_brunch === true;
-  
-  // For main_event and afterparty, add explicit conversion to boolean
-  // if the value is null/undefined, default to false
-  const hasMainEvent = currentGuest.main_event === true;
-  const hasAfterparty = currentGuest.afterparty === true;
   
   console.log("Guest data in EventLayout:", {
     id: currentGuest.id,
@@ -51,10 +46,8 @@ export default function EventLayout() {
     sunday_brunch: currentGuest.sunday_brunch,
     main_event: currentGuest.main_event,
     afterparty: currentGuest.afterparty,
-    showFridayDinner,
-    showSundayBrunch,
-    hasMainEvent,
-    hasAfterparty
+    rawMainEvent: JSON.stringify(currentGuest.main_event), // Log raw value
+    rawAfterparty: JSON.stringify(currentGuest.afterparty), // Log raw value
   });
   
   return (
@@ -191,13 +184,7 @@ export default function EventLayout() {
         <section className="animate-fade-in pt-10">
           <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-8">EVENT DETAILS</h2>
           <div className="max-w-[450px] mx-auto">
-            <ContentSections 
-              invitationType={currentGuest.invitation_type} 
-              fridayDinner={showFridayDinner}
-              sundayBrunch={showSundayBrunch}
-              mainEvent={hasMainEvent}
-              afterparty={hasAfterparty}
-            />
+            <ContentSections invitationType={currentGuest.invitation_type} />
           </div>
           <div className="pt-20">
             <SectionSeparator />
