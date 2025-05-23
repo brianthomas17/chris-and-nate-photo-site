@@ -19,21 +19,27 @@ export default function ContentSections({
 }: ContentSectionsProps) {
   const { getVisibleSections } = useContent();
   
+  // Ensure boolean values by converting any undefined to proper booleans
+  const hasFridayDinner = fridayDinner === true;
+  const hasSundayBrunch = sundayBrunch === true;
+  const hasMainEvent = mainEvent !== false; // Default to true if undefined
+  const hasAfterparty = afterparty === true;
+  
   // Pass all the event access parameters to determine which content sections to show
   const visibleSections = getVisibleSections(
     invitationType, 
-    fridayDinner, 
-    sundayBrunch, 
-    mainEvent, 
-    afterparty
+    hasFridayDinner, 
+    hasSundayBrunch, 
+    hasMainEvent, 
+    hasAfterparty
   );
 
   console.log("Content sections rendering with:", {
     invitationType,
-    fridayDinner,
-    sundayBrunch,
-    mainEvent,
-    afterparty,
+    fridayDinner: hasFridayDinner,
+    sundayBrunch: hasSundayBrunch,
+    mainEvent: hasMainEvent,
+    afterparty: hasAfterparty,
     visibleSectionsCount: visibleSections.length,
     visibleSections: visibleSections.map(s => s.title)
   });

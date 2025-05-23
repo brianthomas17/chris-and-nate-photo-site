@@ -34,10 +34,11 @@ export default function EventLayout() {
   const isAdmin = currentGuest.invitation_type === 'admin';
   const hasParty = !!currentGuest.party_id;
   
-  // Explicitly check if these values are true, not just truthy
+  // Fix the boolean values by explicitly checking for true
+  // Handle undefined/null by converting to false for optional events
   const showFridayDinner = currentGuest.friday_dinner === true;
   const showSundayBrunch = currentGuest.sunday_brunch === true;
-  const hasMainEvent = currentGuest.main_event !== false; // Default to true if undefined
+  const hasMainEvent = currentGuest.main_event !== false; // Default to true if undefined/null
   const hasAfterparty = currentGuest.afterparty === true;
   
   console.log("Guest data in EventLayout:", {

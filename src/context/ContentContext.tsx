@@ -166,24 +166,30 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         return true;
       }
       
+      // Convert any undefined/null values to boolean
+      const hasFridayDinner = !!fridayDinner;
+      const hasSundayBrunch = !!sundayBrunch;
+      const hasMainEvent = mainEvent !== false; // Default to true if undefined/null
+      const hasAfterparty = !!afterparty;
+      
       // Check for each visibility requirement
-      if (section.visible_to_main_event && !mainEvent) {
-        console.log(`Section "${section.title}" filtered out because it requires main event but user has mainEvent=${mainEvent}`);
+      if (section.visible_to_main_event && !hasMainEvent) {
+        console.log(`Section "${section.title}" filtered out because it requires main event but user has mainEvent=${hasMainEvent}`);
         return false;
       }
       
-      if (section.visible_to_afterparty && !afterparty) {
-        console.log(`Section "${section.title}" filtered out because it requires afterparty but user has afterparty=${afterparty}`);
+      if (section.visible_to_afterparty && !hasAfterparty) {
+        console.log(`Section "${section.title}" filtered out because it requires afterparty but user has afterparty=${hasAfterparty}`);
         return false;
       }
       
-      if (section.visible_to_friday_dinner && !fridayDinner) {
-        console.log(`Section "${section.title}" filtered out because it requires Friday dinner but user has fridayDinner=${fridayDinner}`);
+      if (section.visible_to_friday_dinner && !hasFridayDinner) {
+        console.log(`Section "${section.title}" filtered out because it requires Friday dinner but user has fridayDinner=${hasFridayDinner}`);
         return false;
       }
       
-      if (section.visible_to_sunday_brunch && !sundayBrunch) {
-        console.log(`Section "${section.title}" filtered out because it requires Sunday brunch but user has sundayBrunch=${sundayBrunch}`);
+      if (section.visible_to_sunday_brunch && !hasSundayBrunch) {
+        console.log(`Section "${section.title}" filtered out because it requires Sunday brunch but user has sundayBrunch=${hasSundayBrunch}`);
         return false;
       }
       
