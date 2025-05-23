@@ -20,7 +20,8 @@ export default function ContentSections({
     invitationType,
     fridayDinner,
     sundayBrunch,
-    visibleSectionsCount: visibleSections.length
+    visibleSectionsCount: visibleSections.length,
+    visibleSections: visibleSections.map(s => s.title)
   });
 
   if (visibleSections.length === 0) {

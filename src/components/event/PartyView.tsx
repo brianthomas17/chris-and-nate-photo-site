@@ -30,6 +30,7 @@ export default function PartyView({ guestId, partyId }: PartyViewProps) {
           getPartyById(partyId)
         ]);
 
+        console.log("Fetched party members:", members);
         setPartyMembers(members.filter(member => member.id !== guestId));
         
         if (party) {
@@ -69,6 +70,20 @@ export default function PartyView({ guestId, partyId }: PartyViewProps) {
       <Badge variant="destructive">Not Attending</Badge>;
   };
 
+  const getAdditionalEventsBadges = (guest: Guest) => {
+    const badges = [];
+    
+    if (guest.friday_dinner) {
+      badges.push(<Badge key="friday" variant="outline" className="bg-anniversary-darkPurple text-anniversary-gold border-anniversary-gold ml-1">Fri</Badge>);
+    }
+    
+    if (guest.sunday_brunch) {
+      badges.push(<Badge key="sunday" variant="outline" className="bg-anniversary-darkPurple text-anniversary-gold border-anniversary-gold ml-1">Sun</Badge>);
+    }
+    
+    return badges;
+  };
+
   return (
     <Card className="shadow-md">
       <CardHeader>
@@ -94,7 +109,10 @@ export default function PartyView({ guestId, partyId }: PartyViewProps) {
                   <p className="font-medium">{member.first_name}</p>
                   <p className="text-sm text-muted-foreground">{member.email}</p>
                 </div>
-                {getRsvpStatusBadge(member)}
+                <div className="flex items-center">
+                  {getRsvpStatusBadge(member)}
+                  {member.attending === 'Yes' && getAdditionalEventsBadges(member)}
+                </div>
               </li>
             ))}
           </ul>

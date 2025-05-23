@@ -137,29 +137,33 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const getVisibleSections = (invitationType: InvitationType, fridayDinner: boolean = false, sundayBrunch: boolean = false) => {
     console.log("getVisibleSections called with:", { invitationType, fridayDinner, sundayBrunch });
+    console.log("Total content sections:", contentSections.length);
     
-    return contentSections
-      .filter(section => {
-        // First check if the section matches the invitation type
-        const matchesInvitationType = section.visible_to.includes(invitationType);
-        if (!matchesInvitationType) return false;
-        
-        // For sections specific to Friday dinner
-        if (section.visible_to_friday_dinner === true) {
-          // Only show if user is attending Friday dinner
-          if (!fridayDinner) return false;
-        }
-        
-        // For sections specific to Sunday brunch
-        if (section.visible_to_sunday_brunch === true) {
-          // Only show if user is attending Sunday brunch
-          if (!sundayBrunch) return false;
-        }
-        
-        // If we've passed all checks, show the section
-        return true;
-      })
-      .sort((a, b) => a.order_index - b.order_index);
+    const filteredSections = contentSections.filter(section => {
+      // First check if the section matches the invitation type
+      if (!section.visible_to.includes(invitationType)) {
+        return false;
+      }
+      
+      // For sections specific to Friday dinner
+      if (section.visible_to_friday_dinner === true && !fridayDinner) {
+        console.log(`Filtering out section ${section.title} because it requires Friday dinner but user has fridayDinner=${fridayDinner}`);
+        return false;
+      }
+      
+      // For sections specific to Sunday brunch
+      if (section.visible_to_sunday_brunch === true && !sundayBrunch) {
+        console.log(`Filtering out section ${section.title} because it requires Sunday brunch but user has sundayBrunch=${sundayBrunch}`);
+        return false;
+      }
+      
+      // If we've passed all checks, show the section
+      return true;
+    });
+    
+    console.log("Filtered sections:", filteredSections.map(s => s.title));
+    
+    return filteredSections.sort((a, b) => a.order_index - b.order_index);
   };
 
   return (
