@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { ContentSection, InvitationType } from '../types';
 import { supabase } from "@/integrations/supabase/client";
@@ -60,6 +59,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
       }));
 
       setContentSections(transformedSections);
+      console.log("Fetched content sections:", transformedSections);
     } catch (error) {
       console.error('Error fetching content sections:', error);
     }
@@ -170,67 +170,50 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const hasSundayBrunch = Boolean(sundayBrunch);
     const hasMainEvent = Boolean(mainEvent);
     const hasAfterparty = Boolean(afterparty);
+
+    // For debugging
+    contentSections.forEach(section => {
+      console.log(`Content section "${section.title}":`, {
+        fridayDinner: section.visible_to_friday_dinner,
+        sundayBrunch: section.visible_to_sunday_brunch,
+        mainEvent: section.visible_to_main_event,
+        afterparty: section.visible_to_afterparty
+      });
+    });
     
+    // SIMPLIFIED LOGIC:
+    // 1. For admin users: Show all content sections
+    // 2. For regular users: Show content that matches their access permissions
+
     const filteredSections = contentSections.filter(section => {
-      // For admin users: show all content they have permission for
+      // Admin users see all content
       if (invitationType === 'admin') {
-        // For admin users, we check each event type separately and show content
-        // if it's either not restricted to that event type OR the admin has access to it
-        
-        // If content requires main event access
-        if (section.visible_to_main_event && !hasMainEvent) {
-          console.log(`Admin: Section "${section.title}" filtered out - requires main event but admin has mainEvent=${hasMainEvent}`);
-          return false;
-        }
-        
-        // If content requires afterparty access
-        if (section.visible_to_afterparty && !hasAfterparty) {
-          console.log(`Admin: Section "${section.title}" filtered out - requires afterparty but admin has afterparty=${hasAfterparty}`);
-          return false;
-        }
-        
-        // If content requires Friday dinner access
-        if (section.visible_to_friday_dinner && !hasFridayDinner) {
-          console.log(`Admin: Section "${section.title}" filtered out - requires Friday dinner but admin has fridayDinner=${hasFridayDinner}`);
-          return false;
-        }
-        
-        // If content requires Sunday brunch access
-        if (section.visible_to_sunday_brunch && !hasSundayBrunch) {
-          console.log(`Admin: Section "${section.title}" filtered out - requires Sunday brunch but admin has sundayBrunch=${hasSundayBrunch}`);
-          return false;
-        }
-        
-        // If we got here, the admin has the necessary permissions
         console.log(`Admin: Section "${section.title}" is visible`);
         return true;
       }
       
-      // Non-admin users - use strict filtering
-      let shouldShow = false;
+      // For non-admin users, check event access permissions
+      let hasAccess = true;
       
-      // First check if user has main event access and content is for main event
-      if (hasMainEvent && section.visible_to_main_event) {
-        shouldShow = true;
-      } else if (section.visible_to_main_event) {
-        // Content requires main event but user doesn't have access
-        return false;
+      // Check if the user has access to required events
+      if (section.visible_to_main_event && !hasMainEvent) {
+        hasAccess = false;
       }
       
-      // Then check if content requires special access that the user doesn't have
       if (section.visible_to_afterparty && !hasAfterparty) {
-        return false;
+        hasAccess = false;
       }
       
       if (section.visible_to_friday_dinner && !hasFridayDinner) {
-        return false;
+        hasAccess = false;
       }
       
       if (section.visible_to_sunday_brunch && !hasSundayBrunch) {
-        return false;
+        hasAccess = false;
       }
       
-      return shouldShow;
+      console.log(`Regular user: Section "${section.title}" ${hasAccess ? 'is' : 'is not'} visible`);
+      return hasAccess;
     });
     
     console.log("Filtered sections:", filteredSections.map(s => s.title));

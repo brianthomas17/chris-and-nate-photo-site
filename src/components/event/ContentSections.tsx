@@ -17,7 +17,7 @@ export default function ContentSections({
   mainEvent = false,
   afterparty = false
 }: ContentSectionsProps) {
-  const { getVisibleSections } = useContent();
+  const { getVisibleSections, contentSections } = useContent();
   
   // Convert all values to proper booleans using Boolean() constructor
   const hasFridayDinner = Boolean(fridayDinner);
@@ -41,10 +41,12 @@ export default function ContentSections({
     mainEvent: hasMainEvent,
     afterparty: hasAfterparty,
     visibleSectionsCount: visibleSections.length,
+    allSectionsCount: contentSections.length,
     visibleSections: visibleSections.map(s => s.title)
   });
 
   if (visibleSections.length === 0) {
+    console.log("No visible sections found for this user");
     return (
       <div className="text-center p-8">
         <p className="text-white text-xl">No content sections available yet.</p>
