@@ -157,9 +157,7 @@ export default function EventLayout() {
           </section>}
 
         {/* Friday Dinner Section - Shown conditionally */}
-        {showFridayDinner && <section className="animate-fade-in pt-16">
-            <FridayDinnerSection />
-          </section>}
+        {showFridayDinner}
 
         {/* Event Details Section */}
         <section className="animate-fade-in pt-10">
