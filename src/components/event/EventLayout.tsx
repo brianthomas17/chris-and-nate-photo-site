@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -180,7 +179,7 @@ export default function EventLayout() {
         )}
 
         {/* Separator before Event Details */}
-        <div className="mb-16 md:mb-20">
+        <div className="mt-16 mb-16">
           <SectionSeparator />
         </div>
 
@@ -190,7 +189,7 @@ export default function EventLayout() {
         </section>
 
         {/* Separator after Event Details header */}
-        <div className="mb-16 md:mb-20">
+        <div className="mt-16 mb-16">
           <SectionSeparator />
         </div>
 
@@ -204,13 +203,32 @@ export default function EventLayout() {
         {/* Confirmed Attendees Section - Only shown to guests with main_event access */}
         {hasMainEventAccess && (
           <>
-            <div className="mb-16 md:mb-20">
+            <div className="mt-16 mb-16">
               <SectionSeparator />
             </div>
-            <section className="animate-fade-in">
+            <section className="animate-fade-in mb-16 md:mb-20">
               <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-6 md:mb-8 pb-4">CONFIRMED ATTENDEES</h2>
               <div className="max-w-[800px] mx-auto">
                 <ConfirmedAttendees />
+              </div>
+            </section>
+            
+            {/* Questions Section */}
+            <div className="mt-16 mb-16">
+              <SectionSeparator />
+            </div>
+            <section className="animate-fade-in">
+              <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-6 md:mb-8">QUESTIONS</h2>
+              <div className="max-w-[450px] mx-auto text-center">
+                <p className="text-anniversary-gold text-base md:text-lg font-bicyclette leading-relaxed">
+                  Please contact our planner Hunter at{" "}
+                  <a 
+                    href="mailto:hunter@shiftalt.events" 
+                    className="text-anniversary-gold hover:text-anniversary-lightgold underline transition-colors"
+                  >
+                    hunter@shiftalt.events
+                  </a>
+                </p>
               </div>
             </section>
           </>
