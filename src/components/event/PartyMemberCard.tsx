@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { useGuests } from '@/context/GuestContext';
 import { useToast } from '@/hooks/use-toast';
 import { Check, UserCheck, UserX } from 'lucide-react';
+
 interface PartyMemberCardProps {
   guest: Guest;
   currentUserId: string;
@@ -95,10 +96,9 @@ export default function PartyMemberCard({
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="bg-anniversary-purple border border-anniversary-gold/30 text-white">
           <DialogHeader>
-            <DialogTitle className="text-anniversary-gold">
+            <DialogTitle className="text-anniversary-gold mb-4">
               Update RSVP for {guest.first_name}
             </DialogTitle>
-            
           </DialogHeader>
           
           <div className="space-y-6">
