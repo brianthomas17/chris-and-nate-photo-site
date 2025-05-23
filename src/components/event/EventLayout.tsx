@@ -1,3 +1,4 @@
+
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -134,12 +135,23 @@ export default function EventLayout() {
         </header>
       </div>
 
-      {/* NEW SECTION: Large gold italic text between hero and RSVP */}
+      {/* UPDATED SECTION: Large gold italic text with new content and spacing */}
       <div className="container mx-auto px-4 pt-48 pb-12 md:py-16 relative z-10">
-        <div className="max-w-[600px] mx-auto text-center">
+        <div className="max-w-[700px] mx-auto text-center">
           <p className="text-anniversary-gold text-lg md:text-2xl italic font-bicyclette leading-relaxed animate-[fadeIn_1.2s_ease-out_forwards] uppercase">
-            THERE ARE PARTIES, AND THEN THERE ARE NIGHTS THAT DEFINE A DECADE…<br />
+            THERE ARE PARTIES, AND THEN THERE ARE NIGHTS THAT DEFINE A DECADE…
+          </p>
+          
+          <p className="text-anniversary-gold text-lg md:text-2xl italic font-bicyclette leading-relaxed animate-[fadeIn_1.2s_ease-out_forwards] uppercase mt-6">
             JOIN US FOR AN EVENING YOU'LL NEVER FORGET AS WE CELEBRATE TEN YEARS OF CHRIS AND NATE.
+          </p>
+          
+          <p className="text-anniversary-gold text-lg md:text-2xl italic font-bicyclette leading-relaxed animate-[fadeIn_1.2s_ease-out_forwards] uppercase mt-6">
+            10 YEARS AGO CHRIS & NATE MARRIED AT SAN FRANCISCO CITY HALL WITH ONLY FAMILY IN ATTENDANCE. AT THE TIME NATE WAS BUSY BUILDING LEVER AND CHRIS WAS RE-ENTERING THE TECH WORLD,. THEYDIDN'T HAVE THE TIME OR MONEY TO THROW THE WEDDING THEY WANTED, SO THEY DECIDED IF THEY MADE IT TO 10 YEARS OF MARRIAGE THAT THEY WOULD THROW THE MOST EPIC PARTY.
+          </p>
+          
+          <p className="text-anniversary-gold text-lg md:text-2xl italic font-bicyclette leading-relaxed animate-[fadeIn_1.2s_ease-out_forwards] uppercase mt-6">
+            THIS IS THAT PARTY. YOU ARE INVITED. IT WILL BE LIKE NOTHING ANYONE HAS EVER SEEN.
           </p>
         </div>
       </div>
@@ -171,9 +183,7 @@ export default function EventLayout() {
         </section>
         
         {/* Sunday Brunch Section - Shown conditionally */}
-        {showSundayBrunch && <section className="animate-fade-in">
-            <SundayBrunchSection />
-          </section>}
+        {showSundayBrunch && <SundayBrunchSection />}
         
         {/* Confirmed Attendees Section */}
         <section className="animate-fade-in pt-20">
