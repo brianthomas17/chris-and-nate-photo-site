@@ -18,6 +18,8 @@ export interface Guest {
   attending?: string | null;
   friday_dinner?: boolean | null;
   sunday_brunch?: boolean | null;
+  main_event?: boolean;
+  afterparty?: boolean;
 }
 
 export interface Party {

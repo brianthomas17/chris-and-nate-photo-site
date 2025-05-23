@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Guest, InvitationType, Party } from '../types';
 import { useToast } from '@/hooks/use-toast';
@@ -57,7 +58,9 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           party_id,
           attending,
           friday_dinner,
-          sunday_brunch
+          sunday_brunch,
+          main_event,
+          afterparty
         `);
 
       if (error) {
@@ -134,7 +137,11 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           zip_code: guest.zip_code,
           invitation_type: guest.invitation_type,
           party_id: guest.party_id,
-          attending: guest.attending
+          attending: guest.attending,
+          friday_dinner: guest.friday_dinner,
+          sunday_brunch: guest.sunday_brunch,
+          main_event: guest.main_event,
+          afterparty: guest.afterparty
         })
         .select();
         
@@ -178,7 +185,9 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           party_id: guest.party_id,
           attending: guest.attending,
           friday_dinner: guest.friday_dinner,
-          sunday_brunch: guest.sunday_brunch
+          sunday_brunch: guest.sunday_brunch,
+          main_event: guest.main_event,
+          afterparty: guest.afterparty
         })
         .eq('id', guest.id);
 

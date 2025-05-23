@@ -36,6 +36,8 @@ export default function GuestManagement() {
   const [rsvpAttending, setRsvpAttending] = useState<string | null>(null);
   const [fridayDinner, setFridayDinner] = useState<boolean>(false);
   const [sundayBrunch, setSundayBrunch] = useState<boolean>(false);
+  const [mainEvent, setMainEvent] = useState<boolean>(true);
+  const [afterparty, setAfterparty] = useState<boolean>(false);
 
   const resetForm = () => {
     setFirstName("");
@@ -55,6 +57,8 @@ export default function GuestManagement() {
     setRsvpAttending(null);
     setFridayDinner(false);
     setSundayBrunch(false);
+    setMainEvent(true);
+    setAfterparty(false);
   };
 
   const handleAddGuest = async () => {
@@ -80,7 +84,9 @@ export default function GuestManagement() {
       party_id: partyId,
       attending: rsvpAttending,
       friday_dinner: rsvpAttending === "Yes" ? fridayDinner : null,
-      sunday_brunch: rsvpAttending === "Yes" ? sundayBrunch : null
+      sunday_brunch: rsvpAttending === "Yes" ? sundayBrunch : null,
+      main_event: mainEvent,
+      afterparty: afterparty
     });
     
     setIsSubmitting(false);
@@ -114,7 +120,9 @@ export default function GuestManagement() {
       party_id: partyId,
       attending: rsvpAttending,
       friday_dinner: rsvpAttending === "Yes" ? fridayDinner : null,
-      sunday_brunch: rsvpAttending === "Yes" ? sundayBrunch : null
+      sunday_brunch: rsvpAttending === "Yes" ? sundayBrunch : null,
+      main_event: mainEvent,
+      afterparty: afterparty
     });
     
     setIsSubmitting(false);
@@ -141,6 +149,8 @@ export default function GuestManagement() {
     setRsvpAttending(guest.attending);
     setFridayDinner(guest.friday_dinner || false);
     setSundayBrunch(guest.sunday_brunch || false);
+    setMainEvent(guest.main_event || true);
+    setAfterparty(guest.afterparty || false);
     
     setIsEditDialogOpen(true);
   };
@@ -412,6 +422,27 @@ export default function GuestManagement() {
                     </SelectContent>
                   </Select>
                 </div>
+                
+                <div className="space-y-3 border-t pt-3">
+                  <h4 className="font-medium">Event Access</h4>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="add-main-event" 
+                      checked={mainEvent} 
+                      onCheckedChange={(checked) => setMainEvent(checked === true)}
+                    />
+                    <Label htmlFor="add-main-event">Main Event</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="add-afterparty" 
+                      checked={afterparty}
+                      onCheckedChange={(checked) => setAfterparty(checked === true)}
+                    />
+                    <Label htmlFor="add-afterparty">Afterparty</Label>
+                  </div>
+                </div>
+                
                 <div className="space-y-2">
                   <Label htmlFor="rsvpStatus">RSVP Status (Optional)</Label>
                   <Select
@@ -477,6 +508,8 @@ export default function GuestManagement() {
               <TableHead>Last Name</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>RSVP Status</TableHead>
+              <TableHead>Main Event</TableHead>
+              <TableHead>Afterparty</TableHead>
               <TableHead>Friday Dinner</TableHead>
               <TableHead>Sunday Brunch</TableHead>
               <TableHead className="text-right">Actions</TableHead>
@@ -497,6 +530,20 @@ export default function GuestManagement() {
                     )
                   ) : (
                     <Badge variant="outline">Pending</Badge>
+                  )}
+                </TableCell>
+                <TableCell>
+                  {guest.main_event ? (
+                    <Badge className="bg-blue-500">Yes</Badge>
+                  ) : (
+                    <Badge variant="outline">No</Badge>
+                  )}
+                </TableCell>
+                <TableCell>
+                  {guest.afterparty ? (
+                    <Badge className="bg-purple-500">Yes</Badge>
+                  ) : (
+                    <Badge variant="outline">No</Badge>
                   )}
                 </TableCell>
                 <TableCell>
@@ -658,7 +705,26 @@ export default function GuestManagement() {
                 </Select>
               </div>
               
-              {/* RSVP Section */}
+              <div className="space-y-3 border-t pt-3">
+                <h4 className="font-medium">Event Access</h4>
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="edit-main-event" 
+                    checked={mainEvent} 
+                    onCheckedChange={(checked) => setMainEvent(checked === true)}
+                  />
+                  <Label htmlFor="edit-main-event">Main Event</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="edit-afterparty" 
+                    checked={afterparty}
+                    onCheckedChange={(checked) => setAfterparty(checked === true)}
+                  />
+                  <Label htmlFor="edit-afterparty">Afterparty</Label>
+                </div>
+              </div>
+              
               <div className="border-t pt-4 mt-2">
                 <h3 className="font-medium mb-3">RSVP Details</h3>
                 

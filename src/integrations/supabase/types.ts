@@ -93,6 +93,7 @@ export type Database = {
       guests: {
         Row: {
           address: string | null
+          afterparty: boolean
           attending: string | null
           city: string | null
           created_at: string
@@ -102,6 +103,7 @@ export type Database = {
           id: string
           invitation_type: Database["public"]["Enums"]["invitation_type"]
           last_name: string | null
+          main_event: boolean
           party_id: string | null
           party_name: string | null
           phone_number: string | null
@@ -112,6 +114,7 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          afterparty?: boolean
           attending?: string | null
           city?: string | null
           created_at?: string
@@ -121,6 +124,7 @@ export type Database = {
           id?: string
           invitation_type: Database["public"]["Enums"]["invitation_type"]
           last_name?: string | null
+          main_event?: boolean
           party_id?: string | null
           party_name?: string | null
           phone_number?: string | null
@@ -131,6 +135,7 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          afterparty?: boolean
           attending?: string | null
           city?: string | null
           created_at?: string
@@ -140,6 +145,7 @@ export type Database = {
           id?: string
           invitation_type?: Database["public"]["Enums"]["invitation_type"]
           last_name?: string | null
+          main_event?: boolean
           party_id?: string | null
           party_name?: string | null
           phone_number?: string | null

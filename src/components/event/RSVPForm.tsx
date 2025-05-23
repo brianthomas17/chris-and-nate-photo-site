@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useGuests } from "@/context/GuestContext";
 import { Guest } from "@/types";
@@ -11,10 +10,12 @@ import { AlertCircle } from "lucide-react";
 
 interface RSVPFormProps {
   guest: Guest;
+  onComplete?: () => void; // Making onComplete optional to fix the build error
 }
 
 export default function RSVPForm({
-  guest
+  guest,
+  onComplete
 }: RSVPFormProps) {
   const {
     updateRSVP
@@ -113,6 +114,11 @@ export default function RSVPForm({
         title: "RSVP Updated",
         description: `Thank you, ${guest.first_name}! Your RSVP has been recorded.`
       });
+
+      // Call the onComplete callback if provided
+      if (onComplete) {
+        onComplete();
+      }
     } catch (error) {
       console.error("Error submitting RSVP:", error);
       setFormError(error instanceof Error ? error.message : "Unknown error occurred");
