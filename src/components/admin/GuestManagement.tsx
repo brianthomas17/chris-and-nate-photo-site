@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useGuests } from "@/context/GuestContext";
 import { Guest, InvitationType, Party } from "@/types";
@@ -549,14 +550,14 @@ export default function GuestManagement() {
                   )}
                 </TableCell>
                 <TableCell>
-                  {guest.attending === "Yes" && guest.friday_dinner ? (
+                  {guest.friday_dinner ? (
                     <Badge className="bg-blue-500">Yes</Badge>
                   ) : (
                     <Badge variant="outline">No</Badge>
                   )}
                 </TableCell>
                 <TableCell>
-                  {guest.attending === "Yes" && guest.sunday_brunch ? (
+                  {guest.sunday_brunch ? (
                     <Badge className="bg-purple-500">Yes</Badge>
                   ) : (
                     <Badge variant="outline">No</Badge>
