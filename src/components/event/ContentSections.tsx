@@ -126,7 +126,9 @@ export default function ContentSections({
           
           {/* Add SectionSeparator between sections, but not after the last one */}
           {index < visibleSections.length - 1 && (
-            <SectionSeparator className="mt-12 mb-12" />
+            <div className="mb-16 md:mb-20">
+              <SectionSeparator />
+            </div>
           )}
         </div>
       ))}
