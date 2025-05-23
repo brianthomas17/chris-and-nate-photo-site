@@ -14,7 +14,7 @@ export default function ContentSections({
   invitationType,
   fridayDinner = false,
   sundayBrunch = false,
-  mainEvent = false, // Default changed to false - require explicit permission
+  mainEvent = false,
   afterparty = false
 }: ContentSectionsProps) {
   const { getVisibleSections } = useContent();
@@ -22,7 +22,7 @@ export default function ContentSections({
   // Convert all values to proper booleans using Boolean() constructor
   const hasFridayDinner = Boolean(fridayDinner);
   const hasSundayBrunch = Boolean(sundayBrunch);
-  const hasMainEvent = Boolean(mainEvent); // Changed to require explicit true value
+  const hasMainEvent = Boolean(mainEvent);
   const hasAfterparty = Boolean(afterparty);
   
   // Pass all the event access parameters as proper booleans

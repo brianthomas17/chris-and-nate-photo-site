@@ -36,12 +36,13 @@ export default function EventLayout() {
   // Convert all values to proper booleans using Boolean()
   const showFridayDinner = Boolean(currentGuest.friday_dinner); 
   const showSundayBrunch = Boolean(currentGuest.sunday_brunch);
-  const hasMainEvent = Boolean(currentGuest.main_event); // Changed to explicitly require true
+  const hasMainEvent = Boolean(currentGuest.main_event);
   const hasAfterparty = Boolean(currentGuest.afterparty);
   
   console.log("Guest data in EventLayout:", {
     id: currentGuest.id,
     name: currentGuest.first_name,
+    invitation_type: currentGuest.invitation_type,
     friday_dinner: currentGuest.friday_dinner,
     sunday_brunch: currentGuest.sunday_brunch,
     main_event: currentGuest.main_event,
@@ -182,7 +183,7 @@ export default function EventLayout() {
           </section>
         )}
 
-        {/* Event Details Section - Added heading with updated margins */}
+        {/* Event Details Section */}
         <section className="animate-fade-in pt-10">
           <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-8">EVENT DETAILS</h2>
           <div className="max-w-[450px] mx-auto">
