@@ -162,6 +162,11 @@ export default function EventLayout() {
         </div>
       </div>
 
+      {/* NEW SECTION: Added between text section and RSVP */}
+      <div className="container mx-auto px-4 pb-12 relative z-10">
+        <SectionSeparator />
+      </div>
+
       <div className="container mx-auto px-4 py-[60px] md:py-[80px] relative z-10">
         {/* RSVP Section - First */}
         <section className="mb-12 md:mb-16 animate-fade-in">
