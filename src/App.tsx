@@ -1,7 +1,5 @@
 
 import { Toaster } from "@/components/ui/toaster";
-// Remove the Sonner import if it's causing the duplicate toasts
-// import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -21,13 +19,13 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <AuthProvider>
-        <GuestProvider>
-          <ContentProvider>
-            <PhotoProvider>
-              {/* Only include one toaster component */}
-              <Toaster />
-              <BrowserRouter>
+      <BrowserRouter>
+        <AuthProvider>
+          <GuestProvider>
+            <ContentProvider>
+              <PhotoProvider>
+                {/* Only include one toaster component */}
+                <Toaster />
                 <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/admin" element={<Admin />} />
@@ -35,11 +33,11 @@ const App = () => (
                   <Route path="/event" element={<EventLayout />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
-              </BrowserRouter>
-            </PhotoProvider>
-          </ContentProvider>
-        </GuestProvider>
-      </AuthProvider>
+              </PhotoProvider>
+            </ContentProvider>
+          </GuestProvider>
+        </AuthProvider>
+      </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
 );
