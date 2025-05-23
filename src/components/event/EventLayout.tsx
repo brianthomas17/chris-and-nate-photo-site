@@ -34,9 +34,12 @@ export default function EventLayout() {
   const isAdmin = currentGuest.invitation_type === 'admin';
   const hasParty = !!currentGuest.party_id;
   
-  // Use strict equality for boolean values
+  // Convert database values to actual booleans using strict equality
   const showFridayDinner = currentGuest.friday_dinner === true; 
   const showSundayBrunch = currentGuest.sunday_brunch === true;
+  
+  // For main_event and afterparty, add explicit conversion to boolean
+  // if the value is null/undefined, default to false
   const hasMainEvent = currentGuest.main_event === true;
   const hasAfterparty = currentGuest.afterparty === true;
   

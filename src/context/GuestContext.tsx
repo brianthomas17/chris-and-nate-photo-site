@@ -75,7 +75,19 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
       if (data && data.length > 0) {
         console.log("Raw guest data from database:", data);
-        setGuests(data);
+        
+        // Transform the guest data to ensure boolean values are properly handled
+        const transformedGuests = data.map(guest => ({
+          ...guest,
+          // Explicitly convert boolean fields using strict equality
+          friday_dinner: guest.friday_dinner === true,
+          sunday_brunch: guest.sunday_brunch === true,
+          main_event: guest.main_event === true,
+          afterparty: guest.afterparty === true
+        }));
+        
+        setGuests(transformedGuests);
+        console.log("Transformed guest data:", transformedGuests);
       } else {
         console.log('No guests found in database');
         setGuests([]);

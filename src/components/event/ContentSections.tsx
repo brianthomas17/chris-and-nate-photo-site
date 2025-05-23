@@ -19,8 +19,8 @@ export default function ContentSections({
 }: ContentSectionsProps) {
   const { getVisibleSections, contentSections } = useContent();
   
-  // Convert all values to proper booleans using Boolean() constructor
-  // For database values, false can be false, null, undefined, 0, "", etc.
+  // Convert all values to proper booleans using strict equality
+  // For database values, only true is true, everything else is false
   const hasFridayDinner = fridayDinner === true;
   const hasSundayBrunch = sundayBrunch === true;
   const hasMainEvent = mainEvent === true;
