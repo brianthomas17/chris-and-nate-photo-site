@@ -6,20 +6,26 @@ interface ContentSectionsProps {
   invitationType: InvitationType;
   fridayDinner?: boolean;
   sundayBrunch?: boolean;
+  mainEvent?: boolean;
+  afterparty?: boolean;
 }
 
 export default function ContentSections({ 
   invitationType,
   fridayDinner = false,
-  sundayBrunch = false
+  sundayBrunch = false,
+  mainEvent = true,
+  afterparty = false
 }: ContentSectionsProps) {
   const { getVisibleSections } = useContent();
-  const visibleSections = getVisibleSections(invitationType, fridayDinner, sundayBrunch);
+  const visibleSections = getVisibleSections(invitationType, fridayDinner, sundayBrunch, mainEvent, afterparty);
 
   console.log("Content sections rendering with:", {
     invitationType,
     fridayDinner,
     sundayBrunch,
+    mainEvent,
+    afterparty,
     visibleSectionsCount: visibleSections.length,
     visibleSections: visibleSections.map(s => s.title)
   });
@@ -32,11 +38,15 @@ export default function ContentSections({
     );
   }
 
-  // Function to process HTML content to modify heading tags
+  // Function to process HTML content to enhance styling
   const processContent = (html: string): string => {
-    // Add font-bicyclette and uppercase classes to all h1, h2, h3, h4, h5, h6 tags
     return html
-      .replace(/<h([1-6])(.*?)>/g, '<h$1$2 class="font-bicyclette uppercase">');
+      .replace(/<h1(.*?)>/g, '<h1$1 class="font-din text-anniversary-gold text-4xl mb-4 uppercase">')
+      .replace(/<h2(.*?)>/g, '<h2$1 class="font-din text-anniversary-gold text-3xl mb-3 uppercase">')
+      .replace(/<h3(.*?)>/g, '<h3$1 class="font-din text-anniversary-gold text-2xl mb-2 uppercase">')
+      .replace(/<h4(.*?)>/g, '<h4$1 class="font-din text-anniversary-gold text-xl mb-2 uppercase">')
+      .replace(/<h5(.*?)>/g, '<h5$1 class="font-din text-anniversary-gold text-lg mb-1 uppercase">')
+      .replace(/<h6(.*?)>/g, '<h6$1 class="font-din text-anniversary-gold text-base mb-1 uppercase">');
   };
 
   return (
@@ -44,7 +54,7 @@ export default function ContentSections({
       {visibleSections.map((section) => (
         <div key={section.id} className="text-center">
           <div
-            className="prose prose-headings:text-anniversary-gold prose-headings:text-xl prose-p:text-white prose-li:text-white prose-strong:text-white prose-p:text-lg prose-li:text-lg max-w-[450px] mx-auto text-white"
+            className="prose prose-headings:font-din prose-headings:text-anniversary-gold prose-p:text-white prose-li:text-white prose-strong:text-white prose-p:text-lg prose-li:text-lg max-w-[450px] mx-auto text-white"
             dangerouslySetInnerHTML={{ __html: processContent(section.content) }}
           />
         </div>
