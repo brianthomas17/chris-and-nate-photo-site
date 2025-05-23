@@ -87,15 +87,15 @@
     letter-spacing: 0.03em;
   }
   
-  /* Added global link styling */
+  /* Updated global link styling - make them gold by default */
   a {
-    color: #D4AF37;
+    color: #D4AF37 !important;
     text-decoration: none;
     transition: color 0.2s ease-in-out;
   }
   
   a:hover {
-    color: #e5c161;
+    color: #e5c161 !important;
     text-decoration: underline;
   }
   
@@ -193,13 +193,14 @@
   line-height: 1.6;
 }
 
-/* Added gold link variants */
+/* Enhanced gold link variants with stronger specificity */
 .link-gold {
-  color: #D4AF37;
+  color: #D4AF37 !important;
   transition: color 0.2s ease;
 }
 
 .link-gold:hover {
-  color: #e5c161;
+  color: #e5c161 !important;
   text-decoration: underline;
 }
+
