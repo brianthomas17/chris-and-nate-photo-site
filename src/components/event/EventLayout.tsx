@@ -138,23 +138,24 @@ export default function EventLayout() {
       {/* UPDATED SECTION: Large gold italic text with new content and spacing */}
       <div className="container mx-auto px-4 pt-48 pb-12 md:py-16 relative z-10">
         <div className="max-w-[700px] mx-auto text-center">
-          <p className="text-anniversary-gold text-lg md:text-2xl italic font-bicyclette leading-relaxed animate-[fadeIn_1.2s_ease-out_forwards] uppercase">
-            THERE ARE PARTIES, AND THEN THERE ARE NIGHTS THAT DEFINE A DECADE…
+          <p className="text-anniversary-gold text-lg md:text-2xl italic font-bicyclette leading-relaxed animate-[fadeIn_1.2s_ease-out_forwards]">
+            There are parties, and then there are nights that define a decade…
           </p>
-          
-          <p className="text-anniversary-gold text-lg md:text-2xl italic font-bicyclette leading-relaxed animate-[fadeIn_1.2s_ease-out_forwards] uppercase mt-6">
-            JOIN US FOR AN EVENING YOU'LL NEVER FORGET AS WE CELEBRATE TEN YEARS OF CHRIS AND NATE.
+      
+          <p className="text-anniversary-gold text-lg md:text-2xl italic font-bicyclette leading-relaxed animate-[fadeIn_1.2s_ease-out_forwards] mt-6">
+            Join us for an evening you'll never forget as we celebrate ten years of Chris and Nate.
           </p>
-          
-          <p className="text-anniversary-gold text-lg md:text-2xl italic font-bicyclette leading-relaxed animate-[fadeIn_1.2s_ease-out_forwards] uppercase mt-6">
-            10 YEARS AGO CHRIS & NATE MARRIED AT SAN FRANCISCO CITY HALL WITH ONLY FAMILY IN ATTENDANCE. AT THE TIME NATE WAS BUSY BUILDING LEVER AND CHRIS WAS RE-ENTERING THE TECH WORLD,. THEYDIDN'T HAVE THE TIME OR MONEY TO THROW THE WEDDING THEY WANTED, SO THEY DECIDED IF THEY MADE IT TO 10 YEARS OF MARRIAGE THAT THEY WOULD THROW THE MOST EPIC PARTY.
+      
+          <p className="text-anniversary-gold text-lg md:text-2xl italic font-bicyclette leading-relaxed animate-[fadeIn_1.2s_ease-out_forwards] mt-6">
+            Ten years ago Chris and Nate married at San Francisco City Hall with only family in attendance. At the time, Nate was busy building Lever and Chris was re-entering the tech world. They didn't have the time or money to throw the wedding they wanted, so they decided if they made it to ten years of marriage, they would throw the most epic party.
           </p>
-          
-          <p className="text-anniversary-gold text-lg md:text-2xl italic font-bicyclette leading-relaxed animate-[fadeIn_1.2s_ease-out_forwards] uppercase mt-6">
-            THIS IS THAT PARTY. YOU ARE INVITED. IT WILL BE LIKE NOTHING ANYONE HAS EVER SEEN.
+      
+          <p className="text-anniversary-gold text-lg md:text-2xl italic font-bicyclette leading-relaxed animate-[fadeIn_1.2s_ease-out_forwards] mt-6">
+            This is that party. You are invited. It will be like nothing anyone has ever seen.
           </p>
         </div>
       </div>
+
 
       <div className="container mx-auto px-4 py-[60px] md:py-[80px] relative z-10">
         {/* RSVP Section - First */}
