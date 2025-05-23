@@ -38,6 +38,8 @@ export interface ContentSection {
   updated_at?: string;
   visible_to_friday_dinner?: boolean;
   visible_to_sunday_brunch?: boolean;
+  visible_to_main_event: boolean;
+  visible_to_afterparty: boolean;
 }
 
 export interface Photo {

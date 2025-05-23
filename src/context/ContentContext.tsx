@@ -48,7 +48,9 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         created_at: section.created_at,
         updated_at: section.updated_at,
         visible_to_friday_dinner: section.visible_to_friday_dinner,
-        visible_to_sunday_brunch: section.visible_to_sunday_brunch
+        visible_to_sunday_brunch: section.visible_to_sunday_brunch,
+        visible_to_main_event: section.visible_to_main_event,
+        visible_to_afterparty: section.visible_to_afterparty
       }));
 
       setContentSections(transformedSections);
@@ -67,7 +69,9 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
           visible_to: section.visible_to,
           order_index: section.order_index,
           visible_to_friday_dinner: section.visible_to_friday_dinner,
-          visible_to_sunday_brunch: section.visible_to_sunday_brunch
+          visible_to_sunday_brunch: section.visible_to_sunday_brunch,
+          visible_to_main_event: section.visible_to_main_event,
+          visible_to_afterparty: section.visible_to_afterparty
         });
 
       if (error) {
@@ -90,7 +94,9 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         order_index: section.order_index,
         updated_at: new Date().toISOString(),
         visible_to_friday_dinner: section.visible_to_friday_dinner,
-        visible_to_sunday_brunch: section.visible_to_sunday_brunch
+        visible_to_sunday_brunch: section.visible_to_sunday_brunch,
+        visible_to_main_event: section.visible_to_main_event,
+        visible_to_afterparty: section.visible_to_afterparty
       });
       
       const { error } = await supabase
@@ -102,7 +108,9 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
           order_index: section.order_index,
           updated_at: new Date().toISOString(),
           visible_to_friday_dinner: section.visible_to_friday_dinner,
-          visible_to_sunday_brunch: section.visible_to_sunday_brunch
+          visible_to_sunday_brunch: section.visible_to_sunday_brunch,
+          visible_to_main_event: section.visible_to_main_event,
+          visible_to_afterparty: section.visible_to_afterparty
         })
         .eq('id', section.id);
 
@@ -140,24 +148,39 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     console.log("Total content sections:", contentSections.length);
     
     const filteredSections = contentSections.filter(section => {
-      // First check if the section matches the invitation type
-      if (!section.visible_to.includes(invitationType)) {
+      // Use the new direct boolean columns for main event and afterparty visibility
+      let isVisible = false;
+      
+      // Admin can see everything
+      if (invitationType === 'admin') {
+        isVisible = true;
+      }
+      // Main event guest
+      else if (invitationType === 'main event' && section.visible_to_main_event === true) {
+        isVisible = true;
+      }
+      // Afterparty guest
+      else if (invitationType === 'afterparty' && section.visible_to_afterparty === true) {
+        isVisible = true;
+      }
+      
+      // If the section is not visible based on invitation type, return false
+      if (!isVisible) {
+        console.log(`Section "${section.title}" filtered out because it's not visible to ${invitationType} guests`);
         return false;
       }
       
-      // For sections specific to Friday dinner
-      if (section.visible_to_friday_dinner === true && !fridayDinner) {
-        console.log(`Filtering out section ${section.title} because it requires Friday dinner but user has fridayDinner=${fridayDinner}`);
+      // Additional checks for special events
+      if (section.visible_to_friday_dinner === true && fridayDinner !== true) {
+        console.log(`Section "${section.title}" filtered out because it requires Friday dinner but user has fridayDinner=${fridayDinner}`);
         return false;
       }
       
-      // For sections specific to Sunday brunch
-      if (section.visible_to_sunday_brunch === true && !sundayBrunch) {
-        console.log(`Filtering out section ${section.title} because it requires Sunday brunch but user has sundayBrunch=${sundayBrunch}`);
+      if (section.visible_to_sunday_brunch === true && sundayBrunch !== true) {
+        console.log(`Section "${section.title}" filtered out because it requires Sunday brunch but user has sundayBrunch=${sundayBrunch}`);
         return false;
       }
       
-      // If we've passed all checks, show the section
       return true;
     });
     

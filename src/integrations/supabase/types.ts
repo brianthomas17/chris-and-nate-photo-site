@@ -57,7 +57,9 @@ export type Database = {
           title: string
           updated_at: string
           visible_to: Database["public"]["Enums"]["invitation_type"][]
+          visible_to_afterparty: boolean
           visible_to_friday_dinner: boolean | null
+          visible_to_main_event: boolean
           visible_to_sunday_brunch: boolean | null
         }
         Insert: {
@@ -68,7 +70,9 @@ export type Database = {
           title: string
           updated_at?: string
           visible_to: Database["public"]["Enums"]["invitation_type"][]
+          visible_to_afterparty?: boolean
           visible_to_friday_dinner?: boolean | null
+          visible_to_main_event?: boolean
           visible_to_sunday_brunch?: boolean | null
         }
         Update: {
@@ -79,7 +83,9 @@ export type Database = {
           title?: string
           updated_at?: string
           visible_to?: Database["public"]["Enums"]["invitation_type"][]
+          visible_to_afterparty?: boolean
           visible_to_friday_dinner?: boolean | null
+          visible_to_main_event?: boolean
           visible_to_sunday_brunch?: boolean | null
         }
         Relationships: []

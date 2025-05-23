@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useContent } from "@/context/ContentContext";
 import { ContentSection, InvitationType } from "@/types";
@@ -44,9 +43,11 @@ export default function ContentManagement() {
   const handleAddContent = async () => {
     setIsSubmitting(true);
     const visibleTo: InvitationType[] = [];
+    if (visibleToAdmin) visibleTo.push("admin");
+    
+    // Note: We keep the visible_to array for backward compatibility
     if (visibleToFullDay) visibleTo.push("main event");
     if (visibleToEvening) visibleTo.push("afterparty");
-    if (visibleToAdmin) visibleTo.push("admin");
 
     await addContentSection({
       title,
@@ -54,7 +55,9 @@ export default function ContentManagement() {
       visible_to: visibleTo,
       order_index: orderIndex || contentSections.length + 1,
       visible_to_friday_dinner: visibleToFridayDinner,
-      visible_to_sunday_brunch: visibleToSundayBrunch
+      visible_to_sunday_brunch: visibleToSundayBrunch,
+      visible_to_main_event: visibleToFullDay,
+      visible_to_afterparty: visibleToEvening
     });
     
     setIsSubmitting(false);
@@ -67,9 +70,11 @@ export default function ContentManagement() {
     
     setIsSubmitting(true);
     const visibleTo: InvitationType[] = [];
+    if (visibleToAdmin) visibleTo.push("admin");
+    
+    // Note: We keep the visible_to array for backward compatibility
     if (visibleToFullDay) visibleTo.push("main event");
     if (visibleToEvening) visibleTo.push("afterparty");
-    if (visibleToAdmin) visibleTo.push("admin");
 
     await updateContentSection({
       ...currentSection,
@@ -78,7 +83,9 @@ export default function ContentManagement() {
       visible_to: visibleTo,
       order_index: orderIndex || currentSection.order_index,
       visible_to_friday_dinner: visibleToFridayDinner,
-      visible_to_sunday_brunch: visibleToSundayBrunch
+      visible_to_sunday_brunch: visibleToSundayBrunch,
+      visible_to_main_event: visibleToFullDay,
+      visible_to_afterparty: visibleToEvening
     });
     
     setIsSubmitting(false);
@@ -90,8 +97,8 @@ export default function ContentManagement() {
     setCurrentSection(section);
     setTitle(section.title);
     setContent(section.content);
-    setVisibleToFullDay(section.visible_to.includes("main event"));
-    setVisibleToEvening(section.visible_to.includes("afterparty"));
+    setVisibleToFullDay(section.visible_to_main_event);
+    setVisibleToEvening(section.visible_to_afterparty);
     setVisibleToAdmin(section.visible_to.includes("admin"));
     setVisibleToFridayDinner(section.visible_to_friday_dinner || false);
     setVisibleToSundayBrunch(section.visible_to_sunday_brunch || false);
@@ -109,9 +116,17 @@ export default function ContentManagement() {
   const formatVisibility = (section: ContentSection) => {
     const parts = [];
     
-    // Add invitation types
-    if (section.visible_to.length > 0) {
-      parts.push(section.visible_to.join(", "));
+    // Add invitation types based on boolean flags
+    if (section.visible_to_main_event) {
+      parts.push("Main Event");
+    }
+    
+    if (section.visible_to_afterparty) {
+      parts.push("Afterparty");
+    }
+    
+    if (section.visible_to.includes("admin")) {
+      parts.push("Admin");
     }
     
     // Add special event visibility
