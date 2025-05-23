@@ -153,7 +153,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     invitationType: InvitationType, 
     fridayDinner: boolean = false, 
     sundayBrunch: boolean = false,
-    mainEvent: boolean = true,
+    mainEvent: boolean = false, // Changed default to false - require explicit permission
     afterparty: boolean = false
   ) => {
     console.log("getVisibleSections called with:", { 
@@ -166,39 +166,45 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     console.log("Total content sections:", contentSections.length);
     
     const filteredSections = contentSections.filter(section => {
-      // Admin can see everything
+      // Admin can still see everything
       if (invitationType === 'admin') {
         return true;
       }
       
-      // Convert to proper boolean values - use Boolean() to ensure true boolean type
+      // Convert to proper boolean values
       const hasFridayDinner = Boolean(fridayDinner);
       const hasSundayBrunch = Boolean(sundayBrunch);
-      const hasMainEvent = mainEvent !== false ? Boolean(mainEvent) : true; // Default to true if undefined
+      const hasMainEvent = Boolean(mainEvent); // Default to false now - require explicit true
       const hasAfterparty = Boolean(afterparty);
       
-      // Check for each visibility requirement
-      if (section.visible_to_main_event && !hasMainEvent) {
+      // By default, show no content unless explicitly allowed
+      let shouldShow = false;
+      
+      // Check main event access first - this is the base requirement
+      if (section.visible_to_main_event && hasMainEvent) {
+        shouldShow = true;
+      } else if (section.visible_to_main_event && !hasMainEvent) {
         console.log(`Section "${section.title}" filtered out because it requires main event but user has mainEvent=${hasMainEvent}`);
         return false;
       }
       
-      if (section.visible_to_afterparty && !hasAfterparty) {
+      // If the section requires special access, check those as well
+      if (shouldShow && section.visible_to_afterparty && !hasAfterparty) {
         console.log(`Section "${section.title}" filtered out because it requires afterparty but user has afterparty=${hasAfterparty}`);
         return false;
       }
       
-      if (section.visible_to_friday_dinner && !hasFridayDinner) {
+      if (shouldShow && section.visible_to_friday_dinner && !hasFridayDinner) {
         console.log(`Section "${section.title}" filtered out because it requires Friday dinner but user has fridayDinner=${hasFridayDinner}`);
         return false;
       }
       
-      if (section.visible_to_sunday_brunch && !hasSundayBrunch) {
+      if (shouldShow && section.visible_to_sunday_brunch && !hasSundayBrunch) {
         console.log(`Section "${section.title}" filtered out because it requires Sunday brunch but user has sundayBrunch=${hasSundayBrunch}`);
         return false;
       }
       
-      return true;
+      return shouldShow;
     });
     
     console.log("Filtered sections:", filteredSections.map(s => s.title));

@@ -1,3 +1,4 @@
+
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -36,7 +37,7 @@ export default function EventLayout() {
   // Convert all values to proper booleans using Boolean()
   const showFridayDinner = Boolean(currentGuest.friday_dinner); 
   const showSundayBrunch = Boolean(currentGuest.sunday_brunch);
-  const hasMainEvent = currentGuest.main_event !== false ? Boolean(currentGuest.main_event) : true; // Default to true
+  const hasMainEvent = Boolean(currentGuest.main_event); // Changed to explicitly require true
   const hasAfterparty = Boolean(currentGuest.afterparty);
   
   console.log("Guest data in EventLayout:", {
