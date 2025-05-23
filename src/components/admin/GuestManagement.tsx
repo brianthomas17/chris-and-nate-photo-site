@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useGuests } from "@/context/GuestContext";
 import { Guest, InvitationType, Party } from "@/types";
@@ -9,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { PlusCircle, User, Users } from "lucide-react";
+import { PlusCircle, User, Users, Search } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
@@ -39,6 +38,7 @@ export default function GuestManagement() {
   const [sundayBrunch, setSundayBrunch] = useState<boolean>(false);
   const [mainEvent, setMainEvent] = useState<boolean>(true);
   const [afterparty, setAfterparty] = useState<boolean>(false);
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   const resetForm = () => {
     setFirstName("");
@@ -200,6 +200,19 @@ export default function GuestManagement() {
     const party = parties.find(p => p.id === partyId);
     return party ? party.name : "Unknown";
   };
+
+  // Filter guests based on search term
+  const filteredGuests = guests.filter(guest => {
+    const searchLower = searchTerm.toLowerCase().trim();
+    
+    if (searchLower === "") return true;
+    
+    const firstNameMatch = guest.first_name?.toLowerCase().includes(searchLower) || false;
+    const lastNameMatch = guest.last_name?.toLowerCase().includes(searchLower) || false;
+    const emailMatch = guest.email?.toLowerCase().includes(searchLower) || false;
+    
+    return firstNameMatch || lastNameMatch || emailMatch;
+  });
 
   return (
     <Card>
@@ -503,8 +516,30 @@ export default function GuestManagement() {
         </div>
       </CardHeader>
       <CardContent>
+        {/* Search input */}
+        <div className="mb-4 flex items-center">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              placeholder="Search by name or email..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-9 pr-4"
+            />
+          </div>
+          <div className="ml-2">
+            {searchTerm && (
+              <Button variant="ghost" onClick={() => setSearchTerm("")} size="sm">
+                Clear
+              </Button>
+            )}
+          </div>
+        </div>
+        
         <Table>
-          <TableCaption>List of all invited guests.</TableCaption>
+          <TableCaption>
+            {searchTerm ? `${filteredGuests.length} guests found` : 'List of all invited guests.'}
+          </TableCaption>
           <TableHeader>
             <TableRow>
               <TableHead>First Name</TableHead>
@@ -519,7 +554,7 @@ export default function GuestManagement() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {guests.map((guest) => (
+            {filteredGuests.map((guest) => (
               <TableRow key={guest.id}>
                 <TableCell>{guest.first_name}</TableCell>
                 <TableCell>{guest.last_name || "-"}</TableCell>
