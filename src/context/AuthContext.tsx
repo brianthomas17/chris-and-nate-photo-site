@@ -1,18 +1,48 @@
+import React, { createContext, useContext, useState, useEffect, useReducer } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Guest } from '../types';
+import { supabase } from "@/integrations/supabase/client";
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Guest } from '@/types';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
+// Define the state type
+interface AuthState {
+  isLoading: boolean;
+  isAuthenticated: boolean;
+  currentGuest: Guest | null;
+  currentEmail: string | null;
+}
+
+// Define the action type
+type AuthAction =
+  | { type: 'SET_LOADING', payload: boolean }
+  | { type: 'SET_GUEST', payload: Guest | null }
+  | { type: 'SET_EMAIL', payload: string | null }
+  | { type: 'LOGOUT' };
+
+// Define the reducer function
+const authReducer = (state: AuthState, action: AuthAction): AuthState => {
+  switch (action.type) {
+    case 'SET_LOADING':
+      return { ...state, isLoading: action.payload };
+    case 'SET_GUEST':
+      return {
+        ...state,
+        isAuthenticated: !!action.payload,
+        currentGuest: action.payload,
+      };
+    case 'SET_EMAIL':
+      return { ...state, currentEmail: action.payload };
+    case 'LOGOUT':
+      return { ...state, isAuthenticated: false, currentGuest: null, currentEmail: null, isLoading: false };
+    default:
+      return state;
+  }
+};
 
 interface AuthContextType {
-  user: Guest | null;
-  currentGuest: Guest | null; // Added alias for compatibility
-  loading: boolean;
-  isLoading: boolean; // Added alias for compatibility
-  error: string | null;
+  state: AuthState;
   login: (email: string) => Promise<void>;
-  logout: () => Promise<void>;
-  checkAuth: () => Promise<boolean>;
+  logout: () => void;
+  refreshSession: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -25,155 +55,111 @@ export const useAuth = () => {
   return context;
 };
 
+const initialState: AuthState = {
+  isLoading: true,
+  isAuthenticated: false,
+  currentGuest: null,
+  currentEmail: null,
+};
+
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<Guest | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const { toast } = useToast();
+  const [state, dispatch] = useReducer(authReducer, initialState);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    checkAuth();
+    const storedEmail = localStorage.getItem('currentEmail');
+    if (storedEmail) {
+      dispatch({ type: 'SET_EMAIL', payload: storedEmail });
+      login(storedEmail);
+    } else {
+      dispatch({ type: 'SET_LOADING', payload: false });
+    }
   }, []);
 
-  const checkAuth = async (): Promise<boolean> => {
-    try {
-      setLoading(true);
-      
-      // Check if we have a stored user in localStorage
-      const storedUser = localStorage.getItem('eventUser');
-      if (storedUser) {
-        const parsedUser = JSON.parse(storedUser);
-        setUser(parsedUser);
-        setLoading(false);
-        return true;
-      }
-      
-      setUser(null);
-      setLoading(false);
-      return false;
-    } catch (error) {
-      console.error('Auth check error:', error);
-      setUser(null);
-      setLoading(false);
-      return false;
-    }
-  };
-
   const login = async (email: string) => {
+    dispatch({ type: 'SET_LOADING', payload: true });
+    localStorage.setItem('currentEmail', email);
+    dispatch({ type: 'SET_EMAIL', payload: email });
+
     try {
-      setLoading(true);
-      setError(null);
-      
-      // Normalize email by converting to lowercase
-      const normalizedEmail = email.trim().toLowerCase();
-      console.log('Attempting login with normalized email:', normalizedEmail);
-      
-      // For development/testing, allow a special test user login
-      if (process.env.NODE_ENV === 'development' && normalizedEmail === 'test@example.com') {
-        const testUser = {
-          id: "test-user-id",
-          first_name: "Test User",
-          email: "test@example.com",
-          invitation_type: "main event" as const,
-          attending: "Yes"
-        };
-        
-        setUser(testUser);
-        localStorage.setItem('eventUser', JSON.stringify(testUser));
-        
-        setLoading(false);
-        // Removed success toast here
-        return;
-      }
-      
-      // Check if the email exists in our guest list - using direct equality since we normalized the email
-      // and the database now stores all emails in lowercase
-      const { data: guestData, error: guestError } = await supabase
+      const { data, error } = await supabase
         .from('guests')
         .select(`
           id, 
-          first_name, 
+          first_name,
+          last_name,
           email, 
-          phone_number,
           invitation_type,
           party_id,
-          attending
+          attending,
+          friday_dinner,
+          sunday_brunch
         `)
-        .eq('email', normalizedEmail)
+        .eq('email', email)
+        .maybeSingle();
+
+      if (error) {
+        console.error('Error during login:', error);
+        dispatch({ type: 'SET_LOADING', payload: false });
+        return;
+      }
+
+      if (data) {
+        dispatch({ type: 'SET_GUEST', payload: data });
+        console.log("Login successful, guest data:", data);
+        navigate('/');
+      } else {
+        console.log('No guest found with this email');
+        dispatch({ type: 'SET_LOADING', payload: false });
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
+      dispatch({ type: 'SET_LOADING', payload: false });
+    } finally {
+      dispatch({ type: 'SET_LOADING', payload: false });
+    }
+  };
+
+  const logout = () => {
+    localStorage.removeItem('currentEmail');
+    dispatch({ type: 'LOGOUT' });
+    navigate('/');
+  };
+
+  const refreshSession: async () => {
+    try {
+      const { data, error } = await supabase
+        .from('guests')
+        .select(`
+          id, 
+          first_name,
+          last_name,
+          email, 
+          invitation_type,
+          party_id,
+          attending,
+          friday_dinner,
+          sunday_brunch
+        `)
+        .eq('email', state.currentEmail)
         .maybeSingle();
       
-      if (guestError) {
-        throw new Error('Error checking guest list');
-      }
-      
-      if (!guestData) {
-        throw new Error('Email not found in guest list');
-      }
-      
-      // Transform the data to match our Guest interface
-      const guest: Guest = {
-        id: guestData.id,
-        first_name: guestData.first_name,
-        email: guestData.email,
-        phone_number: guestData.phone_number,
-        invitation_type: guestData.invitation_type,
-        party_id: guestData.party_id,
-        attending: guestData.attending
-      };
-      
-      // Store the user in state and localStorage
-      setUser(guest);
-      localStorage.setItem('eventUser', JSON.stringify(guest));
-      
-      // Removed login success toast here
-    } catch (err: any) {
-      console.error('Login error:', err);
-      setError(err.message);
-      toast({
-        title: "Login Failed",
-        description: err.message,
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
+    if (error) {
+      console.error('Error refreshing session:', error);
+      return;
     }
-  };
 
-  const logout = async () => {
-    try {
-      setLoading(true);
-      
-      // Clear the stored user from localStorage
-      localStorage.removeItem('eventUser');
-      
-      setUser(null);
-      toast({
-        title: "Logged Out",
-        description: "You have been successfully logged out.",
-      });
-    } catch (error) {
-      console.error('Logout error:', error);
-      toast({
-        title: "Logout Failed",
-        description: "An error occurred during logout.",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
+    if (data) {
+      dispatch({ type: 'SET_GUEST', payload: data });
+      console.log("Session refreshed, updated guest data:", data);
     }
-  };
+  } catch (error) {
+    console.error('Error refreshing session:', error);
+  }
+},
 
   return (
-    <AuthContext.Provider value={{ 
-      user, 
-      currentGuest: user, // Add alias for compatibility
-      loading, 
-      isLoading: loading, // Add alias for compatibility
-      error, 
-      login, 
-      logout, 
-      checkAuth 
-    }}>
+    <AuthContext.Provider value={{ state, login, logout, refreshSession }}>
       {children}
     </AuthContext.Provider>
   );
