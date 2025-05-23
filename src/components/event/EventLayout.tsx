@@ -37,14 +37,20 @@ export default function EventLayout() {
   // Explicitly check if these values are true, not just truthy
   const showFridayDinner = currentGuest.friday_dinner === true;
   const showSundayBrunch = currentGuest.sunday_brunch === true;
+  const hasMainEvent = currentGuest.main_event !== false; // Default to true if undefined
+  const hasAfterparty = currentGuest.afterparty === true;
   
   console.log("Guest data in EventLayout:", {
     id: currentGuest.id,
     name: currentGuest.first_name,
     friday_dinner: currentGuest.friday_dinner,
     sunday_brunch: currentGuest.sunday_brunch,
+    main_event: currentGuest.main_event,
+    afterparty: currentGuest.afterparty,
     showFridayDinner,
-    showSundayBrunch
+    showSundayBrunch,
+    hasMainEvent,
+    hasAfterparty
   });
   
   return (
@@ -185,6 +191,8 @@ export default function EventLayout() {
               invitationType={currentGuest.invitation_type} 
               fridayDinner={showFridayDinner}
               sundayBrunch={showSundayBrunch}
+              mainEvent={hasMainEvent}
+              afterparty={hasAfterparty}
             />
           </div>
           <div className="pt-20">
@@ -210,4 +218,3 @@ export default function EventLayout() {
     </div>
   );
 }
-

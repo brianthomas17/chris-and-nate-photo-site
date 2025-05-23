@@ -18,7 +18,15 @@ export default function ContentSections({
   afterparty = false
 }: ContentSectionsProps) {
   const { getVisibleSections } = useContent();
-  const visibleSections = getVisibleSections(invitationType, fridayDinner, sundayBrunch, mainEvent, afterparty);
+  
+  // Pass all the event access parameters to determine which content sections to show
+  const visibleSections = getVisibleSections(
+    invitationType, 
+    fridayDinner, 
+    sundayBrunch, 
+    mainEvent, 
+    afterparty
+  );
 
   console.log("Content sections rendering with:", {
     invitationType,

@@ -166,27 +166,22 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         return true;
       }
       
-      // For each visibility flag, check if the section requires it and the guest has it
-      
-      // Check if section requires main event and user has main event access
+      // Check for each visibility requirement
       if (section.visible_to_main_event && !mainEvent) {
         console.log(`Section "${section.title}" filtered out because it requires main event but user has mainEvent=${mainEvent}`);
         return false;
       }
       
-      // Check if section requires afterparty and user has afterparty access
       if (section.visible_to_afterparty && !afterparty) {
         console.log(`Section "${section.title}" filtered out because it requires afterparty but user has afterparty=${afterparty}`);
         return false;
       }
       
-      // Check if section requires Friday dinner and user has Friday dinner access
       if (section.visible_to_friday_dinner && !fridayDinner) {
         console.log(`Section "${section.title}" filtered out because it requires Friday dinner but user has fridayDinner=${fridayDinner}`);
         return false;
       }
       
-      // Check if section requires Sunday brunch and user has Sunday brunch access
       if (section.visible_to_sunday_brunch && !sundayBrunch) {
         console.log(`Section "${section.title}" filtered out because it requires Sunday brunch but user has sundayBrunch=${sundayBrunch}`);
         return false;
