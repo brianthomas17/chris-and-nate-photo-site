@@ -29,10 +29,11 @@ const Admin = () => {
       }
 
       // Only redirect if user is explicitly not an admin
-      // This prevents redirect loops
       if (currentGuest.invitation_type !== 'admin') {
         console.log("Not an admin, redirecting to event page");
         navigate('/event', { replace: true });
+      } else {
+        console.log("Admin access granted, staying on admin page");
       }
     }
   }, [currentGuest, isLoading, navigate]);

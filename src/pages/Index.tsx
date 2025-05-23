@@ -16,6 +16,8 @@ const Index = () => {
   const navigate = useNavigate();
   
   useEffect(() => {
+    console.log("Index page - current guest:", currentGuest, "isLoading:", isLoading);
+    
     // Only redirect if user is authenticated and not loading
     if (currentGuest && !isLoading) {
       console.log("User authenticated on Index page:", currentGuest);

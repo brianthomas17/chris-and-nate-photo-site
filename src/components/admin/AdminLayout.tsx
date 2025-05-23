@@ -24,10 +24,24 @@ export default function AdminLayout() {
     navigate('/');
   };
   const isAdmin = currentGuest?.invitation_type === 'admin';
+  
+  const goToEventPage = () => {
+    console.log("Navigating to event page from admin panel");
+    navigate('/event');
+  };
+  
   return <div className="min-h-screen">
       <div className="py-1 px-4 border-b border-[#C9A95B]/10">
-        <div className="container mx-auto flex justify-end">
-          <div className="ml-auto">
+        <div className="container mx-auto flex justify-between items-center">
+          <Button 
+            variant="outline" 
+            size="sm"
+            className="text-[#C9A95B] border-[#C9A95B]/30 hover:bg-[#C9A95B]/10"
+            onClick={goToEventPage}
+          >
+            View Event Page
+          </Button>
+          <div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="flex items-center gap-1 text-[#C9A95B] hover:text-[#C9A95B]/80 hover:bg-[#C9A95B]/20">
@@ -37,8 +51,8 @@ export default function AdminLayout() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="bg-anniversary-purple border border-[#C9A95B]/30 text-[#C9A95B]">
                 {isAdmin && <>
-                    <DropdownMenuItem onClick={() => navigate('/')} className="cursor-pointer hover:bg-[#C9A95B]/20 hover:text-[#C9A95B]/80">
-                      Main Event Page
+                    <DropdownMenuItem onClick={goToEventPage} className="cursor-pointer hover:bg-[#C9A95B]/20 hover:text-[#C9A95B]/80">
+                      View Event Page
                     </DropdownMenuItem>
                     <DropdownMenuSeparator className="bg-[#C9A95B]/20" />
                   </>}
