@@ -46,35 +46,47 @@ export default function ContentSections({
     raw_sunday_brunch: currentGuest.sunday_brunch
   });
 
-  // Simplified approach: Directly determine which content sections to show
+  // Improved visibility logic: A section is visible if the user has access to ANY of the required events
+  // OR if the section has no specific event restrictions (all visibility flags are false)
   const visibleSections = contentSections.filter(section => {
     // Admin users see all content
     if (invitationType === 'admin') {
       return true;
     }
     
-    // For non-admin users, check permissions directly with our explicit booleans
-    let hasAccess = true;
+    // Check if this section has any specific event restrictions
+    const hasMainEventRestriction = section.visible_to_main_event === true;
+    const hasAfterpartyRestriction = section.visible_to_afterparty === true;
+    const hasFridayDinnerRestriction = section.visible_to_friday_dinner === true;
+    const hasSundayBrunchRestriction = section.visible_to_sunday_brunch === true;
     
-    // Only check conditions where the section has a restriction
-    if (section.visible_to_main_event === true && !mainEvent) {
-      hasAccess = false;
-      console.log(`Section "${section.title}" requires main_event access, guest has: ${mainEvent}`);
+    // If the section has no specific restrictions, it's visible to everyone
+    if (!hasMainEventRestriction && !hasAfterpartyRestriction && !hasFridayDinnerRestriction && !hasSundayBrunchRestriction) {
+      console.log(`Section "${section.title}" has no restrictions, visible to all`);
+      return true;
     }
     
-    if (section.visible_to_afterparty === true && !afterparty) {
-      hasAccess = false;
-      console.log(`Section "${section.title}" requires afterparty access, guest has: ${afterparty}`);
+    // If the section has restrictions, check if the user meets ANY of them
+    let hasAccess = false;
+    
+    if (hasMainEventRestriction && mainEvent) {
+      hasAccess = true;
+      console.log(`Section "${section.title}" accessible via main_event`);
     }
     
-    if (section.visible_to_friday_dinner === true && !fridayDinner) {
-      hasAccess = false;
-      console.log(`Section "${section.title}" requires friday_dinner access, guest has: ${fridayDinner}`);
+    if (hasAfterpartyRestriction && afterparty) {
+      hasAccess = true;
+      console.log(`Section "${section.title}" accessible via afterparty`);
     }
     
-    if (section.visible_to_sunday_brunch === true && !sundayBrunch) {
-      hasAccess = false;
-      console.log(`Section "${section.title}" requires sunday_brunch access, guest has: ${sundayBrunch}`);
+    if (hasFridayDinnerRestriction && fridayDinner) {
+      hasAccess = true;
+      console.log(`Section "${section.title}" accessible via friday_dinner`);
+    }
+    
+    if (hasSundayBrunchRestriction && sundayBrunch) {
+      hasAccess = true;
+      console.log(`Section "${section.title}" accessible via sunday_brunch`);
     }
     
     console.log(`Section "${section.title}" ${hasAccess ? 'is' : 'is not'} visible to ${currentGuest.first_name}`);
