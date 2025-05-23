@@ -83,8 +83,8 @@ export default function GuestManagement() {
       invitation_type: invitationType,
       party_id: partyId,
       attending: rsvpAttending,
-      friday_dinner: rsvpAttending === "Yes" ? fridayDinner : null,
-      sunday_brunch: rsvpAttending === "Yes" ? sundayBrunch : null,
+      friday_dinner: fridayDinner,
+      sunday_brunch: sundayBrunch,
       main_event: mainEvent,
       afterparty: afterparty
     });
@@ -119,8 +119,8 @@ export default function GuestManagement() {
       invitation_type: invitationType,
       party_id: partyId,
       attending: rsvpAttending,
-      friday_dinner: rsvpAttending === "Yes" ? fridayDinner : null,
-      sunday_brunch: rsvpAttending === "Yes" ? sundayBrunch : null,
+      friday_dinner: fridayDinner,
+      sunday_brunch: sundayBrunch,
       main_event: mainEvent,
       afterparty: afterparty
     });
@@ -147,10 +147,12 @@ export default function GuestManagement() {
     // Set RSVP data if available
     console.log("Setting RSVP status from guest data:", guest.attending);
     setRsvpAttending(guest.attending);
-    setFridayDinner(guest.friday_dinner || false);
-    setSundayBrunch(guest.sunday_brunch || false);
-    setMainEvent(guest.main_event || true);
-    setAfterparty(guest.afterparty || false);
+    
+    // Update these lines to properly set the boolean values
+    setFridayDinner(guest.friday_dinner === true);
+    setSundayBrunch(guest.sunday_brunch === true);
+    setMainEvent(guest.main_event === true);
+    setAfterparty(guest.afterparty === true);
     
     setIsEditDialogOpen(true);
   };
@@ -723,6 +725,22 @@ export default function GuestManagement() {
                   />
                   <Label htmlFor="edit-afterparty">Afterparty</Label>
                 </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="edit-friday-dinner" 
+                    checked={fridayDinner} 
+                    onCheckedChange={(checked) => setFridayDinner(checked === true)}
+                  />
+                  <Label htmlFor="edit-friday-dinner">Friday Family Dinner</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="edit-sunday-brunch" 
+                    checked={sundayBrunch}
+                    onCheckedChange={(checked) => setSundayBrunch(checked === true)}
+                  />
+                  <Label htmlFor="edit-sunday-brunch">Sunday Brunch</Label>
+                </div>
               </div>
               
               <div className="border-t pt-4 mt-2">
@@ -757,19 +775,19 @@ export default function GuestManagement() {
                       <h4 className="font-medium">Additional Events</h4>
                       <div className="flex items-center space-x-2">
                         <Checkbox 
-                          id="edit-friday-dinner" 
+                          id="edit-rsvp-friday-dinner" 
                           checked={fridayDinner} 
                           onCheckedChange={(checked) => setFridayDinner(checked === true)}
                         />
-                        <Label htmlFor="edit-friday-dinner">Friday Family Dinner</Label>
+                        <Label htmlFor="edit-rsvp-friday-dinner">Friday Family Dinner</Label>
                       </div>
                       <div className="flex items-center space-x-2">
                         <Checkbox 
-                          id="edit-sunday-brunch" 
+                          id="edit-rsvp-sunday-brunch" 
                           checked={sundayBrunch}
                           onCheckedChange={(checked) => setSundayBrunch(checked === true)}
                         />
-                        <Label htmlFor="edit-sunday-brunch">Sunday Brunch</Label>
+                        <Label htmlFor="edit-rsvp-sunday-brunch">Sunday Brunch</Label>
                       </div>
                     </div>
                   )}
