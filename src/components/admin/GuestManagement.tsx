@@ -8,10 +8,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { PlusCircle, User, Users, Search } from "lucide-react";
+import { PlusCircle, User, Users, Search, ArrowUpAZ, ArrowDownAZ } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+
+type SortField = 'first_name' | 'last_name' | 'email';
+type SortDirection = 'asc' | 'desc';
 
 export default function GuestManagement() {
   const { guests, parties, addGuest, updateGuest, deleteGuest, createParty, updatePartyMembers, updateRSVP } = useGuests();
@@ -39,6 +42,10 @@ export default function GuestManagement() {
   const [mainEvent, setMainEvent] = useState<boolean>(true);
   const [afterparty, setAfterparty] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  
+  // Add sorting state
+  const [sortField, setSortField] = useState<SortField>('first_name');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
 
   const resetForm = () => {
     setFirstName("");
@@ -201,18 +208,83 @@ export default function GuestManagement() {
     return party ? party.name : "Unknown";
   };
 
-  // Filter guests based on search term
-  const filteredGuests = guests.filter(guest => {
-    const searchLower = searchTerm.toLowerCase().trim();
+  // Handle sorting
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      // Toggle direction if same field
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      // Set new field with ascending direction
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
+  // Sort and filter guests
+  const getSortedAndFilteredGuests = () => {
+    // First filter by search term
+    let filtered = guests.filter(guest => {
+      const searchLower = searchTerm.toLowerCase().trim();
+      
+      if (searchLower === "") return true;
+      
+      const firstNameMatch = guest.first_name?.toLowerCase().includes(searchLower) || false;
+      const lastNameMatch = guest.last_name?.toLowerCase().includes(searchLower) || false;
+      const emailMatch = guest.email?.toLowerCase().includes(searchLower) || false;
+      
+      return firstNameMatch || lastNameMatch || emailMatch;
+    });
+
+    // Then sort
+    return filtered.sort((a, b) => {
+      let aValue = '';
+      let bValue = '';
+
+      switch (sortField) {
+        case 'first_name':
+          aValue = a.first_name || '';
+          bValue = b.first_name || '';
+          break;
+        case 'last_name':
+          aValue = a.last_name || '';
+          bValue = b.last_name || '';
+          break;
+        case 'email':
+          aValue = a.email || '';
+          bValue = b.email || '';
+          break;
+      }
+
+      aValue = aValue.toLowerCase();
+      bValue = bValue.toLowerCase();
+
+      if (sortDirection === 'asc') {
+        return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+      } else {
+        return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+      }
+    });
+  };
+
+  const filteredGuests = getSortedAndFilteredGuests();
+
+  // Helper function to render sortable column header
+  const SortableHeader = ({ field, children }: { field: SortField; children: React.ReactNode }) => {
+    const isActive = sortField === field;
+    const Icon = sortDirection === 'asc' ? ArrowUpAZ : ArrowDownAZ;
     
-    if (searchLower === "") return true;
-    
-    const firstNameMatch = guest.first_name?.toLowerCase().includes(searchLower) || false;
-    const lastNameMatch = guest.last_name?.toLowerCase().includes(searchLower) || false;
-    const emailMatch = guest.email?.toLowerCase().includes(searchLower) || false;
-    
-    return firstNameMatch || lastNameMatch || emailMatch;
-  });
+    return (
+      <TableHead 
+        className="cursor-pointer hover:bg-muted/50 select-none"
+        onClick={() => handleSort(field)}
+      >
+        <div className="flex items-center gap-1">
+          {children}
+          {isActive && <Icon className="h-4 w-4" />}
+        </div>
+      </TableHead>
+    );
+  };
 
   return (
     <Card>
@@ -558,9 +630,9 @@ export default function GuestManagement() {
           </TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead>First Name</TableHead>
-              <TableHead>Last Name</TableHead>
-              <TableHead>Email</TableHead>
+              <SortableHeader field="first_name">First Name</SortableHeader>
+              <SortableHeader field="last_name">Last Name</SortableHeader>
+              <SortableHeader field="email">Email</SortableHeader>
               <TableHead>RSVP Status</TableHead>
               <TableHead>Main Event</TableHead>
               <TableHead>Afterparty</TableHead>
