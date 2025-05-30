@@ -8,13 +8,21 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { PlusCircle, User, Users, Search, ArrowUpAZ, ArrowDownAZ } from "lucide-react";
+import { PlusCircle, User, Users, Search, ArrowUpAZ, ArrowDownAZ, Filter } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 
 type SortField = 'first_name' | 'last_name' | 'email';
 type SortDirection = 'asc' | 'desc';
+
+interface EventFilters {
+  mainEvent: boolean | null;
+  afterparty: boolean | null;
+  fridayDinner: boolean | null;
+  sundayBrunch: boolean | null;
+}
 
 export default function GuestManagement() {
   const { guests, parties, addGuest, updateGuest, deleteGuest, createParty, updatePartyMembers, updateRSVP } = useGuests();
@@ -46,6 +54,15 @@ export default function GuestManagement() {
   // Add sorting state
   const [sortField, setSortField] = useState<SortField>('first_name');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+
+  // Add filter state
+  const [showFilters, setShowFilters] = useState(false);
+  const [eventFilters, setEventFilters] = useState<EventFilters>({
+    mainEvent: null,
+    afterparty: null,
+    fridayDinner: null,
+    sundayBrunch: null
+  });
 
   const resetForm = () => {
     setFirstName("");
@@ -220,19 +237,48 @@ export default function GuestManagement() {
     }
   };
 
-  // Sort and filter guests
+  // Clear all filters
+  const clearFilters = () => {
+    setSearchTerm("");
+    setEventFilters({
+      mainEvent: null,
+      afterparty: null,
+      fridayDinner: null,
+      sundayBrunch: null
+    });
+  };
+
+  // Sort and filter guests with updated logic including event filters
   const getSortedAndFilteredGuests = () => {
     // First filter by search term
     let filtered = guests.filter(guest => {
       const searchLower = searchTerm.toLowerCase().trim();
       
-      if (searchLower === "") return true;
-      
-      const firstNameMatch = guest.first_name?.toLowerCase().includes(searchLower) || false;
-      const lastNameMatch = guest.last_name?.toLowerCase().includes(searchLower) || false;
-      const emailMatch = guest.email?.toLowerCase().includes(searchLower) || false;
-      
-      return firstNameMatch || lastNameMatch || emailMatch;
+      if (searchLower !== "") {
+        const firstNameMatch = guest.first_name?.toLowerCase().includes(searchLower) || false;
+        const lastNameMatch = guest.last_name?.toLowerCase().includes(searchLower) || false;
+        const emailMatch = guest.email?.toLowerCase().includes(searchLower) || false;
+        
+        if (!(firstNameMatch || lastNameMatch || emailMatch)) {
+          return false;
+        }
+      }
+
+      // Apply event filters
+      if (eventFilters.mainEvent !== null && guest.main_event !== eventFilters.mainEvent) {
+        return false;
+      }
+      if (eventFilters.afterparty !== null && guest.afterparty !== eventFilters.afterparty) {
+        return false;
+      }
+      if (eventFilters.fridayDinner !== null && guest.friday_dinner !== eventFilters.fridayDinner) {
+        return false;
+      }
+      if (eventFilters.sundayBrunch !== null && guest.sunday_brunch !== eventFilters.sundayBrunch) {
+        return false;
+      }
+
+      return true;
     });
 
     // Then sort
@@ -604,29 +650,135 @@ export default function GuestManagement() {
         </div>
       </CardHeader>
       <CardContent>
-        {/* Search input */}
-        <div className="mb-4 flex items-center">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder="Search by name or email..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9 pr-4"
-            />
-          </div>
-          <div className="ml-2">
-            {searchTerm && (
-              <Button variant="ghost" onClick={() => setSearchTerm("")} size="sm">
-                Clear
+        {/* Search and filter controls */}
+        <div className="mb-4 space-y-4">
+          <div className="flex items-center gap-2">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                placeholder="Search by name or email..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-9 pr-4"
+              />
+            </div>
+            <Button 
+              variant="outline" 
+              onClick={() => setShowFilters(!showFilters)}
+              className="flex items-center gap-2"
+            >
+              <Filter className="h-4 w-4" />
+              Filters
+            </Button>
+            {(searchTerm || Object.values(eventFilters).some(filter => filter !== null)) && (
+              <Button variant="ghost" onClick={clearFilters} size="sm">
+                Clear All
               </Button>
             )}
           </div>
+
+          {/* Filter panel */}
+          {showFilters && (
+            <Card className="p-4">
+              <div className="space-y-4">
+                <h4 className="font-medium">Filter by Event Access</h4>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="filter-main-event" className="text-sm">Main Event</Label>
+                    <Select
+                      value={eventFilters.mainEvent === null ? "all" : eventFilters.mainEvent.toString()}
+                      onValueChange={(value) => {
+                        setEventFilters(prev => ({
+                          ...prev,
+                          mainEvent: value === "all" ? null : value === "true"
+                        }));
+                      }}
+                    >
+                      <SelectTrigger className="w-20">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All</SelectItem>
+                        <SelectItem value="true">Yes</SelectItem>
+                        <SelectItem value="false">No</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="filter-afterparty" className="text-sm">Afterparty</Label>
+                    <Select
+                      value={eventFilters.afterparty === null ? "all" : eventFilters.afterparty.toString()}
+                      onValueChange={(value) => {
+                        setEventFilters(prev => ({
+                          ...prev,
+                          afterparty: value === "all" ? null : value === "true"
+                        }));
+                      }}
+                    >
+                      <SelectTrigger className="w-20">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All</SelectItem>
+                        <SelectItem value="true">Yes</SelectItem>
+                        <SelectItem value="false">No</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="filter-friday-dinner" className="text-sm">Friday Dinner</Label>
+                    <Select
+                      value={eventFilters.fridayDinner === null ? "all" : eventFilters.fridayDinner.toString()}
+                      onValueChange={(value) => {
+                        setEventFilters(prev => ({
+                          ...prev,
+                          fridayDinner: value === "all" ? null : value === "true"
+                        }));
+                      }}
+                    >
+                      <SelectTrigger className="w-20">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All</SelectItem>
+                        <SelectItem value="true">Yes</SelectItem>
+                        <SelectItem value="false">No</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="filter-sunday-brunch" className="text-sm">Sunday Brunch</Label>
+                    <Select
+                      value={eventFilters.sundayBrunch === null ? "all" : eventFilters.sundayBrunch.toString()}
+                      onValueChange={(value) => {
+                        setEventFilters(prev => ({
+                          ...prev,
+                          sundayBrunch: value === "all" ? null : value === "true"
+                        }));
+                      }}
+                    >
+                      <SelectTrigger className="w-20">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All</SelectItem>
+                        <SelectItem value="true">Yes</SelectItem>
+                        <SelectItem value="false">No</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          )}
         </div>
         
         <Table>
           <TableCaption>
-            {searchTerm ? `${filteredGuests.length} guests found` : 'List of all invited guests.'}
+            {searchTerm || Object.values(eventFilters).some(filter => filter !== null) ? `${filteredGuests.length} guests found` : 'List of all invited guests.'}
           </TableCaption>
           <TableHeader>
             <TableRow>
