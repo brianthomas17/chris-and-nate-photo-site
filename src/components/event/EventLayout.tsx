@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -83,18 +82,16 @@ export default function EventLayout() {
       
       {/* Hero Section with square image - z-index to display above background SVG */}
       <div className="px-4 py-3 md:py-6 relative z-10">
-        <header className="relative rounded-xl shadow-lg border border-anniversary-gold/20 bg-anniversary-darkPurple/50 backdrop-blur-sm mx-auto max-w-[800px] p-8 md:p-12">
-          <div className="flex justify-center">
-            <div className="w-full max-w-[600px] aspect-square">
-              <img 
-                src="/lovable-uploads/55aeeccb-f695-402f-bdbd-a0dc52edc692.png" 
-                alt="Chris & Nate Anniversary Celebration"
-                className="w-full h-full object-cover rounded-lg shadow-lg animate-[fadeIn_1s_ease-out_forwards]"
-                style={{ opacity: 0 }}
-                loading="eager"
-                sizes="(max-width: 768px) 100vw, 600px"
-              />
-            </div>
+        <header className="relative rounded-xl shadow-lg border border-anniversary-gold/20 bg-anniversary-darkPurple/50 backdrop-blur-sm mx-auto overflow-hidden">
+          <div className="w-full max-w-[600px] mx-auto aspect-square">
+            <img 
+              src="/lovable-uploads/55aeeccb-f695-402f-bdbd-a0dc52edc692.png" 
+              alt="Chris & Nate Anniversary Celebration"
+              className="w-full h-full object-cover animate-[fadeIn_1s_ease-out_forwards]"
+              style={{ opacity: 0 }}
+              loading="eager"
+              sizes="(max-width: 768px) 100vw, 600px"
+            />
           </div>
         </header>
       </div>
