@@ -1,3 +1,4 @@
+
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -81,9 +82,9 @@ export default function EventLayout() {
       </div>
       
       {/* Hero Section with square image - z-index to display above background SVG */}
-      <div className="px-4 py-3 md:py-6 relative z-10">
-        <header className="relative rounded-xl shadow-lg border border-anniversary-gold/20 bg-anniversary-darkPurple/50 backdrop-blur-sm mx-auto overflow-hidden">
-          <div className="w-full max-w-[600px] mx-auto aspect-square">
+      <div className="px-4 py-3 md:py-6 relative z-10 flex justify-center">
+        <header className="relative rounded-xl shadow-lg border border-anniversary-gold/20 bg-anniversary-darkPurple/50 backdrop-blur-sm overflow-hidden w-fit">
+          <div className="w-full max-w-[600px] aspect-square">
             <img 
               src="/lovable-uploads/55aeeccb-f695-402f-bdbd-a0dc52edc692.png" 
               alt="Chris & Nate Anniversary Celebration"
