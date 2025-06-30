@@ -76,26 +76,26 @@
   body {
     @apply text-foreground;
     font-family: 'Bicyclette-Light', sans-serif;
-    background: linear-gradient(to bottom right, #543A64, #482B5A);
+    background: linear-gradient(to bottom right, #151916, #0F120F);
     min-height: 100vh;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: 'DINCondensedBold', Arial, sans-serif !important;
-    color: #D4AF37;
+    color: #C1A46C;
     text-transform: uppercase;
     letter-spacing: 0.03em;
   }
   
   /* Updated global link styling - make them gold by default */
   a {
-    color: #D4AF37 !important;
+    color: #C1A46C !important;
     text-decoration: none;
     transition: color 0.2s ease-in-out;
   }
   
   a:hover {
-    color: #e5c161 !important;
+    color: #D4B876 !important;
     text-decoration: underline;
   }
   
@@ -176,7 +176,7 @@
   font-size: 4rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: #D4AF37;
+  color: #C1A46C;
   line-height: 1.1;
 }
 
@@ -185,7 +185,7 @@
   font-size: 3rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: #D4AF37;
+  color: #C1A46C;
 }
 
 .body-text {
@@ -195,12 +195,11 @@
 
 /* Enhanced gold link variants with stronger specificity */
 .link-gold {
-  color: #D4AF37 !important;
+  color: #C1A46C !important;
   transition: color 0.2s ease;
 }
 
 .link-gold:hover {
-  color: #e5c161 !important;
+  color: #D4B876 !important;
   text-decoration: underline;
 }
-

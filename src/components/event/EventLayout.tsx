@@ -1,3 +1,4 @@
+
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -60,19 +61,19 @@ export default function EventLayout() {
         <div className="container mx-auto flex justify-center">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="flex items-center gap-1 text-[#C9A95B] hover:text-[#C9A95B]/80 hover:bg-[#C9A95B]/20 h-8 px-2">
+              <Button variant="ghost" className="flex items-center gap-1 text-anniversary-gold hover:text-anniversary-gold/80 hover:bg-anniversary-gold/20 h-8 px-2">
                 {currentGuest.first_name}
                 <ChevronDown size={16} />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="center" className="bg-anniversary-purple border border-[#C9A95B]/30 text-[#C9A95B]">
+            <DropdownMenuContent align="center" className="bg-anniversary-purple border border-anniversary-gold/30 text-anniversary-gold">
               {isAdmin && <>
-                  <DropdownMenuItem onClick={() => navigate('/admin')} className="cursor-pointer hover:bg-[#C9A95B]/20 hover:text-[#C9A95B]/80">
+                  <DropdownMenuItem onClick={() => navigate('/admin')} className="cursor-pointer hover:bg-anniversary-gold/20 hover:text-anniversary-gold/80">
                     Admin Console
                   </DropdownMenuItem>
-                  <DropdownMenuSeparator className="bg-[#C9A95B]/20" />
+                  <DropdownMenuSeparator className="bg-anniversary-gold/20" />
                 </>}
-              <DropdownMenuItem onClick={handleLogout} className="cursor-pointer hover:bg-[#C9A95B]/20 hover:text-[#C9A95B]/80">
+              <DropdownMenuItem onClick={handleLogout} className="cursor-pointer hover:bg-anniversary-gold/20 hover:text-anniversary-gold/80">
                 Logout
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -82,7 +83,7 @@ export default function EventLayout() {
       
       {/* Hero Section with circuit pattern frames - z-index to display above background SVG */}
       <div className="px-4 py-3 md:py-6 relative z-10">
-        <header className="text-[#C9A95B] relative rounded-xl shadow-lg border border-[#C9A95B]/20 bg-anniversary-darkPurple/50 backdrop-blur-sm mx-auto max-w-[800px]" style={{
+        <header className="text-anniversary-gold relative rounded-xl shadow-lg border border-anniversary-gold/20 bg-anniversary-darkPurple/50 backdrop-blur-sm mx-auto max-w-[800px]" style={{
         minHeight: isMobile ? "450px" : "768px",
         display: "flex",
         flexDirection: "column",
@@ -104,32 +105,32 @@ export default function EventLayout() {
           
           <div className="container mx-auto text-center relative z-0 px-4 py-[80px] md:py-[100px]">
             <div className="max-w-[800px] mx-auto">
-              <h3 className="text-xl md:text-3xl font-bicyclette mb-6 md:mb-10 text-[#C9A95B] animate-[fadeIn_1.2s_ease-out_0.8s_forwards]" style={{
+              <h3 className="text-xl md:text-3xl font-bicyclette mb-6 md:mb-10 text-anniversary-gold animate-[fadeIn_1.2s_ease-out_0.8s_forwards]" style={{
               opacity: 0
             }}>
                 CHRIS & NATE INVITE YOU TO
               </h3>
-              <h1 className="text-3xl md:text-6xl font-din tracking-wide mb-4 uppercase text-[#C9A95B] animate-[fadeIn_1.2s_ease-out_1s_forwards]" style={{
+              <h1 className="text-3xl md:text-6xl font-din tracking-wide mb-4 uppercase text-anniversary-gold animate-[fadeIn_1.2s_ease-out_1s_forwards]" style={{
               opacity: 0
             }}>
                 A Decade of Determination, Disruption & Dinner Dilemmas
               </h1>
-              <p className="text-lg md:text-xl text-[#C9A95B] font-bicyclette mb-6 md:mb-8 animate-[fadeIn_1.2s_ease-out_1.2s_forwards]" style={{
+              <p className="text-lg md:text-xl text-anniversary-gold font-bicyclette mb-6 md:mb-8 animate-[fadeIn_1.2s_ease-out_1.2s_forwards]" style={{
               opacity: 0
             }}>
                 THIS ONE'S DIFFERENT...
               </p>
-              <h2 className="text-2xl md:text-5xl font-din mb-4 md:mb-6 text-[#C9A95B] animate-[fadeIn_1.2s_ease-out_1.4s_forwards]" style={{
+              <h2 className="text-2xl md:text-5xl font-din mb-4 md:mb-6 text-anniversary-gold animate-[fadeIn_1.2s_ease-out_1.4s_forwards]" style={{
               opacity: 0
             }}>
                 8.16.25
               </h2>
-              <p className="text-lg md:text-2xl font-bicyclette mb-6 md:mb-8 text-[#C9A95B] animate-[fadeIn_1.2s_ease-out_1.6s_forwards]" style={{
+              <p className="text-lg md:text-2xl font-bicyclette mb-6 md:mb-8 text-anniversary-gold animate-[fadeIn_1.2s_ease-out_1.6s_forwards]" style={{
               opacity: 0
             }}>
                 MORE THAN AN EVENT — IT'S A MOMENT
               </p>
-              <div className="text-[#C9A95B] animate-[fadeIn_1.2s_ease-out_1.8s_forwards]" style={{
+              <div className="text-anniversary-gold animate-[fadeIn_1.2s_ease-out_1.8s_forwards]" style={{
               opacity: 0
             }}>
                 <p className="font-bicyclette text-sm md:text-base">SAINT JOSEPH'S ARTS SOCIETY</p>

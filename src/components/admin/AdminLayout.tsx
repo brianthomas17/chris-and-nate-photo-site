@@ -25,24 +25,24 @@ export default function AdminLayout() {
   };
   const isAdmin = currentGuest?.invitation_type === 'admin';
   return <div className="min-h-screen">
-      <div className="py-1 px-4 border-b border-[#C9A95B]/10">
+      <div className="py-1 px-4 border-b border-anniversary-gold/10">
         <div className="container mx-auto flex justify-end">
           <div className="ml-auto">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex items-center gap-1 text-[#C9A95B] hover:text-[#C9A95B]/80 hover:bg-[#C9A95B]/20">
+                <Button variant="ghost" className="flex items-center gap-1 text-anniversary-gold hover:text-anniversary-gold/80 hover:bg-anniversary-gold/20">
                   {currentGuest?.first_name}
                   <ChevronDown size={16} />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="bg-anniversary-purple border border-[#C9A95B]/30 text-[#C9A95B]">
+              <DropdownMenuContent align="end" className="bg-anniversary-purple border border-anniversary-gold/30 text-anniversary-gold">
                 {isAdmin && <>
-                    <DropdownMenuItem onClick={() => navigate('/')} className="cursor-pointer hover:bg-[#C9A95B]/20 hover:text-[#C9A95B]/80">
+                    <DropdownMenuItem onClick={() => navigate('/')} className="cursor-pointer hover:bg-anniversary-gold/20 hover:text-anniversary-gold/80">
                       Main Event Page
                     </DropdownMenuItem>
-                    <DropdownMenuSeparator className="bg-[#C9A95B]/20" />
+                    <DropdownMenuSeparator className="bg-anniversary-gold/20" />
                   </>}
-                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer hover:bg-[#C9A95B]/20 hover:text-[#C9A95B]/80">
+                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer hover:bg-anniversary-gold/20 hover:text-anniversary-gold/80">
                   Logout
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -52,13 +52,7 @@ export default function AdminLayout() {
       </div>
       
       <div className="px-4 py-3 md:py-6">
-        <header className="text-[#C9A95B] p-4 border-b border-[#C9A95B]/30 relative overflow-hidden rounded-xl shadow-lg border border-[#C9A95B]/20 bg-anniversary-darkPurple/50 backdrop-blur-sm mx-auto max-w-[800px]">
-          {/* Top circuit frame - position adjusted to remove gap */}
-          
-          
-          {/* Bottom circuit frame - position adjusted to remove gap */}
-          
-          
+        <header className="text-anniversary-gold p-4 border-b border-anniversary-gold/30 relative overflow-hidden rounded-xl shadow-lg border border-anniversary-gold/20 bg-anniversary-darkPurple/50 backdrop-blur-sm mx-auto max-w-[800px]">
           <div className="container mx-auto relative z-10">
             <h1 className="text-3xl font-din uppercase tracking-wide">Anniversary Admin</h1>
           </div>
@@ -69,11 +63,11 @@ export default function AdminLayout() {
         <Tabs defaultValue="guests" className="w-full">
           <div className="flex justify-center w-full">
             <TabsList className="mb-8 bg-transparent">
-              <TabsTrigger value="guests" className="data-[state=active]:bg-[#C9A95B] data-[state=active]:text-anniversary-purple">Guests</TabsTrigger>
-              <TabsTrigger value="content" className="data-[state=active]:bg-[#C9A95B] data-[state=active]:text-anniversary-purple">Details</TabsTrigger>
-              <TabsTrigger value="communications" className="data-[state=active]:bg-[#C9A95B] data-[state=active]:text-anniversary-purple">Message Content</TabsTrigger>
-              <TabsTrigger value="messages-sent" className="data-[state=active]:bg-[#C9A95B] data-[state=active]:text-anniversary-purple">Messages Sent</TabsTrigger>
-              <TabsTrigger value="rsvp" className="data-[state=active]:bg-[#C9A95B] data-[state=active]:text-anniversary-purple">Stats</TabsTrigger>
+              <TabsTrigger value="guests" className="data-[state=active]:bg-anniversary-gold data-[state=active]:text-anniversary-purple">Guests</TabsTrigger>
+              <TabsTrigger value="content" className="data-[state=active]:bg-anniversary-gold data-[state=active]:text-anniversary-purple">Details</TabsTrigger>
+              <TabsTrigger value="communications" className="data-[state=active]:bg-anniversary-gold data-[state=active]:text-anniversary-purple">Message Content</TabsTrigger>
+              <TabsTrigger value="messages-sent" className="data-[state=active]:bg-anniversary-gold data-[state=active]:text-anniversary-purple">Messages Sent</TabsTrigger>
+              <TabsTrigger value="rsvp" className="data-[state=active]:bg-anniversary-gold data-[state=active]:text-anniversary-purple">Stats</TabsTrigger>
             </TabsList>
           </div>
           <TabsContent value="guests">

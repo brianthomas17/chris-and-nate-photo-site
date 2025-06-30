@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -85,13 +84,13 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				anniversary: {
-					gold: '#D4AF37',
+					gold: '#C1A46C',
 					navy: '#1A2238',
 					cream: '#F5F5DC',
 					burgundy: '#800020',
-					purple: '#543A64', // Main purple color
-					darkPurple: '#482B5A', // Darker purple for gradient
-					lightgold: '#d9c172'
+					purple: '#151916', // Changed from purple to dark gray
+					darkPurple: '#0F120F', // Darker version of the dark gray
+					lightgold: '#D4B876'
 				}
 			},
 			borderRadius: {
