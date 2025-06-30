@@ -1,4 +1,3 @@
-
 export type InvitationType = 'main event' | 'afterparty' | 'admin';
 
 export interface Guest {
@@ -20,6 +19,11 @@ export interface Guest {
   sunday_brunch?: boolean | null;
   main_event?: boolean;
   afterparty?: boolean;
+  // New RSVP confirmation fields
+  friday_dinner_rsvp?: boolean | null;
+  sunday_brunch_rsvp?: boolean | null;
+  main_event_rsvp?: boolean | null;
+  afterparty_rsvp?: boolean | null;
 }
 
 export interface Party {

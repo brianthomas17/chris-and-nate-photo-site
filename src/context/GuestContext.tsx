@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Guest, InvitationType, Party } from '../types';
 import { useToast } from '@/hooks/use-toast';
@@ -10,7 +9,16 @@ interface GuestContextType {
   addGuest: (guest: Omit<Guest, 'id'>) => Promise<void>;
   updateGuest: (guest: Guest) => Promise<void>;
   deleteGuest: (id: string) => Promise<void>;
-  updateRSVP: (guestId: string, attending: string, fridayDinner?: boolean, sundayBrunch?: boolean) => Promise<any>;
+  updateRSVP: (
+    guestId: string, 
+    attending: string, 
+    fridayDinner?: boolean, 
+    sundayBrunch?: boolean,
+    fridayDinnerRsvp?: boolean,
+    sundayBrunchRsvp?: boolean,
+    mainEventRsvp?: boolean,
+    afterpartyRsvp?: boolean
+  ) => Promise<any>;
   getGuestByEmail: (email: string) => Promise<Guest | undefined>;
   createParty: (name: string) => Promise<string | undefined>;
   updatePartyMembers: (partyId: string, guestIds: string[]) => Promise<void>;
@@ -60,7 +68,11 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           friday_dinner,
           sunday_brunch,
           main_event,
-          afterparty
+          afterparty,
+          friday_dinner_rsvp,
+          sunday_brunch_rsvp,
+          main_event_rsvp,
+          afterparty_rsvp
         `);
 
       if (error) {
@@ -83,7 +95,11 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           friday_dinner: guest.friday_dinner === true,
           sunday_brunch: guest.sunday_brunch === true,
           main_event: guest.main_event === true,
-          afterparty: guest.afterparty === true
+          afterparty: guest.afterparty === true,
+          friday_dinner_rsvp: guest.friday_dinner_rsvp === true,
+          sunday_brunch_rsvp: guest.sunday_brunch_rsvp === true,
+          main_event_rsvp: guest.main_event_rsvp === true,
+          afterparty_rsvp: guest.afterparty_rsvp === true
         }));
         
         setGuests(transformedGuests);
@@ -153,7 +169,11 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           friday_dinner: guest.friday_dinner,
           sunday_brunch: guest.sunday_brunch,
           main_event: guest.main_event,
-          afterparty: guest.afterparty
+          afterparty: guest.afterparty,
+          friday_dinner_rsvp: guest.friday_dinner_rsvp,
+          sunday_brunch_rsvp: guest.sunday_brunch_rsvp,
+          main_event_rsvp: guest.main_event_rsvp,
+          afterparty_rsvp: guest.afterparty_rsvp
         })
         .select();
         
@@ -199,7 +219,11 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           friday_dinner: guest.friday_dinner,
           sunday_brunch: guest.sunday_brunch,
           main_event: guest.main_event,
-          afterparty: guest.afterparty
+          afterparty: guest.afterparty,
+          friday_dinner_rsvp: guest.friday_dinner_rsvp,
+          sunday_brunch_rsvp: guest.sunday_brunch_rsvp,
+          main_event_rsvp: guest.main_event_rsvp,
+          afterparty_rsvp: guest.afterparty_rsvp
         })
         .eq('id', guest.id);
 
@@ -260,17 +284,39 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   };
 
-  const updateRSVP = async (guestId: string, attending: string, fridayDinner: boolean = false, sundayBrunch: boolean = false) => {
-    console.log("updateRSVP called with:", { guestId, attending, fridayDinner, sundayBrunch });
+  const updateRSVP = async (
+    guestId: string, 
+    attending: string, 
+    fridayDinner?: boolean, 
+    sundayBrunch?: boolean,
+    fridayDinnerRsvp?: boolean,
+    sundayBrunchRsvp?: boolean,
+    mainEventRsvp?: boolean,
+    afterpartyRsvp?: boolean
+  ) => {
+    console.log("updateRSVP called with:", { 
+      guestId, 
+      attending, 
+      fridayDinner, 
+      sundayBrunch,
+      fridayDinnerRsvp,
+      sundayBrunchRsvp,
+      mainEventRsvp,
+      afterpartyRsvp
+    });
     
     try {
-      // Update the attending status directly on the guests table
+      // Update the attending status and event confirmations on the guests table
       const { data, error } = await supabase
         .from('guests')
         .update({
           attending,
           friday_dinner: attending === "Yes" ? fridayDinner : null,
           sunday_brunch: attending === "Yes" ? sundayBrunch : null,
+          friday_dinner_rsvp: attending === "Yes" ? fridayDinnerRsvp : null,
+          sunday_brunch_rsvp: attending === "Yes" ? sundayBrunchRsvp : null,
+          main_event_rsvp: attending === "Yes" ? mainEventRsvp : null,
+          afterparty_rsvp: attending === "Yes" ? afterpartyRsvp : null,
           updated_at: new Date().toISOString()
         })
         .eq('id', guestId)
@@ -291,7 +337,11 @@ export const GuestProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                 ...g, 
                 attending,
                 friday_dinner: attending === "Yes" ? fridayDinner : null,
-                sunday_brunch: attending === "Yes" ? sundayBrunch : null
+                sunday_brunch: attending === "Yes" ? sundayBrunch : null,
+                friday_dinner_rsvp: attending === "Yes" ? fridayDinnerRsvp : null,
+                sunday_brunch_rsvp: attending === "Yes" ? sundayBrunchRsvp : null,
+                main_event_rsvp: attending === "Yes" ? mainEventRsvp : null,
+                afterparty_rsvp: attending === "Yes" ? afterpartyRsvp : null
               } 
             : g
         )

@@ -94,63 +94,75 @@ export type Database = {
         Row: {
           address: string | null
           afterparty: boolean
+          afterparty_rsvp: boolean | null
           attending: string | null
           city: string | null
           created_at: string
           email: string | null
           first_name: string
           friday_dinner: boolean | null
+          friday_dinner_rsvp: boolean | null
           id: string
           invitation_type: Database["public"]["Enums"]["invitation_type"]
           last_name: string | null
           main_event: boolean
+          main_event_rsvp: boolean | null
           party_id: string | null
           party_name: string | null
           phone_number: string | null
           state: string | null
           sunday_brunch: boolean | null
+          sunday_brunch_rsvp: boolean | null
           updated_at: string
           zip_code: string | null
         }
         Insert: {
           address?: string | null
           afterparty?: boolean
+          afterparty_rsvp?: boolean | null
           attending?: string | null
           city?: string | null
           created_at?: string
           email?: string | null
           first_name: string
           friday_dinner?: boolean | null
+          friday_dinner_rsvp?: boolean | null
           id?: string
           invitation_type: Database["public"]["Enums"]["invitation_type"]
           last_name?: string | null
           main_event?: boolean
+          main_event_rsvp?: boolean | null
           party_id?: string | null
           party_name?: string | null
           phone_number?: string | null
           state?: string | null
           sunday_brunch?: boolean | null
+          sunday_brunch_rsvp?: boolean | null
           updated_at?: string
           zip_code?: string | null
         }
         Update: {
           address?: string | null
           afterparty?: boolean
+          afterparty_rsvp?: boolean | null
           attending?: string | null
           city?: string | null
           created_at?: string
           email?: string | null
           first_name?: string
           friday_dinner?: boolean | null
+          friday_dinner_rsvp?: boolean | null
           id?: string
           invitation_type?: Database["public"]["Enums"]["invitation_type"]
           last_name?: string | null
           main_event?: boolean
+          main_event_rsvp?: boolean | null
           party_id?: string | null
           party_name?: string | null
           phone_number?: string | null
           state?: string | null
           sunday_brunch?: boolean | null
+          sunday_brunch_rsvp?: boolean | null
           updated_at?: string
           zip_code?: string | null
         }
