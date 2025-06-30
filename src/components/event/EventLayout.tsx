@@ -1,11 +1,11 @@
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import ContentSections from "./ContentSections";
 import RSVPForm from "./RSVPForm";
 import PartyList from "./PartyList";
 import ConfirmedAttendees from "./ConfirmedAttendees";
 import SectionSeparator from "./SectionSeparator";
-import EventDetailsTabs from "./EventDetailsTabs";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -193,9 +193,11 @@ export default function EventLayout() {
           <SectionSeparator />
         </div>
 
-        {/* Event Details Tabs */}
+        {/* Content Sections */}
         <section className="mb-16 md:mb-20 animate-fade-in">
-          <EventDetailsTabs guest={currentGuest} />
+          <div className="max-w-[450px] mx-auto">
+            <ContentSections invitationType={currentGuest.invitation_type} />
+          </div>
         </section>
         
         {/* Confirmed Attendees Section - Only shown to guests with main_event access */}

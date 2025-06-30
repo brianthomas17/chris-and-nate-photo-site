@@ -197,7 +197,7 @@ export default function RSVPForm({
                         <Checkbox 
                           id="main-event-rsvp" 
                           checked={mainEventRsvp}
-                          onCheckedChange={(checked) => setMainEventRsvp(checked === true)}
+                          onCheckedChange={setMainEventRsvp}
                           className="border-anniversary-gold data-[state=checked]:bg-anniversary-gold data-[state=checked]:border-anniversary-gold"
                         />
                         <Label htmlFor="main-event-rsvp" className="text-white text-lg">
@@ -212,7 +212,7 @@ export default function RSVPForm({
                         <Checkbox 
                           id="friday-dinner-rsvp" 
                           checked={fridayDinnerRsvp}
-                          onCheckedChange={(checked) => setFridayDinnerRsvp(checked === true)}
+                          onCheckedChange={setFridayDinnerRsvp}
                           className="border-anniversary-gold data-[state=checked]:bg-anniversary-gold data-[state=checked]:border-anniversary-gold"
                         />
                         <Label htmlFor="friday-dinner-rsvp" className="text-white text-lg">
@@ -227,7 +227,7 @@ export default function RSVPForm({
                         <Checkbox 
                           id="sunday-brunch-rsvp" 
                           checked={sundayBrunchRsvp}
-                          onCheckedChange={(checked) => setSundayBrunchRsvp(checked === true)}
+                          onCheckedChange={setSundayBrunchRsvp}
                           className="border-anniversary-gold data-[state=checked]:bg-anniversary-gold data-[state=checked]:border-anniversary-gold"
                         />
                         <Label htmlFor="sunday-brunch-rsvp" className="text-white text-lg">
@@ -242,7 +242,7 @@ export default function RSVPForm({
                         <Checkbox 
                           id="afterparty-rsvp" 
                           checked={afterpartyRsvp}
-                          onCheckedChange={(checked) => setAfterpartyRsvp(checked === true)}
+                          onCheckedChange={setAfterpartyRsvp}
                           className="border-anniversary-gold data-[state=checked]:bg-anniversary-gold data-[state=checked]:border-anniversary-gold"
                         />
                         <Label htmlFor="afterparty-rsvp" className="text-white text-lg">
