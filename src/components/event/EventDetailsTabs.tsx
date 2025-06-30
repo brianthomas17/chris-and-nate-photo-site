@@ -69,25 +69,41 @@ export default function EventDetailsTabs({ guest }: EventDetailsTabsProps) {
 
   // Filter content sections based on the current tab
   const getContentForTab = (eventType: string) => {
+    console.log(`Getting content for tab: ${eventType}`);
+    console.log(`Total content sections available: ${contentSections.length}`);
+    
     return contentSections.filter(section => {
       // Admin users see all content
       if (guest.invitation_type === 'admin') {
+        console.log(`Admin: Section "${section.title}" is visible for ${eventType}`);
         return true;
       }
       
-      // Filter based on event type
+      // Filter based on event type - only show content that is specifically marked for this event
+      let shouldShow = false;
+      
       switch (eventType) {
         case 'main_event':
-          return section.visible_to_main_event === true;
+          shouldShow = section.visible_to_main_event === true;
+          console.log(`Section "${section.title}" - visible_to_main_event: ${section.visible_to_main_event}, shouldShow: ${shouldShow}`);
+          break;
         case 'friday_dinner':
-          return section.visible_to_friday_dinner === true;
+          shouldShow = section.visible_to_friday_dinner === true;
+          console.log(`Section "${section.title}" - visible_to_friday_dinner: ${section.visible_to_friday_dinner}, shouldShow: ${shouldShow}`);
+          break;
         case 'sunday_brunch':
-          return section.visible_to_sunday_brunch === true;
+          shouldShow = section.visible_to_sunday_brunch === true;
+          console.log(`Section "${section.title}" - visible_to_sunday_brunch: ${section.visible_to_sunday_brunch}, shouldShow: ${shouldShow}`);
+          break;
         case 'afterparty':
-          return section.visible_to_afterparty === true;
+          shouldShow = section.visible_to_afterparty === true;
+          console.log(`Section "${section.title}" - visible_to_afterparty: ${section.visible_to_afterparty}, shouldShow: ${shouldShow}`);
+          break;
         default:
-          return false;
+          shouldShow = false;
       }
+      
+      return shouldShow;
     }).sort((a, b) => a.order_index - b.order_index);
   };
 
@@ -108,6 +124,8 @@ export default function EventDetailsTabs({ guest }: EventDetailsTabsProps) {
 
         {availableTabs.map((tab) => {
           const tabContent = getContentForTab(tab.eventType);
+          
+          console.log(`Tab "${tab.label}" has ${tabContent.length} content sections`);
           
           return (
             <TabsContent key={tab.id} value={tab.id} className="mt-6">
