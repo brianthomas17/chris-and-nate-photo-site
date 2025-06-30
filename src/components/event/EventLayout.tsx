@@ -81,61 +81,19 @@ export default function EventLayout() {
         </div>
       </div>
       
-      {/* Hero Section with circuit pattern frames - z-index to display above background SVG */}
+      {/* Hero Section with square image - z-index to display above background SVG */}
       <div className="px-4 py-3 md:py-6 relative z-10">
-        <header className="text-anniversary-gold relative rounded-xl shadow-lg border border-anniversary-gold/20 bg-anniversary-darkPurple/50 backdrop-blur-sm mx-auto max-w-[800px]" style={{
-        minHeight: isMobile ? "450px" : "768px",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center"
-      }}>
-          {/* Top circuit frame - adjusted to properly align at top */}
-          <div className="absolute top-0 left-0 right-0 w-full h-[100px] md:h-[150px] bg-no-repeat bg-contain bg-top animate-[fadeIn_1s_ease-out_forwards] z-10" style={{
-          backgroundImage: "url('/lovable-uploads/top.svg')",
-          opacity: 0
-        }}>
-          </div>
-          
-          {/* Bottom circuit frame - adjusted to properly align at bottom */}
-          <div className="absolute bottom-0 left-0 right-0 w-full h-[100px] md:h-[150px] bg-no-repeat bg-contain bg-bottom animate-[fadeIn_1s_ease-out_forwards] z-10" style={{
-          backgroundImage: "url('/lovable-uploads/bottom.svg')",
-          opacity: 0
-        }}>
-          </div>
-          
-          <div className="container mx-auto text-center relative z-0 px-4 py-[80px] md:py-[100px]">
-            <div className="max-w-[800px] mx-auto">
-              <h3 className="text-xl md:text-3xl font-bicyclette mb-6 md:mb-10 text-anniversary-gold animate-[fadeIn_1.2s_ease-out_0.8s_forwards]" style={{
-              opacity: 0
-            }}>
-                CHRIS & NATE INVITE YOU TO
-              </h3>
-              <h1 className="text-3xl md:text-6xl font-din tracking-wide mb-4 uppercase text-anniversary-gold animate-[fadeIn_1.2s_ease-out_1s_forwards]" style={{
-              opacity: 0
-            }}>
-                A Decade of Determination, Disruption & Dinner Dilemmas
-              </h1>
-              <p className="text-lg md:text-xl text-anniversary-gold font-bicyclette mb-6 md:mb-8 animate-[fadeIn_1.2s_ease-out_1.2s_forwards]" style={{
-              opacity: 0
-            }}>
-                THIS ONE'S DIFFERENT...
-              </p>
-              <h2 className="text-2xl md:text-5xl font-din mb-4 md:mb-6 text-anniversary-gold animate-[fadeIn_1.2s_ease-out_1.4s_forwards]" style={{
-              opacity: 0
-            }}>
-                8.16.25
-              </h2>
-              <p className="text-lg md:text-2xl font-bicyclette mb-6 md:mb-8 text-anniversary-gold animate-[fadeIn_1.2s_ease-out_1.6s_forwards]" style={{
-              opacity: 0
-            }}>
-                MORE THAN AN EVENT — IT'S A MOMENT
-              </p>
-              <div className="text-anniversary-gold animate-[fadeIn_1.2s_ease-out_1.8s_forwards]" style={{
-              opacity: 0
-            }}>
-                <p className="font-bicyclette text-sm md:text-base">SAINT JOSEPH'S ARTS SOCIETY</p>
-                <p className="font-bicyclette text-sm md:text-base">1401 HOWARD STREET, SAN FRANCISCO</p>
-              </div>
+        <header className="relative rounded-xl shadow-lg border border-anniversary-gold/20 bg-anniversary-darkPurple/50 backdrop-blur-sm mx-auto max-w-[800px] p-8 md:p-12">
+          <div className="flex justify-center">
+            <div className="w-full max-w-[600px] aspect-square">
+              <img 
+                src="/lovable-uploads/55aeeccb-f695-402f-bdbd-a0dc52edc692.png" 
+                alt="Chris & Nate Anniversary Celebration"
+                className="w-full h-full object-cover rounded-lg shadow-lg animate-[fadeIn_1s_ease-out_forwards]"
+                style={{ opacity: 0 }}
+                loading="eager"
+                sizes="(max-width: 768px) 100vw, 600px"
+              />
             </div>
           </div>
         </header>
