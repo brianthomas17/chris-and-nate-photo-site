@@ -1,3 +1,4 @@
+
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -56,7 +57,7 @@ export default function EventLayout() {
         <img src="/lovable-uploads/background.svg" alt="" className="max-w-[50vw] w-auto h-auto" aria-hidden="true" />
       </div>
       
-      <div className="py-1 px-4 border-b border-anniversary-gold/10 relative z-10">
+      <div className="py-1 px-4 border-b border-anniversary-gold/10 relative z-10 animate-[fadeIn_0.8s_ease-out_forwards]" style={{ opacity: 0 }}>
         <div className="container mx-auto flex justify-center">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -81,7 +82,7 @@ export default function EventLayout() {
       </div>
       
       {/* Hero Section with square image - z-index to display above background SVG */}
-      <div className="px-4 py-3 md:py-6 relative z-10 flex justify-center">
+      <div className="px-4 py-3 md:py-6 relative z-10 flex justify-center animate-[fadeIn_1s_ease-out_forwards]" style={{ opacity: 0 }}>
         <header className="relative rounded-xl shadow-lg border border-anniversary-gold/20 bg-anniversary-darkPurple/50 backdrop-blur-sm overflow-hidden w-fit">
           <div className="w-full max-w-[600px] aspect-square">
             <img 
@@ -97,60 +98,60 @@ export default function EventLayout() {
       </div>
 
       {/* Intro Text Section */}
-      <div className="container mx-auto px-4 py-16 md:py-20 relative z-10">
+      <div className="container mx-auto px-4 py-16 md:py-20 relative z-10 animate-[fadeIn_1.2s_ease-out_forwards]" style={{ opacity: 0 }}>
         <div className="max-w-[500px] mx-auto text-center">
-          <p className="text-anniversary-gold text-base md:text-lg italic font-light leading-relaxed animate-[fadeIn_1.2s_ease-out_forwards]">
+          <p className="text-anniversary-gold text-base md:text-lg italic font-light leading-relaxed">
             There are parties, and then there are nights that define a decade…
           </p>
       
-          <p className="text-anniversary-gold text-base md:text-lg italic font-light leading-relaxed animate-[fadeIn_1.2s_ease-out_forwards] mt-6">
+          <p className="text-anniversary-gold text-base md:text-lg italic font-light leading-relaxed mt-6">
             Join us for an evening you'll never forget as we celebrate ten years of Chris and Nate.
           </p>
       
-          <p className="text-anniversary-gold text-base md:text-lg italic font-light leading-relaxed animate-[fadeIn_1.2s_ease-out_forwards] mt-6">
+          <p className="text-anniversary-gold text-base md:text-lg italic font-light leading-relaxed mt-6">
             Ten years ago Chris and Nate married at San Francisco City Hall with only family in attendance. At the time, Nate was busy building Lever and Chris was re-entering the tech world. They didn't have the time or money to throw the wedding they wanted, so they decided if they made it to ten years of marriage, they would throw the most epic party.
           </p>
       
-          <p className="text-anniversary-gold text-base md:text-lg italic font-light leading-relaxed animate-[fadeIn_1.2s_ease-out_forwards] mt-6">
+          <p className="text-anniversary-gold text-base md:text-lg italic font-light leading-relaxed mt-6">
             This is that party. You are invited. It will be like nothing anyone has ever seen.
           </p>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="container mx-auto px-4 relative z-10 animate-[fadeIn_1.4s_ease-out_forwards]" style={{ opacity: 0 }}>
         <SectionSeparator />
       </div>
 
       <div className="container mx-auto px-4 py-16 md:py-20 relative z-10">
         {/* RSVP Section */}
-        <section className="mb-16 md:mb-20 animate-fade-in">
+        <section className="mb-16 md:mb-20 animate-[fadeIn_1.6s_ease-out_forwards]" style={{ opacity: 0 }}>
           <RSVPForm guest={currentGuest} />
         </section>
 
         {/* Party List Section (If user has a party) */}
         {hasParty && (
-          <section className="mb-16 md:mb-20 animate-fade-in">
+          <section className="mb-16 md:mb-20 animate-[fadeIn_1.8s_ease-out_forwards]" style={{ opacity: 0 }}>
             <PartyList guestId={currentGuest.id} partyId={currentGuest.party_id} />
           </section>
         )}
 
         {/* Separator before Event Details */}
-        <div className="mt-16 mb-16">
+        <div className="mt-16 mb-16 animate-[fadeIn_2s_ease-out_forwards]" style={{ opacity: 0 }}>
           <SectionSeparator />
         </div>
 
         {/* Event Details Header Section */}
-        <section className="mb-8 md:mb-12 animate-fade-in">
+        <section className="mb-8 md:mb-12 animate-[fadeIn_2.2s_ease-out_forwards]" style={{ opacity: 0 }}>
           <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-6 md:mb-8">EVENT DETAILS</h2>
         </section>
 
         {/* Separator after Event Details header */}
-        <div className="mt-16 mb-16">
+        <div className="mt-16 mb-16 animate-[fadeIn_2.4s_ease-out_forwards]" style={{ opacity: 0 }}>
           <SectionSeparator />
         </div>
 
         {/* Content Sections */}
-        <section className="mb-16 md:mb-20 animate-fade-in">
+        <section className="mb-16 md:mb-20 animate-[fadeIn_2.6s_ease-out_forwards]" style={{ opacity: 0 }}>
           <div className="max-w-[450px] mx-auto">
             <ContentSections invitationType={currentGuest.invitation_type} />
           </div>
@@ -159,10 +160,10 @@ export default function EventLayout() {
         {/* Confirmed Attendees Section - Only shown to guests with main_event access */}
         {hasMainEventAccess && (
           <>
-            <div className="mt-16 mb-16">
+            <div className="mt-16 mb-16 animate-[fadeIn_2.8s_ease-out_forwards]" style={{ opacity: 0 }}>
               <SectionSeparator />
             </div>
-            <section className="animate-fade-in mb-16 md:mb-20">
+            <section className="mb-16 md:mb-20 animate-[fadeIn_3s_ease-out_forwards]" style={{ opacity: 0 }}>
               <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-6 md:mb-8 pb-4">CONFIRMED ATTENDEES</h2>
               <div className="max-w-[800px] mx-auto">
                 <ConfirmedAttendees />
@@ -172,10 +173,10 @@ export default function EventLayout() {
         )}
 
         {/* Questions Section - Now visible to all users */}
-        <div className="mt-16 mb-16">
+        <div className="mt-16 mb-16 animate-[fadeIn_3.2s_ease-out_forwards]" style={{ opacity: 0 }}>
           <SectionSeparator />
         </div>
-        <section className="animate-fade-in">
+        <section className="animate-[fadeIn_3.4s_ease-out_forwards]" style={{ opacity: 0 }}>
           <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-6 md:mb-8">QUESTIONS</h2>
           <div className="max-w-[450px] mx-auto text-center">
             <p className="text-anniversary-gold text-base md:text-lg font-bicyclette leading-relaxed">
