@@ -80,17 +80,17 @@ export default function EventLayout() {
         </div>
       </div>
       
-      {/* Hero Section with square image - z-index to display above background SVG */}
-      <div className="px-4 py-3 md:py-6 relative z-10 flex justify-center animate-[fadeIn_1s_ease-out_forwards]" style={{ opacity: 0 }}>
+      {/* Hero Section with larger square image - z-index to display above background SVG */}
+      <div className="px-4 py-6 md:py-12 relative z-10 flex justify-center animate-[fadeIn_1s_ease-out_forwards]" style={{ opacity: 0 }}>
         <header className="relative rounded-xl shadow-lg border border-anniversary-gold/20 bg-anniversary-darkPurple/50 backdrop-blur-sm overflow-hidden w-fit">
-          <div className="w-full max-w-[600px] aspect-square">
+          <div className="w-full max-w-[700px] aspect-square">
             <img 
               src="/lovable-uploads/55aeeccb-f695-402f-bdbd-a0dc52edc692.png" 
               alt="Chris & Nate Anniversary Celebration"
               className="w-full h-full object-cover animate-[fadeIn_1s_ease-out_forwards]"
               style={{ opacity: 0 }}
               loading="eager"
-              sizes="(max-width: 768px) 100vw, 600px"
+              sizes="(max-width: 768px) 100vw, 700px"
             />
           </div>
         </header>
