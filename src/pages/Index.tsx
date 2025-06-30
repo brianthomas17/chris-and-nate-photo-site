@@ -53,7 +53,7 @@ const Index = () => {
       {/* Background SVG - positioned in the center with max-width 50% */}
       <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
         <img 
-          src="/lovable-uploads/background.svg" 
+          src="/masks.svg" 
           alt="" 
           className="max-w-[50vw] w-auto h-auto"
           aria-hidden="true"

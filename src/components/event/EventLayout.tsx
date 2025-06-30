@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -54,7 +53,7 @@ export default function EventLayout() {
   return <div className="min-h-screen relative">
       {/* Background SVG - positioned in the center with max-width 50% */}
       <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
-        <img src="/lovable-uploads/background.svg" alt="" className="max-w-[50vw] w-auto h-auto" aria-hidden="true" />
+        <img src="/masks.svg" alt="" className="max-w-[50vw] w-auto h-auto" aria-hidden="true" />
       </div>
       
       <div className="py-1 px-4 border-b border-anniversary-gold/10 relative z-10 animate-[fadeIn_0.8s_ease-out_forwards]" style={{ opacity: 0 }}>

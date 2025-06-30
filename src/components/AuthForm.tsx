@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -63,8 +62,8 @@ export default function AuthForm() {
         <div className="absolute mx-8" style={{ minWidth: '500px', width: 'calc(100% - 64px)', maxWidth: '900px' }}>
           <AspectRatio ratio={1 / 1}>
             <img 
-              src="/lovable-uploads/logo.svg" 
-              alt="Anniversary Logo" 
+              src="/masks.svg" 
+              alt="Anniversary Masks" 
               className="w-full h-full object-contain opacity-80" 
             />
           </AspectRatio>
