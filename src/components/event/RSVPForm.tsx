@@ -210,7 +210,7 @@ export default function RSVPForm({
           <div className="flex justify-center px-0">
             <div className="flex flex-col items-center space-y-4">
               <Button type="submit" className="bg-anniversary-gold hover:bg-anniversary-gold/90 text-black text-lg px-8 py-2 font-medium" disabled={submitting}>
-                {submitting ? "Submitting..." : hasResponded ? "Update Response" : "Submit RSVP"}
+                {submitting ? "Submitting..." : "SAVE RESPONSE"}
               </Button>
             </div>
           </div>
