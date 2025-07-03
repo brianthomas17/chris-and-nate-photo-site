@@ -45,39 +45,39 @@
   color: rgba(193, 164, 108, 0.7);
 }
 
-/* Fonts with renamed files - no spaces in filenames */
+/* Fonts with new font files */
 @font-face {
-  font-family: 'DINCondensedBold';
-  src: url('/fonts/DINCondensedBold.woff2') format('woff2'),
-       url('/fonts/DINCondensedBold.woff') format('woff');
-  font-weight: bold;
+  font-family: 'Fino_Sans_Regular';
+  src: url('/fonts/Fino_Sans_Regular.woff2') format('woff2'),
+       url('/fonts/Fino_Sans_Regular.woff') format('woff');
+  font-weight: normal;
   font-style: normal;
   font-display: swap !important;
 }
 
 @font-face {
-  font-family: 'Bicyclette-Light';
-  src: url('/fonts/BicycletteLight.woff2') format('woff2'),
-       url('/fonts/BicycletteLight.woff') format('woff');
-  font-weight: 300;
+  font-family: 'Haboro_Contrast';
+  src: url('/fonts/Haboro_Contrast.woff2') format('woff2'),
+       url('/fonts/Haboro_Contrast.woff') format('woff');
+  font-weight: normal;
   font-style: normal;
   font-display: swap !important;
 }
 
-/* Font utility classes with stronger enforcement and renamed font */
-.font-din {
-  font-family: 'DINCondensedBold', Arial, sans-serif !important;
+/* Font utility classes with stronger enforcement and new fonts */
+.font-fino {
+  font-family: 'Fino_Sans_Regular', Arial, sans-serif !important;
   letter-spacing: 0.03em;
   text-transform: uppercase;
 }
 
-.font-bicyclette {
-  font-family: 'Bicyclette-Light', sans-serif !important;
+.font-haboro {
+  font-family: 'Haboro_Contrast', sans-serif !important;
 }
 
-/* Add some enhanced typography styles with fallback fonts and renamed font */
+/* Add some enhanced typography styles with fallback fonts and new fonts */
 .heading-xl {
-  font-family: 'DINCondensedBold', Arial, sans-serif !important;
+  font-family: 'Fino_Sans_Regular', Arial, sans-serif !important;
   font-size: 4rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -86,7 +86,7 @@
 }
 
 .heading-lg {
-  font-family: 'DINCondensedBold', Arial, sans-serif !important;
+  font-family: 'Fino_Sans_Regular', Arial, sans-serif !important;
   font-size: 3rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -94,6 +94,6 @@
 }
 
 .body-text {
-  font-family: 'Bicyclette-Light', sans-serif !important;
+  font-family: 'Haboro_Contrast', sans-serif !important;
   line-height: 1.6;
 }

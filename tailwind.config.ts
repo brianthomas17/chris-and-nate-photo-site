@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -141,8 +142,8 @@ export default {
 			fontFamily: {
 				playfair: ['Playfair Display', 'serif'],
 				montserrat: ['Montserrat', 'sans-serif'],
-				din: ['DIN Condensed Bold', 'sans-serif'],
-				bicyclette: ['Bicyclette-Light', 'sans-serif']
+				fino: ['Fino_Sans_Regular', 'sans-serif'],
+				haboro: ['Haboro_Contrast', 'sans-serif']
 			}
 		}
 	},

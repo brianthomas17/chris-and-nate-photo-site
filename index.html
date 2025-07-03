@@ -22,13 +22,13 @@
     <!-- Favicon -->
     <link rel="icon" href="/lovable-uploads/60f4fb45-a2a5-4383-8706-9b366a8ed02d.png" type="image/png">
     
-    <!-- Critical font preloading - with updated filenames -->
-    <link rel="preload" href="/fonts/DINCondensedBold.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
-    <link rel="preload" href="/fonts/BicycletteLight.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+    <!-- Critical font preloading - with new font files -->
+    <link rel="preload" href="/fonts/Fino_Sans_Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+    <link rel="preload" href="/fonts/Haboro_Contrast.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
     
     <!-- Force font files to be downloaded early with absolute paths -->
-    <link rel="prefetch" href="/fonts/DINCondensedBold.woff" as="font" type="font/woff" crossorigin="anonymous" />
-    <link rel="prefetch" href="/fonts/BicycletteLight.woff" as="font" type="font/woff" crossorigin="anonymous" />
+    <link rel="prefetch" href="/fonts/Fino_Sans_Regular.woff" as="font" type="font/woff" crossorigin="anonymous" />
+    <link rel="prefetch" href="/fonts/Haboro_Contrast.woff" as="font" type="font/woff" crossorigin="anonymous" />
     
     <!-- Google Fonts preconnect for performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -36,32 +36,32 @@
 
     <!-- Inline critical font styles to avoid FOUT -->
     <style>
-      /* Critical font face declarations with renamed files */
+      /* Critical font face declarations with new fonts */
       @font-face {
-        font-family: 'DINCondensedBold';
-        src: url('/fonts/DINCondensedBold.woff2') format('woff2'),
-             url('/fonts/DINCondensedBold.woff') format('woff');
-        font-weight: bold;
+        font-family: 'Fino_Sans_Regular';
+        src: url('/fonts/Fino_Sans_Regular.woff2') format('woff2'),
+             url('/fonts/Fino_Sans_Regular.woff') format('woff');
+        font-weight: normal;
         font-style: normal;
         font-display: swap;
       }
       
       @font-face {
-        font-family: 'Bicyclette-Light';
-        src: url('/fonts/BicycletteLight.woff2') format('woff2'),
-             url('/fonts/BicycletteLight.woff') format('woff');
-        font-weight: 300;
+        font-family: 'Haboro_Contrast';
+        src: url('/fonts/Haboro_Contrast.woff2') format('woff2'),
+             url('/fonts/Haboro_Contrast.woff') format('woff');
+        font-weight: normal;
         font-style: normal;
         font-display: swap;
       }
       
       /* Apply fonts to elements immediately */
       h1, h2, h3, h4, h5, h6 {
-        font-family: 'DINCondensedBold', Arial, sans-serif !important;
+        font-family: 'Fino_Sans_Regular', Arial, sans-serif !important;
       }
       
       body {
-        font-family: 'Bicyclette-Light', sans-serif;
+        font-family: 'Haboro_Contrast', sans-serif;
       }
     </style>
   </head>

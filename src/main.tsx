@@ -9,19 +9,19 @@ const initializeApp = async () => {
   
   try {
     // Create test elements for each font to verify loading
-    const testDin = document.createElement('span');
-    testDin.style.fontFamily = 'DINCondensedBold';
-    testDin.style.position = 'absolute';
-    testDin.style.visibility = 'hidden';
-    testDin.textContent = 'Font Test';
-    document.body.appendChild(testDin);
+    const testFino = document.createElement('span');
+    testFino.style.fontFamily = 'Fino_Sans_Regular';
+    testFino.style.position = 'absolute';
+    testFino.style.visibility = 'hidden';
+    testFino.textContent = 'Font Test';
+    document.body.appendChild(testFino);
 
-    const testBicyclette = document.createElement('span');
-    testBicyclette.style.fontFamily = 'Bicyclette-Light';
-    testBicyclette.style.position = 'absolute';
-    testBicyclette.style.visibility = 'hidden';
-    testBicyclette.textContent = 'Font Test';
-    document.body.appendChild(testBicyclette);
+    const testHaboro = document.createElement('span');
+    testHaboro.style.fontFamily = 'Haboro_Contrast';
+    testHaboro.style.position = 'absolute';
+    testHaboro.style.visibility = 'hidden';
+    testHaboro.textContent = 'Font Test';
+    document.body.appendChild(testHaboro);
     
     // Force browser to load fonts
     document.fonts.ready.then(() => {
@@ -33,11 +33,11 @@ const initializeApp = async () => {
     
     // Cleanup function for test elements
     const cleanupTestElements = () => {
-      if (document.body.contains(testDin)) {
-        document.body.removeChild(testDin);
+      if (document.body.contains(testFino)) {
+        document.body.removeChild(testFino);
       }
-      if (document.body.contains(testBicyclette)) {
-        document.body.removeChild(testBicyclette);
+      if (document.body.contains(testHaboro)) {
+        document.body.removeChild(testHaboro);
       }
     };
     
