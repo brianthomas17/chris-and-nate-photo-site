@@ -7,6 +7,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { AlertCircle } from "lucide-react";
+
 interface RSVPFormProps {
   guest: Guest;
   onComplete?: () => void;
@@ -160,8 +161,8 @@ export default function RSVPForm({
                 </div>
               </RadioGroup>
 
-              {/* Event Confirmation Section - only show if attending "Yes" */}
-              {attending === "Yes" && <div className="space-y-6 pt-6 border-t border-anniversary-gold/30">
+              {/* Event Confirmation Section - removed border-t */}
+              {attending === "Yes" && <div className="space-y-6 pt-6">
                   <h3 className="text-xl font-din text-anniversary-gold text-center">WHICH EVENTS Will YOU ATTEND:</h3>
                   
                   <div className="space-y-4">
