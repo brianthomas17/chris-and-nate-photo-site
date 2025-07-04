@@ -10,7 +10,8 @@ import SectionSeparator from "./SectionSeparator";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useState } from "react";
+import { useState, useCallback } from "react";
+import { useImageLoader } from "@/hooks/useImageLoader";
 
 export default function EventLayout() {
   const {
@@ -19,7 +20,27 @@ export default function EventLayout() {
   } = useAuth();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
-  const [imageLoaded, setImageLoaded] = useState(false);
+  const [contentVisible, setContentVisible] = useState(false);
+
+  // Define all critical images that need to load before showing content
+  const criticalImages = [
+    "/lovable-uploads/55aeeccb-f695-402f-bdbd-a0dc52edc692.png", // Hero image
+    "/masks.svg", // Background SVG
+    "/separator_top.svg", // Separator SVG
+    "/separator_bottom.svg" // Separator SVG
+  ];
+
+  const handleAllImagesLoaded = useCallback(() => {
+    // Add a small delay to ensure smooth transition
+    setTimeout(() => {
+      setContentVisible(true);
+    }, 100);
+  }, []);
+
+  const { allImagesLoaded } = useImageLoader({ 
+    imageUrls: criticalImages,
+    onAllLoaded: handleAllImagesLoaded
+  });
 
   if (!currentGuest) {
     navigate('/');
@@ -29,10 +50,6 @@ export default function EventLayout() {
   const handleLogout = () => {
     logout();
     navigate('/');
-  };
-
-  const handleImageLoad = () => {
-    setImageLoaded(true);
   };
 
   const isAdmin = currentGuest.invitation_type === 'admin';
@@ -53,8 +70,7 @@ export default function EventLayout() {
     main_event: currentGuest.main_event,
     afterparty: currentGuest.afterparty,
     rawMainEvent: JSON.stringify(currentGuest.main_event),
-    // Log raw value
-    rawAfterparty: JSON.stringify(currentGuest.afterparty) // Log raw value
+    rawAfterparty: JSON.stringify(currentGuest.afterparty)
   });
 
   return <div className="min-h-screen relative">
@@ -63,7 +79,10 @@ export default function EventLayout() {
         <img src="/masks.svg" alt="" className="max-w-[50vw] w-auto h-auto" aria-hidden="true" />
       </div>
       
-      <div className={`py-1 px-4 border-b border-anniversary-gold/10 relative z-10 transition-opacity duration-800 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}>
+      {/* Header with smooth fade-in */}
+      <div className={`py-1 px-4 border-b border-anniversary-gold/10 relative z-10 transition-all duration-1000 ease-out ${
+        contentVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'
+      }`}>
         <div className="container mx-auto flex justify-center">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -87,7 +106,10 @@ export default function EventLayout() {
         </div>
       </div>
       
-      <div className={`px-4 py-6 md:py-12 relative z-10 flex justify-center transition-opacity duration-800 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}>
+      {/* Hero Image Section with smooth fade-in */}
+      <div className={`px-4 py-6 md:py-12 relative z-10 flex justify-center transition-all duration-1000 ease-out delay-200 ${
+        contentVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+      }`}>
         <header className="relative rounded-xl shadow-lg border border-anniversary-gold/20 bg-anniversary-darkPurple/50 backdrop-blur-sm overflow-hidden w-fit">
           <div className="w-full max-w-[700px] aspect-square">
             <img 
@@ -96,13 +118,15 @@ export default function EventLayout() {
               className="w-full h-full object-cover"
               loading="eager"
               sizes="(max-width: 768px) 100vw, 700px"
-              onLoad={handleImageLoad}
             />
           </div>
         </header>
       </div>
 
-      <div className={`container mx-auto px-4 py-16 md:py-20 relative z-10 transition-opacity duration-800 delay-200 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}>
+      {/* Main Content Section with staggered fade-in */}
+      <div className={`container mx-auto px-4 py-16 md:py-20 relative z-10 transition-all duration-1000 ease-out delay-400 ${
+        contentVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+      }`}>
         <div className="max-w-[500px] mx-auto text-left">
           <h2 className="text-anniversary-gold text-2xl md:text-3xl font-light leading-relaxed">
             There are parties, and then there are nights that define a decade…
@@ -122,11 +146,17 @@ export default function EventLayout() {
         </div>
       </div>
 
-      <div className={`container mx-auto px-4 relative z-10 transition-opacity duration-800 delay-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}>
+      {/* Section Separator with fade-in */}
+      <div className={`container mx-auto px-4 relative z-10 transition-all duration-1000 ease-out delay-600 ${
+        contentVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+      }`}>
         <SectionSeparator />
       </div>
 
-      <div className={`container mx-auto px-4 py-16 md:py-20 relative z-10 transition-opacity duration-800 delay-400 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}>
+      {/* Interactive Content Sections with staggered fade-in */}
+      <div className={`container mx-auto px-4 py-16 md:py-20 relative z-10 transition-all duration-1000 ease-out delay-700 ${
+        contentVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+      }`}>
         {/* RSVP Section */}
         <section className="mb-16 md:mb-20">
           <RSVPForm guest={currentGuest} />
