@@ -10,6 +10,7 @@ import SectionSeparator from "./SectionSeparator";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useState } from "react";
 
 export default function EventLayout() {
   const {
@@ -18,6 +19,7 @@ export default function EventLayout() {
   } = useAuth();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   if (!currentGuest) {
     navigate('/');
@@ -27,6 +29,10 @@ export default function EventLayout() {
   const handleLogout = () => {
     logout();
     navigate('/');
+  };
+
+  const handleImageLoad = () => {
+    setImageLoaded(true);
   };
 
   const isAdmin = currentGuest.invitation_type === 'admin';
@@ -57,7 +63,7 @@ export default function EventLayout() {
         <img src="/masks.svg" alt="" className="max-w-[50vw] w-auto h-auto" aria-hidden="true" />
       </div>
       
-      <div className="py-1 px-4 border-b border-anniversary-gold/10 relative z-10 animate-[fadeIn_0.8s_ease-out_forwards]" style={{ opacity: 0 }}>
+      <div className={`py-1 px-4 border-b border-anniversary-gold/10 relative z-10 transition-opacity duration-800 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}>
         <div className="container mx-auto flex justify-center">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -81,22 +87,22 @@ export default function EventLayout() {
         </div>
       </div>
       
-      <div className="px-4 py-6 md:py-12 relative z-10 flex justify-center animate-[fadeIn_1s_ease-out_forwards]" style={{ opacity: 0 }}>
+      <div className={`px-4 py-6 md:py-12 relative z-10 flex justify-center transition-opacity duration-800 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}>
         <header className="relative rounded-xl shadow-lg border border-anniversary-gold/20 bg-anniversary-darkPurple/50 backdrop-blur-sm overflow-hidden w-fit">
           <div className="w-full max-w-[700px] aspect-square">
             <img 
               src="/lovable-uploads/55aeeccb-f695-402f-bdbd-a0dc52edc692.png" 
               alt="Chris & Nate Anniversary Celebration"
-              className="w-full h-full object-cover animate-[fadeIn_1s_ease-out_forwards]"
-              style={{ opacity: 0 }}
+              className="w-full h-full object-cover"
               loading="eager"
               sizes="(max-width: 768px) 100vw, 700px"
+              onLoad={handleImageLoad}
             />
           </div>
         </header>
       </div>
 
-      <div className="container mx-auto px-4 py-16 md:py-20 relative z-10 animate-[fadeIn_1.2s_ease-out_forwards]" style={{ opacity: 0 }}>
+      <div className={`container mx-auto px-4 py-16 md:py-20 relative z-10 transition-opacity duration-800 delay-200 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}>
         <div className="max-w-[500px] mx-auto text-left">
           <h2 className="text-anniversary-gold text-2xl md:text-3xl font-light leading-relaxed">
             There are parties, and then there are nights that define a decade…
@@ -116,25 +122,25 @@ export default function EventLayout() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 relative z-10 animate-[fadeIn_1.4s_ease-out_forwards]" style={{ opacity: 0 }}>
+      <div className={`container mx-auto px-4 relative z-10 transition-opacity duration-800 delay-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}>
         <SectionSeparator />
       </div>
 
-      <div className="container mx-auto px-4 py-16 md:py-20 relative z-10">
+      <div className={`container mx-auto px-4 py-16 md:py-20 relative z-10 transition-opacity duration-800 delay-400 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}>
         {/* RSVP Section */}
-        <section className="mb-16 md:mb-20 animate-[fadeIn_1.6s_ease-out_forwards]" style={{ opacity: 0 }}>
+        <section className="mb-16 md:mb-20">
           <RSVPForm guest={currentGuest} />
         </section>
 
         {/* Party List Section (If user has a party) */}
         {hasParty && (
-          <section className="mb-16 md:mb-20 animate-[fadeIn_1.8s_ease-out_forwards]" style={{ opacity: 0 }}>
+          <section className="mb-16 md:mb-20">
             <PartyList guestId={currentGuest.id} partyId={currentGuest.party_id} />
           </section>
         )}
 
         {/* Event Details Header Section */}
-        <section className="mb-16 md:mb-20 animate-[fadeIn_2.0s_ease-out_forwards]" style={{ opacity: 0 }}>
+        <section className="mb-16 md:mb-20">
           <div className="text-center">
             {/* Top Separator SVG */}
             <div className="flex justify-center mb-8">
@@ -164,7 +170,7 @@ export default function EventLayout() {
         </section>
 
         {/* Content Sections */}
-        <section className="mb-16 md:mb-20 animate-[fadeIn_2.6s_ease-out_forwards]" style={{ opacity: 0 }}>
+        <section className="mb-16 md:mb-20">
           <div className="max-w-[450px] mx-auto">
             <ContentSections invitationType={currentGuest.invitation_type} />
           </div>
@@ -173,10 +179,10 @@ export default function EventLayout() {
         {/* Confirmed Attendees Section - Only shown to guests with main_event access */}
         {hasMainEventAccess && (
           <>
-            <div className="mt-16 mb-16 animate-[fadeIn_2.8s_ease-out_forwards]" style={{ opacity: 0 }}>
+            <div className="mt-16 mb-16">
               <SectionSeparator />
             </div>
-            <section className="mb-16 md:mb-20 animate-[fadeIn_3s_ease-out_forwards]" style={{ opacity: 0 }}>
+            <section className="mb-16 md:mb-20">
               <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-6 md:mb-8 pb-4">CONFIRMED ATTENDEES</h2>
               <div className="max-w-[800px] mx-auto">
                 <ConfirmedAttendees />
@@ -186,10 +192,10 @@ export default function EventLayout() {
         )}
 
         {/* Questions Section - Now visible to all users */}
-        <div className="mt-16 mb-16 animate-[fadeIn_3.2s_ease-out_forwards]" style={{ opacity: 0 }}>
+        <div className="mt-16 mb-16">
           <SectionSeparator />
         </div>
-        <section className="animate-[fadeIn_3.4s_ease-out_forwards]" style={{ opacity: 0 }}>
+        <section>
           <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-6 md:mb-8">QUESTIONS</h2>
           <div className="max-w-[450px] mx-auto text-center">
             <p className="text-anniversary-gold text-base md:text-lg font-bicyclette leading-relaxed">
