@@ -24,7 +24,7 @@ export default function ContentSections({
     console.log("No current guest found");
     return (
       <div className="text-center p-8">
-        <p className="text-white text-xl">Please log in to view content.</p>
+        <p className="text-[#C2C2C2] text-xl">Please log in to view content.</p>
       </div>
     );
   }
@@ -109,7 +109,7 @@ export default function ContentSections({
     console.log("No visible sections found for this user");
     return (
       <div className="text-center p-8">
-        <p className="text-white text-xl">No content sections available yet.</p>
+        <p className="text-[#C2C2C2] text-xl">No content sections available yet.</p>
       </div>
     );
   }
@@ -131,7 +131,7 @@ export default function ContentSections({
         <div key={section.id}>
           <div className="text-center">
             <div
-              className="prose prose-headings:font-din prose-headings:text-anniversary-gold prose-p:text-white prose-li:text-white prose-strong:text-white prose-p:text-lg prose-li:text-lg max-w-[450px] mx-auto text-white"
+              className="prose prose-headings:font-din prose-headings:text-anniversary-gold prose-p:text-[#C2C2C2] prose-li:text-[#C2C2C2] prose-strong:text-[#C2C2C2] prose-p:text-lg prose-li:text-lg max-w-[450px] mx-auto text-[#C2C2C2]"
               dangerouslySetInnerHTML={{ __html: processContent(section.content) }}
             />
           </div>
