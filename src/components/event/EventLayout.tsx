@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -81,7 +80,6 @@ export default function EventLayout() {
         </div>
       </div>
       
-      {/* Hero Section with larger square image - z-index to display above background SVG */}
       <div className="px-4 py-6 md:py-12 relative z-10 flex justify-center animate-[fadeIn_1s_ease-out_forwards]" style={{ opacity: 0 }}>
         <header className="relative rounded-xl shadow-lg border border-anniversary-gold/20 bg-anniversary-darkPurple/50 backdrop-blur-sm overflow-hidden w-fit">
           <div className="w-full max-w-[700px] aspect-square">
@@ -97,22 +95,21 @@ export default function EventLayout() {
         </header>
       </div>
 
-      {/* Intro Text Section */}
       <div className="container mx-auto px-4 py-16 md:py-20 relative z-10 animate-[fadeIn_1.2s_ease-out_forwards]" style={{ opacity: 0 }}>
-        <div className="max-w-[500px] mx-auto text-center">
-          <p className="text-anniversary-gold text-base md:text-lg italic font-light leading-relaxed">
+        <div className="max-w-[500px] mx-auto text-left">
+          <p className="text-anniversary-gold text-base md:text-lg font-light leading-relaxed">
             There are parties, and then there are nights that define a decade…
           </p>
       
-          <p className="text-anniversary-gold text-base md:text-lg italic font-light leading-relaxed mt-6">
+          <p className="text-anniversary-gold text-base md:text-lg font-light leading-relaxed mt-6">
             Join us for an evening you'll never forget as we celebrate ten years of Chris and Nate.
           </p>
       
-          <p className="text-anniversary-gold text-base md:text-lg italic font-light leading-relaxed mt-6">
+          <p className="text-anniversary-gold text-base md:text-lg font-light leading-relaxed mt-6">
             Ten years ago Chris and Nate married at San Francisco City Hall with only family in attendance. At the time, Nate was busy building Lever and Chris was re-entering the tech world. They didn't have the time or money to throw the wedding they wanted, so they decided if they made it to ten years of marriage, they would throw the most epic party.
           </p>
       
-          <p className="text-anniversary-gold text-base md:text-lg italic font-light leading-relaxed mt-6">
+          <p className="text-anniversary-gold text-base md:text-lg font-light leading-relaxed mt-6">
             This is that party. You are invited. It will be like nothing anyone has ever seen.
           </p>
         </div>
