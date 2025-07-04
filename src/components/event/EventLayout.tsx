@@ -1,3 +1,4 @@
+
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -133,21 +134,6 @@ export default function EventLayout() {
             <PartyList guestId={currentGuest.id} partyId={currentGuest.party_id} />
           </section>
         )}
-
-        {/* Separator before Event Details */}
-        <div className="mt-16 mb-16 animate-[fadeIn_2s_ease-out_forwards]" style={{ opacity: 0 }}>
-          <SectionSeparator />
-        </div>
-
-        {/* Event Details Header Section */}
-        <section className="mb-8 md:mb-12 animate-[fadeIn_2.2s_ease-out_forwards]" style={{ opacity: 0 }}>
-          <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-6 md:mb-8">EVENT DETAILS</h2>
-        </section>
-
-        {/* Separator after Event Details header */}
-        <div className="mt-16 mb-16 animate-[fadeIn_2.4s_ease-out_forwards]" style={{ opacity: 0 }}>
-          <SectionSeparator />
-        </div>
 
         {/* Content Sections */}
         <section className="mb-16 md:mb-20 animate-[fadeIn_2.6s_ease-out_forwards]" style={{ opacity: 0 }}>
