@@ -133,6 +133,36 @@ export default function EventLayout() {
           </section>
         )}
 
+        {/* Event Details Header Section */}
+        <section className="mb-16 md:mb-20 animate-[fadeIn_2.0s_ease-out_forwards]" style={{ opacity: 0 }}>
+          <div className="text-center">
+            {/* Top Separator SVG */}
+            <div className="flex justify-center mb-8">
+              <img 
+                src="/separator_top.svg" 
+                alt="" 
+                className="w-full max-w-4xl"
+                aria-hidden="true"
+              />
+            </div>
+            
+            {/* Header Text */}
+            <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold mb-8">
+              EVENT DETAILS
+            </h2>
+            
+            {/* Bottom Separator SVG */}
+            <div className="flex justify-center">
+              <img 
+                src="/separator_bottom.svg" 
+                alt="" 
+                className="w-full max-w-4xl"
+                aria-hidden="true"
+              />
+            </div>
+          </div>
+        </section>
+
         {/* Content Sections */}
         <section className="mb-16 md:mb-20 animate-[fadeIn_2.6s_ease-out_forwards]" style={{ opacity: 0 }}>
           <div className="max-w-[450px] mx-auto">
