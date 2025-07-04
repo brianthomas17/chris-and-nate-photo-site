@@ -13,12 +13,17 @@ export default function AuthForm() {
   const [formError, setFormError] = useState('');
   const [seedStatus, setSeedStatus] = useState<'idle' | 'seeding' | 'seeded' | 'error'>('idle');
   const [showLoginForm, setShowLoginForm] = useState(false);
+  const [showHeroImage, setShowHeroImage] = useState(false);
   const {
     login
   } = useAuth();
 
-  // Show login form after a small delay
+  // Show hero image immediately, then login form after a delay
   useEffect(() => {
+    // Start hero image fade-in immediately
+    setShowHeroImage(true);
+    
+    // Show login form after a small delay
     const timer = setTimeout(() => {
       setShowLoginForm(true);
     }, 800);
@@ -58,21 +63,23 @@ export default function AuthForm() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-anniversary-purple relative overflow-hidden">
-      {/* Background logo image with margin added */}
+      {/* Background logo image with fade-in animation */}
       <div className="fixed inset-0 z-0 pointer-events-none flex items-center justify-center overflow-visible">
-        <div className="absolute mx-8" style={{ minWidth: '500px', width: 'calc(100% - 64px)', maxWidth: '900px' }}>
+        <div className={`absolute mx-8 transition-opacity duration-[2000ms] ease-out ${
+          showHeroImage ? 'opacity-80' : 'opacity-0'
+        }`} style={{ minWidth: '500px', width: 'calc(100% - 64px)', maxWidth: '900px' }}>
           <AspectRatio ratio={1 / 1}>
             <img 
               src="/lovable-uploads/6395beab-ec13-4211-85d9-c76cbd98073b.png" 
               alt="Anniversary Masks" 
-              className="w-full h-full object-contain opacity-80" 
+              className="w-full h-full object-contain" 
             />
           </AspectRatio>
         </div>
       </div>
       
+      {/* Login form with delayed fade-in animation */}
       <div className="w-full max-w-md relative z-10 px-4 flex flex-col items-center" style={{ marginTop: "35vh" }}>
-        {/* Login form with a delayed fade-in animation */}
         <div className={`w-full opacity-0 ${showLoginForm ? "animate-[fade-in_1.5s_ease-out_forwards]" : ""}`}>
           <form onSubmit={handleSubmit} className="w-full flex flex-col items-center">
             <div className="w-full max-w-[300px] mx-auto">
