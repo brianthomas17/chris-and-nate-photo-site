@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -6,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { seedTestAccounts } from "@/utils/seedTestAccounts";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { useImageLoader } from "@/hooks/useImageLoader";
 
 export default function AuthForm() {
   const [email, setEmail] = useState('');
@@ -18,17 +18,27 @@ export default function AuthForm() {
     login
   } = useAuth();
 
-  // Show hero image immediately, then login form after a delay
+  // Define the hero image URL
+  const heroImageUrl = "/lovable-uploads/6395beab-ec13-4211-85d9-c76cbd98073b.png";
+
+  // Use the image loader hook to detect when the image is loaded
+  const { allImagesLoaded } = useImageLoader({ 
+    imageUrls: [heroImageUrl],
+    onAllLoaded: () => {
+      // Start the fade-in animation once the image is loaded
+      setShowHeroImage(true);
+    }
+  });
+
+  // Show login form after the hero image starts fading in
   useEffect(() => {
-    // Start hero image fade-in immediately
-    setShowHeroImage(true);
-    
-    // Show login form after a small delay
-    const timer = setTimeout(() => {
-      setShowLoginForm(true);
-    }, 800);
-    return () => clearTimeout(timer);
-  }, []);
+    if (showHeroImage) {
+      const timer = setTimeout(() => {
+        setShowLoginForm(true);
+      }, 400); // Start login form animation shortly after hero image starts
+      return () => clearTimeout(timer);
+    }
+  }, [showHeroImage]);
 
   const handleSeedTestAccounts = async () => {
     setSeedStatus('seeding');
@@ -63,14 +73,14 @@ export default function AuthForm() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-anniversary-purple relative overflow-hidden">
-      {/* Background logo image with fade-in animation */}
+      {/* Background logo image with fade-in animation after loading */}
       <div className="fixed inset-0 z-0 pointer-events-none flex items-center justify-center overflow-visible">
-        <div className={`absolute mx-8 transition-opacity duration-[2000ms] ease-out ${
+        <div className={`absolute mx-8 transition-opacity duration-1000 ease-out ${
           showHeroImage ? 'opacity-80' : 'opacity-0'
         }`} style={{ minWidth: '500px', width: 'calc(100% - 64px)', maxWidth: '900px' }}>
           <AspectRatio ratio={1 / 1}>
             <img 
-              src="/lovable-uploads/6395beab-ec13-4211-85d9-c76cbd98073b.png" 
+              src={heroImageUrl}
               alt="Anniversary Masks" 
               className="w-full h-full object-contain" 
             />
