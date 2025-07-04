@@ -76,9 +76,9 @@
   body {
     @apply text-foreground;
     font-family: 'Haboro_Contrast', sans-serif;
-    background: linear-gradient(to bottom right, #151916, #0F120F);
+    background: #22211D;
     min-height: 100vh;
-    color: #C2C2C2; /* Changed from default text color to C2C2C2 */
+    color: #C2C2C2;
   }
 
   h1, h2, h3, h4, h5, h6 {

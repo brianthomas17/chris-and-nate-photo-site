@@ -89,8 +89,8 @@ export default {
 					navy: '#1A2238',
 					cream: '#F5F5DC',
 					burgundy: '#800020',
-					purple: '#151916', // Changed from purple to dark gray
-					darkPurple: '#0F120F', // Darker version of the dark gray
+					purple: '#22211D', // Updated to the new background color
+					darkPurple: '#1A1918', // Slightly darker version of the new background
 					lightgold: '#D4B876',
 					gray: '#C2C2C2' // Added new gray color for text
 				}
