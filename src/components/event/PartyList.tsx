@@ -56,7 +56,7 @@ export default function PartyList({ guestId, partyId }: PartyListProps) {
         <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-6 md:mb-8">
           YOUR PARTY
         </h2>
-        <p className="text-center text-gray-300 mb-6">
+        <p className="text-center text-[#C2C2C2] mb-6">
           Please confirm the events members of your party will attend
         </p>
         <div className="flex flex-col space-y-4 max-w-md mx-auto">

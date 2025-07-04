@@ -102,15 +102,15 @@ export default function EventLayout() {
             There are parties, and then there are nights that define a decade…
           </h2>
       
-          <p className="text-white text-base md:text-lg font-light leading-relaxed mt-6">
+          <p className="text-[#C2C2C2] text-base md:text-lg font-light leading-relaxed mt-6">
             Join us for an evening you'll never forget as we celebrate ten years of Chris and Nate.
           </p>
       
-          <p className="text-white text-base md:text-lg font-light leading-relaxed mt-6">
+          <p className="text-[#C2C2C2] text-base md:text-lg font-light leading-relaxed mt-6">
             Ten years ago Chris and Nate married at San Francisco City Hall with only family in attendance. At the time, Nate was busy building Lever and Chris was re-entering the tech world. They didn't have the time or money to throw the wedding they wanted, so they decided if they made it to ten years of marriage, they would throw the most epic party.
           </p>
       
-          <p className="text-white text-base md:text-lg font-light leading-relaxed mt-6">
+          <p className="text-[#C2C2C2] text-base md:text-lg font-light leading-relaxed mt-6">
             This is that party. You are invited. It will be like nothing anyone has ever seen.
           </p>
         </div>

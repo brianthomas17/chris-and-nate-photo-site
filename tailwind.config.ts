@@ -91,7 +91,8 @@ export default {
 					burgundy: '#800020',
 					purple: '#151916', // Changed from purple to dark gray
 					darkPurple: '#0F120F', // Darker version of the dark gray
-					lightgold: '#D4B876'
+					lightgold: '#D4B876',
+					gray: '#C2C2C2' // Added new gray color for text
 				}
 			},
 			borderRadius: {

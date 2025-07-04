@@ -42,7 +42,7 @@ export default function ConfirmedAttendees() {
   }, []);
   
   if (error) {
-    return <div className="text-center text-white opacity-70">{error}</div>;
+    return <div className="text-center text-[#C2C2C2] opacity-70">{error}</div>;
   }
   
   if (isLoading) {
@@ -58,7 +58,7 @@ export default function ConfirmedAttendees() {
   }
   
   if (attendees.length === 0) {
-    return <div className="text-center text-white opacity-70">No confirmed attendees yet.</div>;
+    return <div className="text-center text-[#C2C2C2] opacity-70">No confirmed attendees yet.</div>;
   }
   
   return (
@@ -66,7 +66,7 @@ export default function ConfirmedAttendees() {
       {attendees.map((guest, index) => (
         <div 
           key={index} 
-          className="text-white text-xs md:text-sm font-bicyclette text-center uppercase"
+          className="text-[#C2C2C2] text-xs md:text-sm font-bicyclette text-center uppercase"
         >
           {guest.first_name} {guest.last_name}
         </div>
