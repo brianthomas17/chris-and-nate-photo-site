@@ -57,7 +57,7 @@ export default function AuthForm() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-anniversary-purple relative overflow-hidden">
+    <div className="flex items-center justify-center min-h-screen relative overflow-hidden" style={{ backgroundColor: '#121613' }}>
       {/* Background logo image with margin added */}
       <div className="fixed inset-0 z-0 pointer-events-none flex items-center justify-center overflow-visible">
         <div className="absolute mx-8" style={{ minWidth: '500px', width: 'calc(100% - 64px)', maxWidth: '900px' }}>
