@@ -57,7 +57,7 @@ export default function PartyList({ guestId, partyId }: PartyListProps) {
           YOUR PARTY
         </h2>
         <p className="text-center text-gray-300 mb-6">
-          Please Confirm which events each person in your party will attend
+          Please confirm the events members of your party will attend
         </p>
         <div className="flex flex-col space-y-4 max-w-md mx-auto">
           {partyMembers.map(guest => (
