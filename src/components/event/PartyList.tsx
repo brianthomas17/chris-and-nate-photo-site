@@ -57,9 +57,7 @@ export default function PartyList({ guestId, partyId }: PartyListProps) {
           YOUR PARTY
         </h2>
         <p className="text-center text-gray-300 mb-6">
-          {partyMembers.length > 1 
-            ? `You have ${partyMembers.length} guests in your party` 
-            : "You are the only guest in your party"}
+          Please Confirm which events each person in your party will attend
         </p>
         <div className="flex flex-col space-y-4 max-w-md mx-auto">
           {partyMembers.map(guest => (
