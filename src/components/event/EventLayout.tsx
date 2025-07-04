@@ -141,7 +141,7 @@ export default function EventLayout() {
               <img 
                 src="/separator_top.svg" 
                 alt="" 
-                className="w-full max-w-4xl"
+                className="w-full max-w-[600px]"
                 aria-hidden="true"
               />
             </div>
@@ -156,7 +156,7 @@ export default function EventLayout() {
               <img 
                 src="/separator_bottom.svg" 
                 alt="" 
-                className="w-full max-w-4xl"
+                className="w-full max-w-[600px]"
                 aria-hidden="true"
               />
             </div>
