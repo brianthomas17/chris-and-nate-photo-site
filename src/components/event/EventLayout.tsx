@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -98,7 +97,7 @@ export default function EventLayout() {
 
       <div className="container mx-auto px-4 py-16 md:py-20 relative z-10 animate-[fadeIn_1.2s_ease-out_forwards]" style={{ opacity: 0 }}>
         <div className="max-w-[500px] mx-auto text-left">
-          <h2 className="text-anniversary-gold text-base md:text-lg font-light leading-relaxed">
+          <h2 className="text-anniversary-gold text-2xl md:text-3xl font-light leading-relaxed">
             There are parties, and then there are nights that define a decade…
           </h2>
       
