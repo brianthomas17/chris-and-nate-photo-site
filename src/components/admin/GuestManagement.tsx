@@ -787,10 +787,10 @@ export default function GuestManagement() {
               <SortableHeader field="last_name">Last Name</SortableHeader>
               <SortableHeader field="email">Email</SortableHeader>
               <TableHead>RSVP Status</TableHead>
-              <TableHead>Main Invite</TableHead>
               <TableHead>Friday Invite</TableHead>
-              <TableHead>Friday</TableHead>
-              <TableHead>Brunch</TableHead>
+              <TableHead>Main Attending</TableHead>
+              <TableHead>Friday Attending</TableHead>
+              <TableHead>Brunch Attending</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -812,18 +812,18 @@ export default function GuestManagement() {
                   )}
                 </TableCell>
                 <TableCell>
-                  <Checkbox 
-                    checked={guest.main_event_rsvp === true} 
-                    disabled 
-                    className="pointer-events-none"
-                  />
-                </TableCell>
-                <TableCell>
                   {guest.friday_dinner === true ? (
                     <Badge variant="default" className="bg-blue-500">Yes</Badge>
                   ) : (
                     <Badge variant="outline">No</Badge>
                   )}
+                </TableCell>
+                <TableCell>
+                  <Checkbox 
+                    checked={guest.main_event_rsvp === true} 
+                    disabled 
+                    className="pointer-events-none"
+                  />
                 </TableCell>
                 <TableCell>
                   <Checkbox 
