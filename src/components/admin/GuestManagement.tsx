@@ -810,31 +810,25 @@ export default function GuestManagement() {
                   )}
                 </TableCell>
                 <TableCell>
-                  {guest.main_event_rsvp === true ? (
-                    <Badge className="bg-blue-500">Yes</Badge>
-                  ) : guest.main_event_rsvp === false ? (
-                    <Badge variant="destructive">No</Badge>
-                  ) : (
-                    <Badge variant="outline">-</Badge>
-                  )}
+                  <Checkbox 
+                    checked={guest.main_event_rsvp === true} 
+                    disabled 
+                    className="pointer-events-none"
+                  />
                 </TableCell>
                 <TableCell>
-                  {guest.friday_dinner_rsvp === true ? (
-                    <Badge className="bg-blue-500">Yes</Badge>
-                  ) : guest.friday_dinner_rsvp === false ? (
-                    <Badge variant="destructive">No</Badge>
-                  ) : (
-                    <Badge variant="outline">-</Badge>
-                  )}
+                  <Checkbox 
+                    checked={guest.friday_dinner_rsvp === true} 
+                    disabled 
+                    className="pointer-events-none"
+                  />
                 </TableCell>
                 <TableCell>
-                  {guest.sunday_brunch_rsvp === true ? (
-                    <Badge className="bg-purple-500">Yes</Badge>
-                  ) : guest.sunday_brunch_rsvp === false ? (
-                    <Badge variant="destructive">No</Badge>
-                  ) : (
-                    <Badge variant="outline">-</Badge>
-                  )}
+                  <Checkbox 
+                    checked={guest.sunday_brunch_rsvp === true} 
+                    disabled 
+                    className="pointer-events-none"
+                  />
                 </TableCell>
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">
