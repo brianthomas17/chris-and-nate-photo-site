@@ -1013,46 +1013,91 @@ export default function GuestManagement() {
                       </SelectContent>
                     </Select>
                   </div>
-
-                  {rsvpAttending === "Yes" && (
-                    <div className="space-y-3 pt-3">
-                      <h4 className="font-medium">Event Attendance</h4>
-                      <div className="flex items-center space-x-2">
-                        <Checkbox 
-                          id="edit-main-event-rsvp" 
-                          checked={mainEventRsvp} 
-                          onCheckedChange={(checked) => setMainEventRsvp(checked === true)}
-                        />
-                        <Label htmlFor="edit-main-event-rsvp">Main Event</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Checkbox 
-                          id="edit-friday-dinner-rsvp" 
-                          checked={fridayDinnerRsvp} 
-                          onCheckedChange={(checked) => setFridayDinnerRsvp(checked === true)}
-                        />
-                        <Label htmlFor="edit-friday-dinner-rsvp">Friday Family Dinner</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Checkbox 
-                          id="edit-sunday-brunch-rsvp" 
-                          checked={sundayBrunchRsvp}
-                          onCheckedChange={(checked) => setSundayBrunchRsvp(checked === true)}
-                        />
-                        <Label htmlFor="edit-sunday-brunch-rsvp">Sunday Brunch</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Checkbox 
-                          id="edit-afterparty-rsvp" 
-                          checked={afterpartyRsvp}
-                          onCheckedChange={(checked) => setAfterpartyRsvp(checked === true)}
-                        />
-                        <Label htmlFor="edit-afterparty-rsvp">Afterparty</Label>
-                      </div>
-                    </div>
-                  )}
                 </div>
               </div>
+
+              <div className="border-t pt-4 mt-2">
+                <h3 className="font-medium mb-3">Event Invitations</h3>
+                <div className="space-y-3">
+                  <div className="text-sm text-muted-foreground">
+                    Events this guest is invited to:
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        checked={mainEvent} 
+                        disabled 
+                        className="pointer-events-none"
+                      />
+                      <Label className="text-sm">Main Event</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        checked={afterparty} 
+                        disabled 
+                        className="pointer-events-none"
+                      />
+                      <Label className="text-sm">Afterparty</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        checked={fridayDinner} 
+                        disabled 
+                        className="pointer-events-none"
+                      />
+                      <Label className="text-sm">Friday Family Dinner</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        checked={sundayBrunch} 
+                        disabled 
+                        className="pointer-events-none"
+                      />
+                      <Label className="text-sm">Sunday Brunch</Label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {rsvpAttending === "Yes" && (
+                <div className="border-t pt-4 mt-2">
+                  <h3 className="font-medium mb-3">Event Attendance</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="edit-main-event-rsvp" 
+                        checked={mainEventRsvp} 
+                        onCheckedChange={(checked) => setMainEventRsvp(checked === true)}
+                      />
+                      <Label htmlFor="edit-main-event-rsvp">Main Event</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="edit-friday-dinner-rsvp" 
+                        checked={fridayDinnerRsvp} 
+                        onCheckedChange={(checked) => setFridayDinnerRsvp(checked === true)}
+                      />
+                      <Label htmlFor="edit-friday-dinner-rsvp">Friday Family Dinner</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="edit-sunday-brunch-rsvp" 
+                        checked={sundayBrunchRsvp}
+                        onCheckedChange={(checked) => setSundayBrunchRsvp(checked === true)}
+                      />
+                      <Label htmlFor="edit-sunday-brunch-rsvp">Sunday Brunch</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="edit-afterparty-rsvp" 
+                        checked={afterpartyRsvp}
+                        onCheckedChange={(checked) => setAfterpartyRsvp(checked === true)}
+                      />
+                      <Label htmlFor="edit-afterparty-rsvp">Afterparty</Label>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setIsEditDialogOpen(false)} disabled={isSubmitting}>
