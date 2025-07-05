@@ -787,6 +787,7 @@ export default function GuestManagement() {
               <SortableHeader field="email">Email</SortableHeader>
               <TableHead>RSVP Status</TableHead>
               <TableHead>Main Invite</TableHead>
+              <TableHead>Friday Invite</TableHead>
               <TableHead>Friday</TableHead>
               <TableHead>Brunch</TableHead>
               <TableHead className="text-right">Actions</TableHead>
@@ -812,6 +813,13 @@ export default function GuestManagement() {
                 <TableCell>
                   <Checkbox 
                     checked={guest.main_event_rsvp === true} 
+                    disabled 
+                    className="pointer-events-none"
+                  />
+                </TableCell>
+                <TableCell>
+                  <Checkbox 
+                    checked={guest.friday_dinner === true} 
                     disabled 
                     className="pointer-events-none"
                   />
