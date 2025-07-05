@@ -786,10 +786,9 @@ export default function GuestManagement() {
               <SortableHeader field="last_name">Last Name</SortableHeader>
               <SortableHeader field="email">Email</SortableHeader>
               <TableHead>RSVP Status</TableHead>
-              <TableHead>Main Event</TableHead>
-              <TableHead>Afterparty</TableHead>
-              <TableHead>Friday Dinner</TableHead>
-              <TableHead>Sunday Brunch</TableHead>
+              <TableHead>Main</TableHead>
+              <TableHead>Friday</TableHead>
+              <TableHead>Brunch</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -811,31 +810,30 @@ export default function GuestManagement() {
                   )}
                 </TableCell>
                 <TableCell>
-                  {guest.main_event ? (
+                  {guest.main_event_rsvp === true ? (
                     <Badge className="bg-blue-500">Yes</Badge>
+                  ) : guest.main_event_rsvp === false ? (
+                    <Badge variant="destructive">No</Badge>
                   ) : (
-                    <Badge variant="outline">No</Badge>
+                    <Badge variant="outline">-</Badge>
                   )}
                 </TableCell>
                 <TableCell>
-                  {guest.afterparty ? (
-                    <Badge className="bg-purple-500">Yes</Badge>
-                  ) : (
-                    <Badge variant="outline">No</Badge>
-                  )}
-                </TableCell>
-                <TableCell>
-                  {guest.friday_dinner ? (
+                  {guest.friday_dinner_rsvp === true ? (
                     <Badge className="bg-blue-500">Yes</Badge>
+                  ) : guest.friday_dinner_rsvp === false ? (
+                    <Badge variant="destructive">No</Badge>
                   ) : (
-                    <Badge variant="outline">No</Badge>
+                    <Badge variant="outline">-</Badge>
                   )}
                 </TableCell>
                 <TableCell>
-                  {guest.sunday_brunch ? (
+                  {guest.sunday_brunch_rsvp === true ? (
                     <Badge className="bg-purple-500">Yes</Badge>
+                  ) : guest.sunday_brunch_rsvp === false ? (
+                    <Badge variant="destructive">No</Badge>
                   ) : (
-                    <Badge variant="outline">No</Badge>
+                    <Badge variant="outline">-</Badge>
                   )}
                 </TableCell>
                 <TableCell className="text-right">
