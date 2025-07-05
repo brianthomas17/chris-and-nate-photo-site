@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useGuests } from "@/context/GuestContext";
 import { Guest, InvitationType, Party } from "@/types";
@@ -51,7 +50,13 @@ export default function GuestManagement() {
   const [mainEvent, setMainEvent] = useState<boolean>(true);
   const [afterparty, setAfterparty] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  
+
+  // Add RSVP state variables for the edit modal
+  const [mainEventRsvp, setMainEventRsvp] = useState<boolean>(false);
+  const [fridayDinnerRsvp, setFridayDinnerRsvp] = useState<boolean>(false);
+  const [sundayBrunchRsvp, setSundayBrunchRsvp] = useState<boolean>(false);
+  const [afterpartyRsvp, setAfterpartyRsvp] = useState<boolean>(false);
+
   // Add sorting state
   const [sortField, setSortField] = useState<SortField>('first_name');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
@@ -85,18 +90,22 @@ export default function GuestManagement() {
     setSundayBrunch(false);
     setMainEvent(true);
     setAfterparty(false);
+    setMainEventRsvp(false);
+    setFridayDinnerRsvp(false);
+    setSundayBrunchRsvp(false);
+    setAfterpartyRsvp(false);
   };
 
   const handleAddGuest = async () => {
     setIsSubmitting(true);
-    
+
     // Validate that at least first name is provided
     if (!firstName.trim()) {
       alert("First name is required");
       setIsSubmitting(false);
       return;
     }
-    
+
     await addGuest({
       first_name: firstName,
       last_name: lastName || null,
@@ -114,7 +123,7 @@ export default function GuestManagement() {
       main_event: mainEvent,
       afterparty: afterparty
     });
-    
+
     setIsSubmitting(false);
     setIsAddDialogOpen(false);
     resetForm();
@@ -122,16 +131,16 @@ export default function GuestManagement() {
 
   const handleUpdateGuest = async () => {
     if (!currentGuest) return;
-    
+
     // Validate that at least first name is provided
     if (!firstName.trim()) {
       alert("First name is required");
       setIsSubmitting(false);
       return;
     }
-    
+
     setIsSubmitting(true);
-    
+
     await updateGuest({
       ...currentGuest,
       first_name: firstName,
@@ -148,9 +157,13 @@ export default function GuestManagement() {
       friday_dinner: fridayDinner,
       sunday_brunch: sundayBrunch,
       main_event: mainEvent,
-      afterparty: afterparty
+      afterparty: afterparty,
+      main_event_rsvp: mainEventRsvp,
+      friday_dinner_rsvp: fridayDinnerRsvp,
+      sunday_brunch_rsvp: sundayBrunchRsvp,
+      afterparty_rsvp: afterpartyRsvp
     });
-    
+
     setIsSubmitting(false);
     setIsEditDialogOpen(false);
     resetForm();
@@ -169,17 +182,23 @@ export default function GuestManagement() {
     setZipCode(guest.zip_code || "");
     setInvitationType(guest.invitation_type);
     setPartyId(guest.party_id || null);
-    
+
     // Set RSVP data if available
     console.log("Setting RSVP status from guest data:", guest.attending);
     setRsvpAttending(guest.attending);
-    
+
     // Update these lines to properly set the boolean values
     setFridayDinner(guest.friday_dinner === true);
     setSundayBrunch(guest.sunday_brunch === true);
     setMainEvent(guest.main_event === true);
     setAfterparty(guest.afterparty === true);
-    
+
+    // Set RSVP confirmation values
+    setMainEventRsvp(guest.main_event_rsvp === true);
+    setFridayDinnerRsvp(guest.friday_dinner_rsvp === true);
+    setSundayBrunchRsvp(guest.sunday_brunch_rsvp === true);
+    setAfterpartyRsvp(guest.afterparty_rsvp === true);
+
     setIsEditDialogOpen(true);
   };
 
@@ -197,14 +216,14 @@ export default function GuestManagement() {
 
   const handleCreateParty = async () => {
     if (!newPartyName.trim()) return;
-    
+
     setIsSubmitting(true);
     const newPartyId = await createParty(newPartyName);
-    
+
     if (newPartyId && selectedGuests.length > 0) {
       await updatePartyMembers(newPartyId, selectedGuests);
     }
-    
+
     setIsSubmitting(false);
     setIsPartyDialogOpen(false);
     resetForm();
@@ -212,7 +231,7 @@ export default function GuestManagement() {
 
   const handleAssignToParty = async () => {
     if (!selectedParty || selectedGuests.length === 0) return;
-    
+
     setIsSubmitting(true);
     await updatePartyMembers(selectedParty, selectedGuests);
     setIsSubmitting(false);
@@ -254,12 +273,12 @@ export default function GuestManagement() {
     // First filter by search term
     let filtered = guests.filter(guest => {
       const searchLower = searchTerm.toLowerCase().trim();
-      
+
       if (searchLower !== "") {
         const firstNameMatch = guest.first_name?.toLowerCase().includes(searchLower) || false;
         const lastNameMatch = guest.last_name?.toLowerCase().includes(searchLower) || false;
         const emailMatch = guest.email?.toLowerCase().includes(searchLower) || false;
-        
+
         if (!(firstNameMatch || lastNameMatch || emailMatch)) {
           return false;
         }
@@ -319,7 +338,7 @@ export default function GuestManagement() {
   const SortableHeader = ({ field, children }: { field: SortField; children: React.ReactNode }) => {
     const isActive = sortField === field;
     const Icon = sortDirection === 'asc' ? ArrowUpAZ : ArrowDownAZ;
-    
+
     return (
       <TableHead 
         className="cursor-pointer hover:bg-muted/50 select-none"
@@ -422,7 +441,7 @@ export default function GuestManagement() {
               </div>
             </DialogContent>
           </Dialog>
-          
+
           <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
             <DialogTrigger asChild>
               <Button className="bg-anniversary-gold hover:bg-anniversary-gold/90 text-black">
@@ -459,7 +478,7 @@ export default function GuestManagement() {
                     />
                   </div>
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="email">Email (Optional)</Label>
                   <Input
@@ -470,7 +489,7 @@ export default function GuestManagement() {
                     placeholder="guest@example.com"
                   />
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="phoneNumber">Phone Number</Label>
                   <Input
@@ -481,7 +500,7 @@ export default function GuestManagement() {
                     placeholder="+1 (555) 123-4567"
                   />
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="address">Address</Label>
                   <Input
@@ -491,7 +510,7 @@ export default function GuestManagement() {
                     placeholder="123 Main St"
                   />
                 </div>
-                
+
                 <div className="grid grid-cols-3 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="city">City</Label>
@@ -521,7 +540,7 @@ export default function GuestManagement() {
                     />
                   </div>
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="invitationType">Invitation Type</Label>
                   <Select
@@ -557,7 +576,7 @@ export default function GuestManagement() {
                     </SelectContent>
                   </Select>
                 </div>
-                
+
                 <div className="space-y-3 border-t pt-3">
                   <h4 className="font-medium">Event Access</h4>
                   <div className="flex items-center space-x-2">
@@ -593,7 +612,7 @@ export default function GuestManagement() {
                     <Label htmlFor="add-sunday-brunch">Sunday Brunch</Label>
                   </div>
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="rsvpStatus">RSVP Status (Optional)</Label>
                   <Select
@@ -615,7 +634,7 @@ export default function GuestManagement() {
                     </SelectContent>
                   </Select>
                 </div>
-                
+
                 {rsvpAttending === "Yes" && (
                   <div className="space-y-3 border-t pt-3">
                     <h4 className="font-medium">Additional Events</h4>
@@ -705,7 +724,7 @@ export default function GuestManagement() {
                       </SelectContent>
                     </Select>
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <Label htmlFor="filter-afterparty" className="text-sm">Afterparty</Label>
                     <Select
@@ -727,7 +746,7 @@ export default function GuestManagement() {
                       </SelectContent>
                     </Select>
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <Label htmlFor="filter-friday-dinner" className="text-sm">Friday Dinner</Label>
                     <Select
@@ -749,7 +768,7 @@ export default function GuestManagement() {
                       </SelectContent>
                     </Select>
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <Label htmlFor="filter-sunday-brunch" className="text-sm">Sunday Brunch</Label>
                     <Select
@@ -776,7 +795,7 @@ export default function GuestManagement() {
             </Card>
           )}
         </div>
-        
+
         <Table>
           <TableCaption>
             {searchTerm || Object.values(eventFilters).some(filter => filter !== null) ? `${filteredGuests.length} guests found` : 'List of all invited guests.'}
@@ -886,7 +905,7 @@ export default function GuestManagement() {
                   />
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="edit-email">Email (Optional)</Label>
                 <Input
@@ -896,7 +915,7 @@ export default function GuestManagement() {
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="edit-phoneNumber">Phone Number</Label>
                 <Input
@@ -907,7 +926,7 @@ export default function GuestManagement() {
                   placeholder="+1 (555) 123-4567"
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="edit-address">Address</Label>
                 <Input
@@ -917,7 +936,7 @@ export default function GuestManagement() {
                   placeholder="123 Main St"
                 />
               </div>
-              
+
               <div className="grid grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="edit-city">City</Label>
@@ -947,23 +966,7 @@ export default function GuestManagement() {
                   />
                 </div>
               </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="edit-invitationType">Invitation Type</Label>
-                <Select
-                  value={invitationType}
-                  onValueChange={(value) => setInvitationType(value as InvitationType)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="main event">Main Event</SelectItem>
-                    <SelectItem value="afterparty">Afterparty</SelectItem>
-                    <SelectItem value="admin">Admin</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="edit-party">Party</Label>
                 <Select
@@ -983,46 +986,10 @@ export default function GuestManagement() {
                   </SelectContent>
                 </Select>
               </div>
-              
-              <div className="space-y-3 border-t pt-3">
-                <h4 className="font-medium">Event Access</h4>
-                <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id="edit-main-event" 
-                    checked={mainEvent} 
-                    onCheckedChange={(checked) => setMainEvent(checked === true)}
-                  />
-                  <Label htmlFor="edit-main-event">Main Event</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id="edit-afterparty" 
-                    checked={afterparty}
-                    onCheckedChange={(checked) => setAfterparty(checked === true)}
-                  />
-                  <Label htmlFor="edit-afterparty">Afterparty</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id="edit-friday-dinner" 
-                    checked={fridayDinner} 
-                    onCheckedChange={(checked) => setFridayDinner(checked === true)}
-                  />
-                  <Label htmlFor="edit-friday-dinner">Friday Family Dinner</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id="edit-sunday-brunch" 
-                    checked={sundayBrunch}
-                    onCheckedChange={(checked) => setSundayBrunch(checked === true)}
-                  />
-                  <Label htmlFor="edit-sunday-brunch">Sunday Brunch</Label>
-                </div>
-              </div>
-              
+
               <div className="border-t pt-4 mt-2">
                 <h3 className="font-medium mb-3">RSVP Details</h3>
-                
+
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="rsvp-status">RSVP Status</Label>
@@ -1046,25 +1013,41 @@ export default function GuestManagement() {
                       </SelectContent>
                     </Select>
                   </div>
-                  
+
                   {rsvpAttending === "Yes" && (
                     <div className="space-y-3 pt-3">
-                      <h4 className="font-medium">Additional Events</h4>
+                      <h4 className="font-medium">Event Attendance</h4>
                       <div className="flex items-center space-x-2">
                         <Checkbox 
-                          id="edit-rsvp-friday-dinner" 
-                          checked={fridayDinner} 
-                          onCheckedChange={(checked) => setFridayDinner(checked === true)}
+                          id="edit-main-event-rsvp" 
+                          checked={mainEventRsvp} 
+                          onCheckedChange={(checked) => setMainEventRsvp(checked === true)}
                         />
-                        <Label htmlFor="edit-rsvp-friday-dinner">Friday Family Dinner</Label>
+                        <Label htmlFor="edit-main-event-rsvp">Main Event</Label>
                       </div>
                       <div className="flex items-center space-x-2">
                         <Checkbox 
-                          id="edit-rsvp-sunday-brunch" 
-                          checked={sundayBrunch}
-                          onCheckedChange={(checked) => setSundayBrunch(checked === true)}
+                          id="edit-friday-dinner-rsvp" 
+                          checked={fridayDinnerRsvp} 
+                          onCheckedChange={(checked) => setFridayDinnerRsvp(checked === true)}
                         />
-                        <Label htmlFor="edit-rsvp-sunday-brunch">Sunday Brunch</Label>
+                        <Label htmlFor="edit-friday-dinner-rsvp">Friday Family Dinner</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox 
+                          id="edit-sunday-brunch-rsvp" 
+                          checked={sundayBrunchRsvp}
+                          onCheckedChange={(checked) => setSundayBrunchRsvp(checked === true)}
+                        />
+                        <Label htmlFor="edit-sunday-brunch-rsvp">Sunday Brunch</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox 
+                          id="edit-afterparty-rsvp" 
+                          checked={afterpartyRsvp}
+                          onCheckedChange={(checked) => setAfterpartyRsvp(checked === true)}
+                        />
+                        <Label htmlFor="edit-afterparty-rsvp">Afterparty</Label>
                       </div>
                     </div>
                   )}
