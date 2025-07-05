@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useGuests } from "@/context/GuestContext";
 import { Guest, InvitationType, Party } from "@/types";
@@ -818,11 +819,11 @@ export default function GuestManagement() {
                   />
                 </TableCell>
                 <TableCell>
-                  <Checkbox 
-                    checked={guest.friday_dinner === true} 
-                    disabled 
-                    className="pointer-events-none"
-                  />
+                  {guest.friday_dinner === true ? (
+                    <Badge variant="default" className="bg-blue-500">Yes</Badge>
+                  ) : (
+                    <Badge variant="outline">No</Badge>
+                  )}
                 </TableCell>
                 <TableCell>
                   <Checkbox 
