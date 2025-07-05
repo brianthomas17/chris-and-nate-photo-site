@@ -1026,32 +1026,28 @@ export default function GuestManagement() {
                     <div className="flex items-center space-x-2">
                       <Checkbox 
                         checked={mainEvent} 
-                        disabled 
-                        className="pointer-events-none"
+                        onCheckedChange={(checked) => setMainEvent(checked === true)}
                       />
                       <Label className="text-sm">Main Event</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Checkbox 
                         checked={afterparty} 
-                        disabled 
-                        className="pointer-events-none"
+                        onCheckedChange={(checked) => setAfterparty(checked === true)}
                       />
                       <Label className="text-sm">Afterparty</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Checkbox 
                         checked={fridayDinner} 
-                        disabled 
-                        className="pointer-events-none"
+                        onCheckedChange={(checked) => setFridayDinner(checked === true)}
                       />
                       <Label className="text-sm">Friday Family Dinner</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Checkbox 
                         checked={sundayBrunch} 
-                        disabled 
-                        className="pointer-events-none"
+                        onCheckedChange={(checked) => setSundayBrunch(checked === true)}
                       />
                       <Label className="text-sm">Sunday Brunch</Label>
                     </div>
