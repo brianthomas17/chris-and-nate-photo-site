@@ -786,7 +786,7 @@ export default function GuestManagement() {
               <SortableHeader field="last_name">Last Name</SortableHeader>
               <SortableHeader field="email">Email</SortableHeader>
               <TableHead>RSVP Status</TableHead>
-              <TableHead>Main</TableHead>
+              <TableHead>Main Invite</TableHead>
               <TableHead>Friday</TableHead>
               <TableHead>Brunch</TableHead>
               <TableHead className="text-right">Actions</TableHead>
