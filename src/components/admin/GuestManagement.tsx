@@ -10,6 +10,7 @@ import SearchAndFilters from "./guest/SearchAndFilters";
 import AddGuestDialog from "./guest/AddGuestDialog";
 import EditGuestDialog from "./guest/EditGuestDialog";
 import PartyManagementDialog from "./guest/PartyManagementDialog";
+import GuestStats from "./guest/GuestStats";
 import { useGuestFiltering } from "./guest/useGuestFiltering";
 
 type SortField = 'first_name' | 'last_name' | 'email';
@@ -140,6 +141,8 @@ export default function GuestManagement() {
         </div>
       </CardHeader>
       <CardContent>
+        <GuestStats guests={guests} />
+        
         <SearchAndFilters
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
