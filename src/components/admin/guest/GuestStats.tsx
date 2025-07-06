@@ -12,6 +12,9 @@ export default function GuestStats({ guests }: GuestStatsProps) {
   const attendingGuests = guests.filter(guest => guest.attending === "Yes").length;
   const pendingGuests = guests.filter(guest => guest.attending === null).length;
   const notAttendingGuests = guests.filter(guest => guest.attending === "No").length;
+  
+  // Calculate Friday invites (guests who were invited to Friday dinner)
+  const fridayInvites = guests.filter(guest => guest.friday_dinner === true).length;
 
   // Calculate event attendance statistics
   const mainEventAttending = guests.filter(guest => guest.main_event_rsvp === true).length;
@@ -19,7 +22,7 @@ export default function GuestStats({ guests }: GuestStatsProps) {
   const brunchAttending = guests.filter(guest => guest.sunday_brunch_rsvp === true).length;
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-6">
+    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-6">
       <StatsCard 
         title="Total Invites" 
         value={totalInvites} 
@@ -39,6 +42,11 @@ export default function GuestStats({ guests }: GuestStatsProps) {
         title="Not Attending" 
         value={notAttendingGuests} 
         className="bg-red-50 border-red-200"
+      />
+      <StatsCard 
+        title="Friday Invites" 
+        value={fridayInvites} 
+        className="bg-orange-50 border-orange-200"
       />
       <StatsCard 
         title="Main Event" 
