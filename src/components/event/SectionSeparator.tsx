@@ -9,7 +9,7 @@ export default function SectionSeparator({ className = '' }: SectionSeparatorPro
   return (
     <div className={`flex justify-center my-8 md:my-12 ${className}`}>
       <img 
-        src="/lovable-uploads/separator.svg" 
+        src="/separator_sections.svg" 
         alt="" 
         className="w-48 md:w-64 mx-20"
         aria-hidden="true"
