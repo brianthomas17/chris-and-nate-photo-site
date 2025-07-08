@@ -11,7 +11,7 @@ export default function SectionSeparator({ className = '' }: SectionSeparatorPro
       <img 
         src="/separator_sections.svg" 
         alt="" 
-        className="w-48 md:w-64 mx-20 max-w-[500px]"
+        className="w-full max-w-none"
         aria-hidden="true"
       />
     </div>
