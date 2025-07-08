@@ -143,6 +143,10 @@ export default function EventLayout() {
           <p className="text-[#C2C2C2] text-base md:text-lg font-light leading-relaxed mt-6">
             This is that party. You are invited. It will be like nothing anyone has ever seen.
           </p>
+
+          <p className="text-[#C2C2C2] text-base md:text-lg font-light leading-relaxed mt-6">
+            More than an event... It's a moment.
+          </p>
         </div>
       </div>
 
