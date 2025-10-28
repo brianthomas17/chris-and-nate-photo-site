@@ -96,6 +96,9 @@ export default function EventDetailsTab({ accessType }: EventDetailsTabProps) {
           </div>
         </>
       )}
+      
+      {/* Bottom separator graphic */}
+      <SectionSeparator />
     </div>
   );
 }
