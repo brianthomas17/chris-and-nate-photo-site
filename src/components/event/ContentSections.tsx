@@ -1,109 +1,27 @@
 
 import { useContent } from "@/context/ContentContext";
-import { InvitationType } from "@/types";
-import { useAuth } from "@/context/AuthContext";
+import { AccessType } from "@/types";
 import SectionSeparator from "./SectionSeparator";
 
 interface ContentSectionsProps {
-  invitationType: InvitationType;
-  fridayDinner?: boolean;
-  sundayBrunch?: boolean;
-  mainEvent?: boolean;
-  afterparty?: boolean;
+  accessType: AccessType;
 }
 
 export default function ContentSections({ 
-  invitationType
+  accessType
 }: ContentSectionsProps) {
   const { contentSections } = useContent();
-  const { currentGuest } = useAuth();
   
-  console.log("Current guest in ContentSections:", currentGuest);
-  
-  if (!currentGuest) {
-    console.log("No current guest found");
-    return (
-      <div className="text-center p-8">
-        <p className="text-[#C2C2C2] text-xl">Please log in to view content.</p>
-      </div>
-    );
-  }
-
-  // Ensure boolean values are properly handled
-  const mainEvent = currentGuest.main_event === true;
-  const afterparty = currentGuest.afterparty === true;
-  const fridayDinner = currentGuest.friday_dinner === true;
-  const sundayBrunch = currentGuest.sunday_brunch === true;
-  
-  console.log("Explicitly converted boolean values:", {
-    main_event: mainEvent,
-    afterparty: afterparty,
-    friday_dinner: fridayDinner,
-    sunday_brunch: sundayBrunch,
-    raw_main_event: currentGuest.main_event,
-    raw_afterparty: currentGuest.afterparty,
-    raw_friday_dinner: currentGuest.friday_dinner,
-    raw_sunday_brunch: currentGuest.sunday_brunch
-  });
-
-  // Improved visibility logic: A section is visible if the user has access to ANY of the required events
-  // OR if the section has no specific event restrictions (all visibility flags are false)
+  // Filter sections based on access type
   const visibleSections = contentSections.filter(section => {
-    // Admin users see all content
-    if (invitationType === 'admin') {
-      return true;
+    // Determine which visibility flag to check based on access type
+    if (accessType === 'main_event') {
+      return section.visible_to_main_event === true;
+    } else if (accessType === 'afterparty') {
+      return section.visible_to_afterparty === true;
     }
-    
-    // Check if this section has any specific event restrictions
-    const hasMainEventRestriction = section.visible_to_main_event === true;
-    const hasAfterpartyRestriction = section.visible_to_afterparty === true;
-    const hasFridayDinnerRestriction = section.visible_to_friday_dinner === true;
-    const hasSundayBrunchRestriction = section.visible_to_sunday_brunch === true;
-    
-    // If the section has no specific restrictions, it's visible to everyone
-    if (!hasMainEventRestriction && !hasAfterpartyRestriction && !hasFridayDinnerRestriction && !hasSundayBrunchRestriction) {
-      console.log(`Section "${section.title}" has no restrictions, visible to all`);
-      return true;
-    }
-    
-    // If the section has restrictions, check if the user meets ANY of them
-    let hasAccess = false;
-    
-    if (hasMainEventRestriction && mainEvent) {
-      hasAccess = true;
-      console.log(`Section "${section.title}" accessible via main_event`);
-    }
-    
-    if (hasAfterpartyRestriction && afterparty) {
-      hasAccess = true;
-      console.log(`Section "${section.title}" accessible via afterparty`);
-    }
-    
-    if (hasFridayDinnerRestriction && fridayDinner) {
-      hasAccess = true;
-      console.log(`Section "${section.title}" accessible via friday_dinner`);
-    }
-    
-    if (hasSundayBrunchRestriction && sundayBrunch) {
-      hasAccess = true;
-      console.log(`Section "${section.title}" accessible via sunday_brunch`);
-    }
-    
-    console.log(`Section "${section.title}" ${hasAccess ? 'is' : 'is not'} visible to ${currentGuest.first_name}`);
-    return hasAccess;
+    return false;
   }).sort((a, b) => a.order_index - b.order_index);
-
-  console.log("Content sections visibility:", {
-    guestName: currentGuest.first_name,
-    invitationType: currentGuest.invitation_type,
-    mainEvent,
-    afterparty,
-    fridayDinner,
-    sundayBrunch,
-    visibleSectionsCount: visibleSections.length,
-    allSectionsCount: contentSections.length,
-    visibleSections: visibleSections.map(s => s.title)
-  });
 
   if (visibleSections.length === 0) {
     console.log("No visible sections found for this user");

@@ -1,65 +1,148 @@
 
-import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { Guest } from "@/types";
-import { Skeleton } from "@/components/ui/skeleton";
+// Hard-coded list of confirmed attendees who RSVP'd "Yes"
+const attendees = [
+  { first_name: "Jonathan", last_name: "Agudelo" },
+  { first_name: "Brandt", last_name: "Anderson" },
+  { first_name: "Kelsey", last_name: "Anderson" },
+  { first_name: "Nicholas", last_name: "Artale" },
+  { first_name: "Hunter", last_name: "Atchison" },
+  { first_name: "Chloe", last_name: "Balacco" },
+  { first_name: "Blake", last_name: "Barkley" },
+  { first_name: "Erika", last_name: "Berg" },
+  { first_name: "Allison", last_name: "Blackerby" },
+  { first_name: "Maddie", last_name: "Boudreaux" },
+  { first_name: "Teo", last_name: "Briones" },
+  { first_name: "Emma", last_name: "Brown" },
+  { first_name: "Will", last_name: "Brown" },
+  { first_name: "Caitlin", last_name: "Buck" },
+  { first_name: "Reilly", last_name: "Bunting" },
+  { first_name: "Jane", last_name: "Burge" },
+  { first_name: "Frank", last_name: "Burkett" },
+  { first_name: "Kelsey", last_name: "Burkett" },
+  { first_name: "Ben", last_name: "Burns" },
+  { first_name: "Paige", last_name: "Burns" },
+  { first_name: "Cameron", last_name: "Calvit" },
+  { first_name: "Lauren", last_name: "Calvit" },
+  { first_name: "Anne", last_name: "Carter" },
+  { first_name: "Mark", last_name: "Carter" },
+  { first_name: "Patrick", last_name: "Coleman" },
+  { first_name: "Jackson", last_name: "Davis" },
+  { first_name: "Shelby", last_name: "Davis" },
+  { first_name: "Whitney", last_name: "Dees" },
+  { first_name: "Natalie", last_name: "Dillard" },
+  { first_name: "Mary Kate", last_name: "Drennan" },
+  { first_name: "Andrew", last_name: "Dyal" },
+  { first_name: "Caroline", last_name: "Dyal" },
+  { first_name: "Lauren", last_name: "Dyal" },
+  { first_name: "Hayley", last_name: "Edwards" },
+  { first_name: "Witt", last_name: "Edwards" },
+  { first_name: "Megan", last_name: "Eiermann" },
+  { first_name: "Alexa", last_name: "England" },
+  { first_name: "Matthew", last_name: "England" },
+  { first_name: "Courtney", last_name: "Evett" },
+  { first_name: "Margaret", last_name: "Evett" },
+  { first_name: "Mary", last_name: "Freeman" },
+  { first_name: "Nathan", last_name: "Freeman" },
+  { first_name: "Caroline", last_name: "Galvin" },
+  { first_name: "Lillie", last_name: "Galvin" },
+  { first_name: "Clare", last_name: "Gillon" },
+  { first_name: "Nick", last_name: "Gillon" },
+  { first_name: "Cole", last_name: "Goodson" },
+  { first_name: "Kristin", last_name: "Goodson" },
+  { first_name: "Mallory", last_name: "Greco" },
+  { first_name: "Sadie", last_name: "Griffin" },
+  { first_name: "Shelby", last_name: "Guillebeau" },
+  { first_name: "Tyler", last_name: "Guillebeau" },
+  { first_name: "Mack", last_name: "Gumley" },
+  { first_name: "Sarah Mac", last_name: "Gumley" },
+  { first_name: "Catherine", last_name: "Harner" },
+  { first_name: "Parker", last_name: "Harrell" },
+  { first_name: "Sloan", last_name: "Herrington" },
+  { first_name: "Matt", last_name: "Hite" },
+  { first_name: "Meredith", last_name: "Hite" },
+  { first_name: "Olivia", last_name: "Hogan" },
+  { first_name: "Emma", last_name: "Jones" },
+  { first_name: "Gracie", last_name: "Jones" },
+  { first_name: "John Wesley", last_name: "Jones" },
+  { first_name: "Kylie", last_name: "Jones" },
+  { first_name: "Lori Ann", last_name: "Jones" },
+  { first_name: "Peyton", last_name: "Jones" },
+  { first_name: "Samantha", last_name: "Jones" },
+  { first_name: "Will", last_name: "Jones" },
+  { first_name: "Charlie", last_name: "Kenimer" },
+  { first_name: "Sarah Kate", last_name: "Kenimer" },
+  { first_name: "Sara", last_name: "Kidd" },
+  { first_name: "George", last_name: "Lamar" },
+  { first_name: "Mary Emily", last_name: "Lamar" },
+  { first_name: "Hallie", last_name: "Lancaster" },
+  { first_name: "Kyle", last_name: "Lancaster" },
+  { first_name: "Grace", last_name: "Lee" },
+  { first_name: "Maddie", last_name: "Lindsay" },
+  { first_name: "Tripp", last_name: "Lindsay" },
+  { first_name: "Reese", last_name: "Lott" },
+  { first_name: "Mary-Hayden", last_name: "Maddox" },
+  { first_name: "Morgan", last_name: "Maddox" },
+  { first_name: "Sam", last_name: "Mathews" },
+  { first_name: "Savannah", last_name: "Mathews" },
+  { first_name: "Christopher", last_name: "May" },
+  { first_name: "Maggie", last_name: "May" },
+  { first_name: "Lauren", last_name: "Mays" },
+  { first_name: "Patrick", last_name: "Mays" },
+  { first_name: "Caroline", last_name: "McBrayer" },
+  { first_name: "Pierce", last_name: "McGoldrick" },
+  { first_name: "Claire", last_name: "McGowan" },
+  { first_name: "Sawyer", last_name: "McGowan" },
+  { first_name: "Aimee", last_name: "McMillan" },
+  { first_name: "Tanner", last_name: "McMillan" },
+  { first_name: "Parker", last_name: "Meaders" },
+  { first_name: "Hannah", last_name: "Medlin" },
+  { first_name: "Jake", last_name: "Medlin" },
+  { first_name: "Ashley", last_name: "Morris" },
+  { first_name: "Braxton", last_name: "Morris" },
+  { first_name: "Anna Cate", last_name: "Moses" },
+  { first_name: "Griffin", last_name: "Moses" },
+  { first_name: "Emily", last_name: "Neely" },
+  { first_name: "Davis", last_name: "Newton" },
+  { first_name: "Ford", last_name: "Peavy" },
+  { first_name: "Sims", last_name: "Pittman" },
+  { first_name: "Ben", last_name: "Rabon" },
+  { first_name: "Andrew", last_name: "Reeves" },
+  { first_name: "Hattie", last_name: "Reeves" },
+  { first_name: "Anna", last_name: "Rice" },
+  { first_name: "Piper", last_name: "Rice" },
+  { first_name: "Adele", last_name: "Riddle" },
+  { first_name: "Kyle", last_name: "Riddle" },
+  { first_name: "Anna", last_name: "Ritchie" },
+  { first_name: "Peyton", last_name: "Roberts" },
+  { first_name: "Lily", last_name: "Rounsaville" },
+  { first_name: "Carly", last_name: "Sapp" },
+  { first_name: "William", last_name: "Sapp" },
+  { first_name: "Jack", last_name: "Simpson" },
+  { first_name: "Meredith", last_name: "Simpson" },
+  { first_name: "Sophie", last_name: "Sims" },
+  { first_name: "Jack", last_name: "Skeens" },
+  { first_name: "Bailey", last_name: "Smaha" },
+  { first_name: "Mary", last_name: "Smith" },
+  { first_name: "Connor", last_name: "Sparks" },
+  { first_name: "Morgan", last_name: "Sparks" },
+  { first_name: "Eleanor", last_name: "Stalvey" },
+  { first_name: "John Henry", last_name: "Stalvey" },
+  { first_name: "Emily", last_name: "Sullivan" },
+  { first_name: "Cole", last_name: "Vaughan" },
+  { first_name: "Aubrey", last_name: "Whitfield" },
+  { first_name: "Maggie", last_name: "Whitfield" },
+  { first_name: "Ellen", last_name: "Williams" },
+  { first_name: "Emily", last_name: "Williams" },
+  { first_name: "William", last_name: "Williams" },
+  { first_name: "Ann", last_name: "Woodward" },
+  { first_name: "Carolyn", last_name: "Woodward" },
+  { first_name: "Macy", last_name: "Woodward" },
+  { first_name: "Maggie", last_name: "Woodward" },
+  { first_name: "Mary", last_name: "Woodward" },
+  { first_name: "Walker", last_name: "Woodward" },
+];
 
 export default function ConfirmedAttendees() {
-  const [attendees, setAttendees] = useState<Guest[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  
-  useEffect(() => {
-    async function fetchConfirmedAttendees() {
-      try {
-        setIsLoading(true);
-        
-        // Fetch guests who have RSVP'd yes and have first and last name
-        const { data, error } = await supabase
-          .from('guests')
-          .select('first_name, last_name')
-          .eq('attending', 'Yes')
-          .not('last_name', 'is', null)
-          .not('first_name', 'is', null)
-          .order('last_name', { ascending: true });
-        
-        if (error) {
-          console.error("Error fetching confirmed attendees:", error);
-          setError("Unable to load confirmed attendees");
-          return;
-        }
-        
-        setAttendees(data as Guest[]);
-      } catch (err) {
-        console.error("Error in fetchConfirmedAttendees:", err);
-        setError("An unexpected error occurred");
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    
-    fetchConfirmedAttendees();
-  }, []);
-  
-  if (error) {
-    return <div className="text-center text-[#C2C2C2] opacity-70">{error}</div>;
-  }
-  
-  if (isLoading) {
-    return (
-      <div className="space-y-2">
-        <div className="grid grid-cols-3 gap-x-3 gap-y-2 max-w-[700px] mx-auto">
-          {Array.from({ length: 9 }).map((_, i) => (
-            <Skeleton key={i} className="h-4 w-full bg-anniversary-gold/20" />
-          ))}
-        </div>
-      </div>
-    );
-  }
-  
-  if (attendees.length === 0) {
-    return <div className="text-center text-[#C2C2C2] opacity-70">No confirmed attendees yet.</div>;
-  }
   
   return (
     <div className="grid grid-cols-3 gap-x-3 gap-y-2 md:gap-x-4 md:gap-y-3 max-w-[700px] mx-auto">

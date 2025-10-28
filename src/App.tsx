@@ -5,7 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "./context/AuthContext";
+import { PasswordAuthProvider } from "./context/PasswordAuthContext";
 import { ContentProvider } from "./context/ContentContext";
 import { GuestProvider } from "./context/GuestContext";
 import { PhotoProvider } from "./context/PhotoContext";
@@ -21,7 +21,7 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <AuthProvider>
+      <PasswordAuthProvider>
         <GuestProvider>
           <ContentProvider>
             <PhotoProvider>
@@ -39,7 +39,7 @@ const App = () => (
             </PhotoProvider>
           </ContentProvider>
         </GuestProvider>
-      </AuthProvider>
+      </PasswordAuthProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );

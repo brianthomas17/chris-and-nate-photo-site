@@ -1,22 +1,17 @@
 import { useState, useEffect } from "react";
-import { useAuth } from "@/context/AuthContext";
+import { usePasswordAuth } from "@/context/PasswordAuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { AlertCircle, Loader2 } from "lucide-react";
-import { seedTestAccounts } from "@/utils/seedTestAccounts";
+import { AlertCircle } from "lucide-react";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { useImageLoader } from "@/hooks/useImageLoader";
 
 export default function AuthForm() {
-  const [email, setEmail] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [password, setPassword] = useState('');
   const [formError, setFormError] = useState('');
-  const [seedStatus, setSeedStatus] = useState<'idle' | 'seeding' | 'seeded' | 'error'>('idle');
   const [showLoginForm, setShowLoginForm] = useState(false);
   const [showHeroImage, setShowHeroImage] = useState(false);
-  const {
-    login
-  } = useAuth();
+  const { login } = usePasswordAuth();
 
   // Define the hero image URL
   const heroImageUrl = "/lovable-uploads/6395beab-ec13-4211-85d9-c76cbd98073b.png";
@@ -40,34 +35,19 @@ export default function AuthForm() {
     }
   }, [showHeroImage]);
 
-  const handleSeedTestAccounts = async () => {
-    setSeedStatus('seeding');
-    try {
-      await seedTestAccounts();
-      setSeedStatus('seeded');
-    } catch (error) {
-      console.error("Error seeding test accounts:", error);
-      setSeedStatus('error');
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
     setFormError('');
-    if (!email.trim()) {
-      setFormError('Please enter your email address');
-      setIsSubmitting(false);
+    
+    if (!password.trim()) {
+      setFormError('Please enter a password');
       return;
     }
-    try {
-      console.log("Submitting login form with email:", email);
-      await login(email);
-    } catch (error) {
-      console.error('Login error:', error);
-      setFormError('An error occurred. Please try again.');
-    } finally {
-      setIsSubmitting(false);
+    
+    const success = login(password);
+    if (!success) {
+      setFormError('Invalid password. Please try again.');
+      setPassword('');
     }
   };
 
@@ -95,11 +75,11 @@ export default function AuthForm() {
             <div className="w-full max-w-[300px] mx-auto">
               <div className="space-y-2">
                 <Input 
-                  id="email" 
-                  type="email" 
-                  placeholder="Enter Your Email For Access" 
-                  value={email} 
-                  onChange={e => setEmail(e.target.value)} 
+                  id="password" 
+                  type="password" 
+                  placeholder="Enter Password" 
+                  value={password} 
+                  onChange={e => setPassword(e.target.value)} 
                   className={`w-full text-center border-anniversary-gold bg-white/80 text-black placeholder:text-gray-600 rounded-md ${formError ? 'border-red-500' : ''}`} 
                 />
                 {formError && (
@@ -111,17 +91,12 @@ export default function AuthForm() {
               </div>
             </div>
             <div className="mt-6 w-full max-w-[300px] mx-auto">
-              {email.length > 0 && (
+              {password.length > 0 && (
                 <Button 
                   type="submit" 
-                  className="w-full bg-[#C9A95B] hover:bg-[#C9A95B]/90 text-black transition-all duration-300 animate-[fade-in_0.3s_ease-out] rounded-md h-10" 
-                  disabled={isSubmitting}
+                  className="w-full bg-[#C9A95B] hover:bg-[#C9A95B]/90 text-black transition-all duration-300 animate-[fade-in_0.3s_ease-out] rounded-md h-10"
                 >
-                  {isSubmitting ? (
-                    <span className="flex items-center">
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Checking...
-                    </span>
-                  ) : "Continue"}
+                  Continue
                 </Button>
               )}
             </div>

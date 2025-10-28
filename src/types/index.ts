@@ -1,4 +1,5 @@
 export type InvitationType = 'main event' | 'afterparty' | 'admin';
+export type AccessType = 'main_event' | 'afterparty';
 
 export interface Guest {
   id: string;
