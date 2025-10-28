@@ -16,7 +16,12 @@ export default function TabLayout() {
   const eventTabLabel = isMainEvent ? 'Main Event' : 'Afterparty';
 
   return (
-    <div className="min-h-screen bg-anniversary-purple text-white">
+    <div className="min-h-screen bg-anniversary-purple text-white relative">
+      {/* Background SVG - positioned in the center with max-width 50% */}
+      <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-0">
+        <img src="/masks.svg" alt="" className="max-w-[50vw] w-auto h-auto" aria-hidden="true" />
+      </div>
+
       {/* Header with logout button */}
       <div className="fixed top-0 right-0 p-4 z-50">
         <Button
