@@ -1,4 +1,3 @@
-import { useContent } from "@/context/ContentContext";
 import ContentSections from "./ContentSections";
 import ConfirmedAttendees from "./ConfirmedAttendees";
 import SectionSeparator from "./SectionSeparator";

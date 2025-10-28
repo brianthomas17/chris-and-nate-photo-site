@@ -6,14 +6,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { PasswordAuthProvider } from "./context/PasswordAuthContext";
-import { ContentProvider } from "./context/ContentContext";
-import { GuestProvider } from "./context/GuestContext";
 
 import Index from "./pages/Index";
-import Admin from "./pages/Admin";
-import RSVP from "./pages/RSVP";
 import NotFound from "./pages/NotFound";
-import EventLayout from "./components/event/EventLayout";
 
 const queryClient = new QueryClient();
 
@@ -21,21 +16,13 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <PasswordAuthProvider>
-        <GuestProvider>
-          <ContentProvider>
-            {/* Only include one toaster component */}
-            <Toaster />
-            <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/admin" element={<Admin />} />
-                <Route path="/rsvp" element={<RSVP />} />
-                <Route path="/event" element={<EventLayout />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </ContentProvider>
-        </GuestProvider>
+        <Toaster />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
       </PasswordAuthProvider>
     </TooltipProvider>
   </QueryClientProvider>

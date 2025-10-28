@@ -1,5 +1,4 @@
-
-import { useContent } from "@/context/ContentContext";
+import { getContentByAccessType } from "@/data/contentSections";
 import { AccessType } from "@/types";
 import SectionSeparator from "./SectionSeparator";
 
@@ -7,23 +6,13 @@ interface ContentSectionsProps {
   accessType: AccessType;
 }
 
-export default function ContentSections({ 
-  accessType
-}: ContentSectionsProps) {
-  const { contentSections } = useContent();
+export default function ContentSections({ accessType }: ContentSectionsProps) {
+  const contentSections = getContentByAccessType(accessType);
   
-  // Filter sections based on access type
-  const visibleSections = contentSections.filter(section => {
-    // Determine which visibility flag to check based on access type
-    if (accessType === 'main_event') {
-      return section.visible_to_main_event === true;
-    } else if (accessType === 'afterparty') {
-      return section.visible_to_afterparty === true;
-    }
-    return false;
-  }).sort((a, b) => a.order_index - b.order_index);
+  // Content is already filtered by access type from getContentByAccessType
+  const filteredSections = contentSections.sort((a, b) => a.order_index - b.order_index);
 
-  if (visibleSections.length === 0) {
+  if (filteredSections.length === 0) {
     console.log("No visible sections found for this user");
     return (
       <div className="text-center p-8">
@@ -45,7 +34,7 @@ export default function ContentSections({
 
   return (
     <div className="space-y-16">
-      {visibleSections.map((section, index) => (
+      {filteredSections.map((section, index) => (
         <div key={section.id}>
           <div className="text-center">
             <div
@@ -55,7 +44,7 @@ export default function ContentSections({
           </div>
           
           {/* Add SectionSeparator between sections, but not after the last one */}
-          {index < visibleSections.length - 1 && (
+          {index < filteredSections.length - 1 && (
             <div className="mt-16 mb-16">
               <SectionSeparator />
             </div>

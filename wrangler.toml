@@ -1,0 +1,20 @@
+# Cloudflare Pages Configuration (Optional)
+# This file is not required for Cloudflare Pages deployment
+# but can be used for additional configuration
+
+name = "chris-nate-anniversary"
+compatibility_date = "2024-01-01"
+
+# Build configuration
+[build]
+command = "npm run build"
+cwd = "."
+watch_dirs = ["src"]
+
+[build.upload]
+format = "service-worker"
+dir = "dist"
+
+# Environment variables (if needed)
+# [vars]
+# CLOUDINARY_CLOUD_NAME = "your-cloud-name"

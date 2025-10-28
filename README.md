@@ -1,3 +1,100 @@
+# Chris & Nate 10th Anniversary Event Site
+
+A static React application for Chris and Nate's 10th anniversary celebration, featuring password-based content filtering and Cloudinary photo galleries.
+
+## Features
+
+- **Password-based Access**: Two access levels (main event / afterparty) with simple password filtering
+- **Static Content**: All event information hard-coded for historical archiving
+- **Photo Galleries**: Direct Cloudinary integration for event photos
+- **No Backend**: Fully static site, perfect for Cloudflare Pages deployment
+- **Responsive Design**: Beautiful UI that works on all devices
+
+## Technology Stack
+
+- React 18 with TypeScript
+- Vite for building
+- Tailwind CSS for styling
+- Cloudinary for photo hosting
+- Yet Another React Lightbox for photo viewing
+
+## Development
+
+```bash
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+```
+
+## Deployment
+
+See [CLOUDFLARE_DEPLOYMENT.md](./CLOUDFLARE_DEPLOYMENT.md) for detailed deployment instructions to Cloudflare Pages.
+
+Quick start:
+1. Push to GitHub/GitLab
+2. Connect to Cloudflare Pages
+3. Build command: `npm run build`
+4. Output directory: `dist`
+5. Deploy!
+
+## Configuration
+
+### Passwords
+
+Edit `src/context/PasswordAuthContext.tsx`:
+```typescript
+const PASSWORDS = {
+  MAIN_EVENT: 'your-main-password',
+  AFTERPARTY: 'your-after-password'
+};
+```
+
+### Content
+
+Edit `src/data/contentSections.ts` to update event information.
+
+### Cloudinary
+
+Update your cloud name in `src/services/cloudinary.ts`:
+```typescript
+const CLOUDINARY_CLOUD_NAME = 'your-cloud-name';
+```
+
+## Project Structure
+
+```
+src/
+├── components/
+│   ├── event/          # Event-related components
+│   ├── ui/             # Reusable UI components (shadcn)
+│   └── AuthForm.tsx    # Password entry form
+├── context/
+│   └── PasswordAuthContext.tsx  # Password state management
+├── data/
+│   └── contentSections.ts       # Hard-coded event content
+├── services/
+│   └── cloudinary.ts            # Cloudinary API integration
+├── pages/
+│   ├── Index.tsx       # Main page
+│   └── NotFound.tsx    # 404 page
+└── types/
+    └── index.ts        # TypeScript types
+```
+
+## License
+
+Private project - All rights reserved
+
+---
+
 # Welcome to your Lovable project
 
 ## Project info
