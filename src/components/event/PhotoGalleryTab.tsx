@@ -67,13 +67,25 @@ export default function PhotoGalleryTab() {
 
   const fetchImages = async (folder: string) => {
     setLoading(true);
+    console.log('Fetching images for folder:', folder);
     try {
       const { data, error } = await supabase.functions.invoke('fetch-cloudinary-photos', {
         body: { folder },
       });
 
-      if (error) throw error;
+      console.log('Response from edge function:', { data, error });
 
+      if (error) {
+        console.error('Edge function error:', error);
+        throw error;
+      }
+
+      if (!data) {
+        console.error('No data received from edge function');
+        throw new Error('No data received');
+      }
+
+      console.log('Images received:', data.images?.length || 0);
       setImages(data.images || []);
     } catch (error) {
       console.error('Error fetching images:', error);
