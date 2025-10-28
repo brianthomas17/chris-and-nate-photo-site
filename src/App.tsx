@@ -8,7 +8,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { PasswordAuthProvider } from "./context/PasswordAuthContext";
 import { ContentProvider } from "./context/ContentContext";
 import { GuestProvider } from "./context/GuestContext";
-import { PhotoProvider } from "./context/PhotoContext";
 
 import Index from "./pages/Index";
 import Admin from "./pages/Admin";
@@ -24,19 +23,17 @@ const App = () => (
       <PasswordAuthProvider>
         <GuestProvider>
           <ContentProvider>
-            <PhotoProvider>
-              {/* Only include one toaster component */}
-              <Toaster />
-              <BrowserRouter>
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/admin" element={<Admin />} />
-                  <Route path="/rsvp" element={<RSVP />} />
-                  <Route path="/event" element={<EventLayout />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </BrowserRouter>
-            </PhotoProvider>
+            {/* Only include one toaster component */}
+            <Toaster />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/admin" element={<Admin />} />
+                <Route path="/rsvp" element={<RSVP />} />
+                <Route path="/event" element={<EventLayout />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
           </ContentProvider>
         </GuestProvider>
       </PasswordAuthProvider>
