@@ -16,19 +16,24 @@ interface CloudinaryImage {
 }
 
 const FOLDERS = [
-  'Highlights',
-  'Setup',
-  'Arrivals and Cocktail Hour',
-  'Chris and Nate Portraits',
-  'Family Photos',
-  'Doggos',
-  'Sean Evans Meet and Greet',
-  'Hot Ones',
-  'Dinner and Dessert Forest',
-  'Japanese Market',
-  'Afterparty',
-  'Film',
+  'Chris and Nate/Highlights',
+  'Chris and Nate/Setup',
+  'Chris and Nate/Arrivals and Cocktail Hour',
+  'Chris and Nate/Chris and Nate Portraits',
+  'Chris and Nate/Family Photos',
+  'Chris and Nate/Doggos',
+  'Chris and Nate/Sean Evans Meet and Greet',
+  'Chris and Nate/Hot Ones',
+  'Chris and Nate/Dinner and Dessert Forest',
+  'Chris and Nate/Japanese Market',
+  'Chris and Nate/Afterparty',
+  'Chris and Nate/Film',
 ];
+
+// Helper to display folder name without parent path
+const getFolderDisplayName = (folder: string) => {
+  return folder.replace('Chris and Nate/', '');
+};
 
 export default function PhotoGalleryTab() {
   const [selectedFolder, setSelectedFolder] = useState(FOLDERS[0]);
@@ -120,7 +125,7 @@ export default function PhotoGalleryTab() {
                   : 'text-white/70 hover:text-white border-b-2 border-transparent rounded-none'
               }`}
             >
-              {folder}
+              {getFolderDisplayName(folder)}
             </Button>
           ))}
           
@@ -150,7 +155,7 @@ export default function PhotoGalleryTab() {
                           : 'text-white/70 hover:text-white'
                       }`}
                     >
-                      {folder}
+                      {getFolderDisplayName(folder)}
                     </Button>
                   ))}
                 </div>
