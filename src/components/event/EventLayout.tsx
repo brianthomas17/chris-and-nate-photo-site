@@ -206,7 +206,7 @@ export default function EventLayout() {
         {/* Content Sections */}
         <section className="mb-16 md:mb-20">
           <div className="max-w-[450px] mx-auto">
-            <ContentSections invitationType={currentGuest.invitation_type} />
+            <ContentSections accessType={hasMainEventAccess ? 'main_event' : 'afterparty'} />
           </div>
         </section>
         
