@@ -13,8 +13,8 @@ const PasswordAuthContext = createContext<PasswordAuthContextType | undefined>(u
 
 // Simple password constants (not focused on security, just access filtering)
 const PASSWORDS = {
-  MAIN_EVENT: 'main2025',
-  AFTERPARTY: 'after2025'
+  MAIN_EVENT: 'main',
+  AFTERPARTY: 'after'
 } as const;
 
 export const usePasswordAuth = () => {
