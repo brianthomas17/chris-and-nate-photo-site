@@ -96,23 +96,6 @@ export default function EventDetailsTab({ accessType }: EventDetailsTabProps) {
           </div>
         </>
       )}
-
-      {/* Questions Section */}
-      <SectionSeparator />
-      <section className="px-4">
-        <h2 className="text-2xl md:text-3xl font-din text-anniversary-gold text-center mb-6 md:mb-8">QUESTIONS</h2>
-        <div className="max-w-[450px] mx-auto text-center">
-          <p className="text-anniversary-gold text-base md:text-lg font-bicyclette leading-relaxed">
-            Please contact our planner Hunter Rae at{" "}
-            <a 
-              href="mailto:hunter@shiftalt.events" 
-              className="text-anniversary-gold hover:text-anniversary-lightgold underline transition-colors"
-            >
-              hunter@shiftalt.events
-            </a>
-          </p>
-        </div>
-      </section>
     </div>
   );
 }
