@@ -2,7 +2,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Photo } from '../types';
 import { useToast } from '@/hooks/use-toast';
-import { useAuth } from './AuthContext';
 import { supabase } from "@/integrations/supabase/client";
 
 interface PhotoContextType {
@@ -24,7 +23,6 @@ export const usePhotos = () => {
 export const PhotoProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const { toast } = useToast();
-  const { currentGuest } = useAuth(); // This should now work with our updated AuthContext
 
   useEffect(() => {
     fetchPhotos();
@@ -61,14 +59,12 @@ export const PhotoProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const addPhoto = async (url: string) => {
-    if (!currentGuest) return;
-
     try {
       const { error } = await supabase
         .from('photos')
         .insert({
           url,
-          uploaded_by: currentGuest.id
+          uploaded_by: 'anonymous' // Placeholder since we don't have guest authentication in password mode
         });
 
       if (error) {
