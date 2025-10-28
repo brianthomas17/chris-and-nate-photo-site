@@ -16,23 +16,23 @@ interface CloudinaryImage {
 }
 
 const FOLDERS = [
-  'Chris and Nate/Highlights',
-  'Chris and Nate/Setup',
-  'Chris and Nate/Arrivals and Cocktail Hour',
-  'Chris and Nate/Chris and Nate Portraits',
-  'Chris and Nate/Family Photos',
-  'Chris and Nate/Doggos',
-  'Chris and Nate/Sean Evans Meet and Greet',
-  'Chris and Nate/Hot Ones',
-  'Chris and Nate/Dinner and Dessert Forest',
-  'Chris and Nate/Japanese Market',
-  'Chris and Nate/Afterparty',
-  'Chris and Nate/Film',
+  'Home/Chris and Nate/Highlights',
+  'Home/Chris and Nate/Setup',
+  'Home/Chris and Nate/Arrivals and Cocktail Hour',
+  'Home/Chris and Nate/Chris and Nate Portraits',
+  'Home/Chris and Nate/Family Photos',
+  'Home/Chris and Nate/Doggos',
+  'Home/Chris and Nate/Sean Evans Meet and Greet',
+  'Home/Chris and Nate/Hot Ones',
+  'Home/Chris and Nate/Dinner and Dessert Forest',
+  'Home/Chris and Nate/Japanese Market',
+  'Home/Chris and Nate/Afterparty',
+  'Home/Chris and Nate/Film',
 ];
 
 // Helper to display folder name without parent path
 const getFolderDisplayName = (folder: string) => {
-  return folder.replace('Chris and Nate/', '');
+  return folder.replace('Home/Chris and Nate/', '');
 };
 
 export default function PhotoGalleryTab() {
