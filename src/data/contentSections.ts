@@ -105,19 +105,7 @@ Downtown ~ $190/night</p>
 <p>No hotel block, but see above for recommended options in the city!</p>
 
 <h4>Will there be photos?</h4>
-<p>Yes! We'll have a photographer capturing the evening, and you'll also have access to upload your own photos and videos.</p>
-
-<h4>Can I bring a plus one?</h4>
-<p>We would love to accommodate everyone, but we're working within some space constraints. If you're able to bring a guest, we have designated that on your invite.</p>
-
-<h4>Can I bring my kids?</h4>
-<p>Unfortunately, this is an adults-only event.</p>
-
-<h4>I have a food allergy. Can you accommodate me?</h4>
-<p>Yes! Just let us know what you're allergic to, and we will do our best to accommodate you!</p>
-
-<h4>What about the afterparty?</h4>
-<p>The afterparty will kick off at 9:00 PM in a separate room from the main event (call time 8:30 PM). We'll have a DJ, drinks, and a chance to let loose! If you have an afterparty ticket, it will be noted on your RSVP confirmation. Dress code: elevated club vibes!</p>`,
+<p>Yes! We'll have a photographer capturing the evening, and you'll also have access to upload your own photos and videos.</p>`,
     order_index: 4,
     visible_to_main_event: true,
     visible_to_afterparty: false,
