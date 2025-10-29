@@ -77,10 +77,38 @@ export default function EventDetailsTab({ accessType }: EventDetailsTabProps) {
         </div>
       </div>
 
-      {/* Content Sections - filtered by access type */}
-      <div className="max-w-[450px] mx-auto">
-        <ContentSections accessType={accessType} />
-      </div>
+      {/* Content Sections - conditional based on access type */}
+      {isMainEvent ? (
+        <div className="max-w-[450px] mx-auto">
+          <ContentSections accessType={accessType} />
+        </div>
+      ) : (
+        /* Hardcoded Afterparty Content */
+        <div className="max-w-[500px] mx-auto text-left px-4 space-y-6">
+          <h2 className="text-anniversary-gold text-2xl md:text-3xl font-din text-center mb-4">
+            AFTERPARTY
+          </h2>
+          
+          <p className="text-anniversary-gold text-xl md:text-2xl font-haboro text-center leading-relaxed">
+            DRESS TO IMPRESS. ARRIVE CURIOUS. STAY LATE.
+          </p>
+          
+          <div className="text-[#C2C2C2] text-base md:text-lg font-light leading-relaxed space-y-2">
+            <p className="font-semibold">Saturday, August 16, 2025</p>
+            <p>St Joseph's Arts Society</p>
+            <p>1401 Howard Street, San Francisco CA</p>
+            <p className="font-semibold">9:00PM UNTIL 1:00AM</p>
+          </div>
+          
+          <p className="text-[#C2C2C2] text-base md:text-lg font-light leading-relaxed">
+            Lose yourself on the dance floor as Bootie SF brings the mashup madness into the morning hours.
+          </p>
+          
+          <p className="text-[#C2C2C2] text-base md:text-lg font-light leading-relaxed">
+            <span className="font-semibold">Dress code:</span> Elevated Club Vibes
+          </p>
+        </div>
+      )}
 
       {/* Confirmed Attendees - only for main event */}
       {isMainEvent && (
