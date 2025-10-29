@@ -8,12 +8,8 @@ interface ContentSectionsProps {
 
 export default function ContentSections({ accessType }: ContentSectionsProps) {
   const contentSections = getContentByAccessType(accessType);
-  
-  // Content is already filtered by access type from getContentByAccessType
-  const filteredSections = contentSections.sort((a, b) => a.order_index - b.order_index);
 
-  if (filteredSections.length === 0) {
-    console.log("No visible sections found for this user");
+  if (contentSections.length === 0) {
     return (
       <div className="text-center p-8">
         <p className="text-[#C2C2C2] text-xl">No content sections available yet.</p>
@@ -34,7 +30,7 @@ export default function ContentSections({ accessType }: ContentSectionsProps) {
 
   return (
     <div className="space-y-16">
-      {filteredSections.map((section, index) => (
+      {contentSections.map((section, index) => (
         <div key={section.id}>
           <div className="text-center">
             <div
@@ -44,7 +40,7 @@ export default function ContentSections({ accessType }: ContentSectionsProps) {
           </div>
           
           {/* Add SectionSeparator between sections, but not after the last one */}
-          {index < filteredSections.length - 1 && (
+          {index < contentSections.length - 1 && (
             <div className="mt-16 mb-16">
               <SectionSeparator />
             </div>
