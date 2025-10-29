@@ -12,7 +12,7 @@ export interface CloudinaryImage {
 }
 
 // Replace with your actual Cloudinary cloud name
-const CLOUDINARY_CLOUD_NAME = 'dkvdqttsh';
+const CLOUDINARY_CLOUD_NAME = 'dvrmpfclj';
 
 /**
  * Fetch images from a Cloudinary tag using the public list API
