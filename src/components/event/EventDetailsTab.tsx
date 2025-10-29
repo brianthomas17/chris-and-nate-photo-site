@@ -84,12 +84,12 @@ export default function EventDetailsTab({ accessType }: EventDetailsTabProps) {
         </div>
       ) : (
         /* Hardcoded Afterparty Content */
-        <div className="max-w-[500px] mx-auto text-left px-4 space-y-6">
-          <h2 className="text-anniversary-gold text-2xl md:text-3xl font-din text-center mb-4">
+        <div className="max-w-[500px] mx-auto text-center px-4 space-y-6">
+          <h2 className="text-anniversary-gold text-2xl md:text-3xl font-din mb-4">
             AFTERPARTY
           </h2>
           
-          <p className="text-anniversary-gold text-xl md:text-2xl font-haboro text-center leading-relaxed">
+          <p className="text-anniversary-gold text-xl md:text-2xl font-haboro leading-relaxed">
             DRESS TO IMPRESS. ARRIVE CURIOUS. STAY LATE.
           </p>
           
