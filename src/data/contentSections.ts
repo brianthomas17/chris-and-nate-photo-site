@@ -25,7 +25,7 @@ Chris & Nate's Castro Home:
     visible_to_afterparty: false,
   },
   {
-    id: "main-event-pre-afterparty",
+    id: "main-event-and-afterparty",
     title: "THE MAIN EVENT",
     content: `<h2>THE MAIN EVENT</h2>
 <h3>DRESS TO IMPRESS. ARRIVE CURIOUS. STAY LATE.</h3>
@@ -44,21 +44,15 @@ St Joseph's Arts Society<br>
 <p>Savor a thoughtful buffet crafted with elevated ingredients, curated by Chris & Nate, designed to invite reflection around the table. Just be sure to save room for dessert...</p>
 
 <h3>DESSERT FOREST OPENS AT 7:45PM</h3>
-<p>You won't want to miss this interactive, edible wonderland! Be prepared to explore, discover and lean into temptation … this is not a passive buffet, come with a sense of wonder!</p>`,
-    order_index: 2,
-    visible_to_main_event: true,
-    visible_to_afterparty: false,
-  },
-  {
-    id: "afterparty",
-    title: "AFTERPARTY",
-    content: `<h3>AFTERPARTY FROM 9:00PM UNTIL 1:00AM</h3>
+<p>You won't want to miss this interactive, edible wonderland! Be prepared to explore, discover and lean into temptation … this is not a passive buffet, come with a sense of wonder!</p>
+
+<h3>AFTERPARTY FROM 9:00PM UNTIL 1:00AM</h3>
 <h4>Call time 8:30 PM</h4>
 <p>Lose yourself on the dance floor as Bootie SF brings the mashup madness into the morning hours. </p>
 <p>Dress code: Elevated Club Vibes</p>`,
-    order_index: 3,
+    order_index: 2,
     visible_to_main_event: true,
-    visible_to_afterparty: true, // Visible to BOTH access types
+    visible_to_afterparty: true,
   },
   {
     id: "brunch",
@@ -72,7 +66,7 @@ San Francisco, CA 94111</a><br>
 <h3>BRUNCH FROM 10:30AM UNTIL 1:00PM</h3>
 <p>Join Chris & Nate for a casual send-off dim sum brunch, highlighting their favorite dim sum items in an iconic view of the San Francisco Bay Bridge in an outdoor patio.
 <p>You're welcome to wear whatever you like; dress code is casual!  Feel free to swing by the restaurant any time between 10AM-1PM to say hi and grab a bite. </p>`,
-    order_index: 4,
+    order_index: 3,
     visible_to_main_event: true,
     visible_to_afterparty: false,
   },
@@ -124,7 +118,7 @@ Downtown ~ $190/night</p>
 
 <h4>What about the afterparty?</h4>
 <p>The afterparty will kick off at 9:00 PM in a separate room from the main event (call time 8:30 PM). We'll have a DJ, drinks, and a chance to let loose! If you have an afterparty ticket, it will be noted on your RSVP confirmation. Dress code: elevated club vibes!</p>`,
-    order_index: 5,
+    order_index: 4,
     visible_to_main_event: true,
     visible_to_afterparty: false,
   },
