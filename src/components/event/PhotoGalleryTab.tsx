@@ -13,33 +13,28 @@ interface CloudinaryImage {
   created_at: string;
 }
 
-const FOLDERS = [
-  'Home/Chris and Nate/Highlights',
-  'Home/Chris and Nate/Setup',
-  'Home/Chris and Nate/Arrivals and Cocktail Hour',
-  'Home/Chris and Nate/Chris and Nate Portraits',
-  'Home/Chris and Nate/Family Photos',
-  'Home/Chris and Nate/Doggos',
-  'Home/Chris and Nate/Sean Evans Meet and Greet',
-  'Home/Chris and Nate/Hot Ones',
-  'Home/Chris and Nate/Dinner and Dessert Forest',
-  'Home/Chris and Nate/Japanese Market',
-  'Home/Chris and Nate/Afterparty',
-  'Home/Chris and Nate/Film',
+const TAGS = [
+  'Highlights',
+  'Setup',
+  'Arrivals and Cocktail Hour',
+  'Chris and Nate Portraits',
+  'Family Photos',
+  'Doggos',
+  'Sean Evans Meet and Greet',
+  'Hot Ones',
+  'Dinner and Dessert Forest',
+  'Japanese Market',
+  'Afterparty',
+  'Film',
 ];
 
-// Helper to display folder name without parent path
-const getFolderDisplayName = (folder: string) => {
-  return folder.replace('Home/Chris and Nate/', '');
-};
-
 export default function PhotoGalleryTab() {
-  const [selectedFolder, setSelectedFolder] = useState(FOLDERS[0]);
+  const [selectedTag, setSelectedTag] = useState(TAGS[0]);
   const [images, setImages] = useState<CloudinaryImage[]>([]);
   const [loading, setLoading] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
-  const [showMoreFolders, setShowMoreFolders] = useState(false);
+  const [showMoreTags, setShowMoreTags] = useState(false);
 
   // Determine how many tabs to show based on screen size
   const [visibleTabCount, setVisibleTabCount] = useState(6);
@@ -65,15 +60,15 @@ export default function PhotoGalleryTab() {
   }, []);
 
   useEffect(() => {
-    fetchImages(selectedFolder);
-  }, [selectedFolder]);
+    fetchImages(selectedTag);
+  }, [selectedTag]);
 
-  const fetchImages = async (folder: string) => {
+  const fetchImages = async (tag: string) => {
     try {
       setLoading(true);
-      console.log(`Fetching images for folder: ${folder}`);
+      console.log(`Fetching images for tag: ${tag}`);
       
-      const cloudinaryImages = await fetchCloudinaryPhotos(folder);
+      const cloudinaryImages = await fetchCloudinaryPhotos(tag);
       
       console.log('Received images:', cloudinaryImages);
       
@@ -100,37 +95,37 @@ export default function PhotoGalleryTab() {
     setLightboxOpen(true);
   };
 
-  const visibleFolders = showMoreFolders ? FOLDERS : FOLDERS.slice(0, visibleTabCount);
-  const hasMoreFolders = FOLDERS.length > visibleTabCount;
+  const visibleTags = showMoreTags ? TAGS : TAGS.slice(0, visibleTabCount);
+  const hasMoreTags = TAGS.length > visibleTabCount;
 
   return (
     <div className="space-y-8">
-      {/* Folder Tabs */}
+      {/* Tag Tabs */}
       <div className="flex flex-wrap justify-center gap-2 px-4">
-        {visibleFolders.map((folder) => (
+        {visibleTags.map((tag) => (
           <button
-            key={folder}
-            onClick={() => setSelectedFolder(folder)}
+            key={tag}
+            onClick={() => setSelectedTag(tag)}
             className={`px-4 py-2 rounded-lg font-bicyclette uppercase text-sm transition-all ${
-              selectedFolder === folder
+              selectedTag === tag
                 ? 'bg-anniversary-gold text-anniversary-purple'
                 : 'bg-anniversary-darkPurple/50 text-anniversary-gold hover:bg-anniversary-darkPurple'
             }`}
           >
-            {getFolderDisplayName(folder)}
+            {tag}
           </button>
         ))}
-        {hasMoreFolders && !showMoreFolders && (
+        {hasMoreTags && !showMoreTags && (
           <button
-            onClick={() => setShowMoreFolders(true)}
+            onClick={() => setShowMoreTags(true)}
             className="px-4 py-2 rounded-lg font-bicyclette uppercase text-sm bg-anniversary-darkPurple/50 text-anniversary-gold hover:bg-anniversary-darkPurple transition-all"
           >
             More...
           </button>
         )}
-        {showMoreFolders && (
+        {showMoreTags && (
           <button
-            onClick={() => setShowMoreFolders(false)}
+            onClick={() => setShowMoreTags(false)}
             className="px-4 py-2 rounded-lg font-bicyclette uppercase text-sm bg-anniversary-darkPurple/50 text-anniversary-gold hover:bg-anniversary-darkPurple transition-all"
           >
             Less
@@ -148,7 +143,7 @@ export default function PhotoGalleryTab() {
       {/* Empty State */}
       {!loading && images.length === 0 && (
         <div className="text-center py-20">
-          <p className="text-anniversary-gold/70 text-lg">No photos available in this folder.</p>
+          <p className="text-anniversary-gold/70 text-lg">No photos available for this tag.</p>
         </div>
       )}
 

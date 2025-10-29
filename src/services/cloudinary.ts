@@ -15,15 +15,16 @@ export interface CloudinaryImage {
 const CLOUDINARY_CLOUD_NAME = 'dkvdqttsh';
 
 /**
- * Fetch images from a Cloudinary folder using the public list API
- * @param folder - The folder path in Cloudinary (e.g., "Home/Chris and Nate/Highlights")
+ * Fetch images from a Cloudinary tag using the public list API
+ * @param tag - The tag name in Cloudinary (e.g., "Highlights")
  * @returns Array of image objects with URLs
  */
-export const fetchCloudinaryPhotos = async (folder: string): Promise<CloudinaryImage[]> => {
+export const fetchCloudinaryPhotos = async (tag: string): Promise<CloudinaryImage[]> => {
   try {
-    // Cloudinary's image list endpoint
+    // Cloudinary's image list endpoint (tag-based)
     // This endpoint is public and doesn't require authentication
-    const url = `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/list/${folder}.json`;
+    const encodedTag = encodeURIComponent(tag);
+    const url = `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/list/${encodedTag}.json`;
     
     console.log('Fetching photos from:', url);
     
