@@ -51,7 +51,6 @@ export default function EventDetailsTab({ accessType }: EventDetailsTabProps) {
         </p>
       </div>
 
-      <SectionSeparator />
 
       {/* Event Details Header */}
       <div className="text-center px-4">
