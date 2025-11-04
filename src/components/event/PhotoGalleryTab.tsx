@@ -36,32 +36,8 @@ export default function PhotoGalleryTab() {
   const [loading, setLoading] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
-  const [showMoreTags, setShowMoreTags] = useState(false);
   const [isDownloadingAll, setIsDownloadingAll] = useState(false);
   const [downloadProgress, setDownloadProgress] = useState(0);
-
-  // Determine how many tabs to show based on screen size
-  const [visibleTabCount, setVisibleTabCount] = useState(6);
-
-  useEffect(() => {
-    const updateVisibleTabs = () => {
-      if (window.innerWidth < 640) {
-        setVisibleTabCount(2);
-      } else if (window.innerWidth < 768) {
-        setVisibleTabCount(3);
-      } else if (window.innerWidth < 1024) {
-        setVisibleTabCount(4);
-      } else if (window.innerWidth < 1280) {
-        setVisibleTabCount(6);
-      } else {
-        setVisibleTabCount(8);
-      }
-    };
-
-    updateVisibleTabs();
-    window.addEventListener('resize', updateVisibleTabs);
-    return () => window.removeEventListener('resize', updateVisibleTabs);
-  }, []);
 
   useEffect(() => {
     fetchImages(selectedTag);
@@ -158,14 +134,11 @@ export default function PhotoGalleryTab() {
     }
   };
 
-  const visibleTags = showMoreTags ? TAGS : TAGS.slice(0, visibleTabCount);
-  const hasMoreTags = TAGS.length > visibleTabCount;
-
   return (
     <div className="space-y-8">
       {/* Tag Tabs */}
       <div className="flex flex-wrap justify-center gap-2 px-4">
-        {visibleTags.map((tag) => (
+        {TAGS.map((tag) => (
           <button
             key={tag}
             onClick={() => setSelectedTag(tag)}
@@ -178,22 +151,6 @@ export default function PhotoGalleryTab() {
             {tag}
           </button>
         ))}
-        {hasMoreTags && !showMoreTags && (
-          <button
-            onClick={() => setShowMoreTags(true)}
-            className="px-4 py-2 rounded-lg font-bicyclette uppercase text-sm bg-anniversary-darkPurple/50 text-anniversary-gold hover:bg-anniversary-darkPurple transition-all"
-          >
-            More...
-          </button>
-        )}
-        {showMoreTags && (
-          <button
-            onClick={() => setShowMoreTags(false)}
-            className="px-4 py-2 rounded-lg font-bicyclette uppercase text-sm bg-anniversary-darkPurple/50 text-anniversary-gold hover:bg-anniversary-darkPurple transition-all"
-          >
-            Less
-          </button>
-        )}
       </div>
 
       {/* Download All Button */}
