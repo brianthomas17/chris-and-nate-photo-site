@@ -159,7 +159,7 @@ export default function PhotoGalleryTab() {
           <button
             onClick={downloadAllPhotos}
             disabled={isDownloadingAll}
-            className="px-4 py-2 bg-anniversary-gold text-anniversary-purple rounded-lg font-bicyclette uppercase text-sm hover:bg-anniversary-gold/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            className="px-4 py-2 bg-anniversary-gold text-anniversary-purple rounded-lg font-bicyclette uppercase text-sm hover:brightness-110 transition-all disabled:brightness-75 disabled:cursor-not-allowed flex items-center gap-2"
           >
             {isDownloadingAll ? (
               <>
