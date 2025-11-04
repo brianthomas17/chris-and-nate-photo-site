@@ -154,28 +154,37 @@ export default function PhotoGalleryTab() {
           {images.map((image, index) => (
             <div
               key={image.id}
-              className="relative aspect-square group overflow-hidden rounded-lg"
+              className="relative aspect-square group overflow-hidden rounded-lg cursor-pointer"
+              onClick={() => openLightbox(index)}
             >
               <img
                 src={image.url}
                 alt={`Photo ${index + 1}`}
-                className="w-full h-full object-cover transition-transform group-hover:scale-110 cursor-pointer"
-                onClick={() => openLightbox(index)}
+                className="w-full h-full object-cover transition-transform group-hover:scale-110"
                 loading="lazy"
               />
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors pointer-events-none" />
               
               <button
-                onClick={(e) => {
+                onClick={async (e) => {
                   e.stopPropagation();
-                  const link = document.createElement('a');
-                  link.href = image.url;
-                  link.download = `photo-${image.id}.jpg`;
-                  document.body.appendChild(link);
-                  link.click();
-                  document.body.removeChild(link);
+                  try {
+                    const response = await fetch(image.url);
+                    const blob = await response.blob();
+                    const blobUrl = window.URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = blobUrl;
+                    link.download = `photo-${image.id.split('/').pop()}.jpg`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    window.URL.revokeObjectURL(blobUrl);
+                  } catch (error) {
+                    console.error('Download failed:', error);
+                    window.open(image.url, '_blank');
+                  }
                 }}
-                className="absolute top-2 right-2 p-2 bg-anniversary-gold/90 hover:bg-anniversary-gold text-anniversary-purple rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                className="absolute top-2 right-2 p-2 bg-anniversary-gold/90 hover:bg-anniversary-gold text-anniversary-purple rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-auto"
                 aria-label="Download photo"
               >
                 <DownloadIcon className="h-4 w-4" />
