@@ -88,14 +88,14 @@
     letter-spacing: 0.03em;
   }
   
-  /* Updated global link styling - make them gold by default */
-  a {
+  /* Updated global link styling - make them gold by default, but not for Tabs */
+  a:not([class*="Tabs"]) {
     color: #C1A46C !important;
     text-decoration: none;
     transition: color 0.2s ease-in-out;
   }
   
-  a:hover {
+  a:not([class*="Tabs"]):hover {
     color: #D4B876 !important;
     text-decoration: underline;
   }
