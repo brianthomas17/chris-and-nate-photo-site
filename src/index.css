@@ -73,6 +73,10 @@
     @apply border-border;
   }
 
+  html {
+    overflow-y: scroll; /* Force scrollbar to always be visible to prevent layout shifts */
+  }
+
   body {
     @apply text-foreground;
     font-family: 'Haboro_Contrast', sans-serif;
