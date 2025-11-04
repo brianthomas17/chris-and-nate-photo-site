@@ -36,6 +36,8 @@ export default function PhotoGalleryTab() {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [showMoreTags, setShowMoreTags] = useState(false);
+  const [isDownloadingAll, setIsDownloadingAll] = useState(false);
+  const [downloadProgress, setDownloadProgress] = useState(0);
 
   // Determine how many tabs to show based on screen size
   const [visibleTabCount, setVisibleTabCount] = useState(6);
@@ -96,6 +98,65 @@ export default function PhotoGalleryTab() {
     setLightboxOpen(true);
   };
 
+  const downloadAllPhotos = async () => {
+    if (images.length === 0) return;
+    
+    setIsDownloadingAll(true);
+    setDownloadProgress(0);
+    
+    try {
+      // Import JSZip dynamically
+      const JSZip = (await import('jszip')).default;
+      const zip = new JSZip();
+      
+      // Create a folder in the ZIP with the tag name
+      const folder = zip.folder(selectedTag.replace(/\s+/g, '_'));
+      
+      // Download each image and add to ZIP
+      for (let i = 0; i < images.length; i++) {
+        const image = images[i];
+        
+        try {
+          // Fetch image as blob
+          const response = await fetch(image.url);
+          const blob = await response.blob();
+          
+          // Add to ZIP with a clean filename
+          const fileName = `${String(i + 1).padStart(3, '0')}_${image.id.split('/').pop()}.jpg`;
+          folder?.file(fileName, blob);
+          
+          // Update progress
+          setDownloadProgress(Math.round(((i + 1) / images.length) * 100));
+        } catch (error) {
+          console.error(`Failed to download image ${image.id}:`, error);
+          // Continue with other images even if one fails
+        }
+      }
+      
+      // Generate ZIP file
+      const zipBlob = await zip.generateAsync({ type: 'blob' });
+      
+      // Create download link
+      const zipUrl = window.URL.createObjectURL(zipBlob);
+      const link = document.createElement('a');
+      link.href = zipUrl;
+      link.download = `${selectedTag.replace(/\s+/g, '_')}_Photos.zip`;
+      document.body.appendChild(link);
+      link.click();
+      
+      // Cleanup
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(zipUrl);
+      
+    } catch (error) {
+      console.error('Failed to create ZIP file:', error);
+      alert('Failed to download photos. Please try again.');
+    } finally {
+      setIsDownloadingAll(false);
+      setDownloadProgress(0);
+    }
+  };
+
   const visibleTags = showMoreTags ? TAGS : TAGS.slice(0, visibleTabCount);
   const hasMoreTags = TAGS.length > visibleTabCount;
 
@@ -133,6 +194,29 @@ export default function PhotoGalleryTab() {
           </button>
         )}
       </div>
+
+      {/* Download All Button */}
+      {!loading && images.length > 0 && (
+        <div className="flex justify-center px-4">
+          <button
+            onClick={downloadAllPhotos}
+            disabled={isDownloadingAll}
+            className="px-6 py-3 bg-anniversary-gold text-anniversary-purple rounded-lg font-bicyclette uppercase text-sm hover:bg-anniversary-gold/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          >
+            {isDownloadingAll ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Downloading {downloadProgress}%
+              </>
+            ) : (
+              <>
+                <DownloadIcon className="h-4 w-4" />
+                Download All {selectedTag} Photos ({images.length})
+              </>
+            )}
+          </button>
+        </div>
+      )}
 
       {/* Loading State */}
       {loading && (
