@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import Lightbox from 'yet-another-react-lightbox';
 import Zoom from 'yet-another-react-lightbox/plugins/zoom';
+import Download from 'yet-another-react-lightbox/plugins/download';
 import 'yet-another-react-lightbox/styles.css';
 import { fetchCloudinaryPhotos } from '@/services/cloudinary';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Download as DownloadIcon } from 'lucide-react';
 
 interface CloudinaryImage {
   id: string;
@@ -153,16 +154,32 @@ export default function PhotoGalleryTab() {
           {images.map((image, index) => (
             <div
               key={image.id}
-              className="relative aspect-square cursor-pointer group overflow-hidden rounded-lg"
-              onClick={() => openLightbox(index)}
+              className="relative aspect-square group overflow-hidden rounded-lg"
             >
               <img
                 src={image.url}
                 alt={`Photo ${index + 1}`}
-                className="w-full h-full object-cover transition-transform group-hover:scale-110"
+                className="w-full h-full object-cover transition-transform group-hover:scale-110 cursor-pointer"
+                onClick={() => openLightbox(index)}
                 loading="lazy"
               />
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors pointer-events-none" />
+              
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const link = document.createElement('a');
+                  link.href = image.url;
+                  link.download = `photo-${image.id}.jpg`;
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                }}
+                className="absolute top-2 right-2 p-2 bg-anniversary-gold/90 hover:bg-anniversary-gold text-anniversary-purple rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                aria-label="Download photo"
+              >
+                <DownloadIcon className="h-4 w-4" />
+              </button>
             </div>
           ))}
         </div>
@@ -177,8 +194,9 @@ export default function PhotoGalleryTab() {
           src: img.url,
           width: img.width,
           height: img.height,
+          download: img.url,
         }))}
-        plugins={[Zoom]}
+        plugins={[Zoom, Download]}
         zoom={{
           maxZoomPixelRatio: 3,
           scrollToZoom: true,
