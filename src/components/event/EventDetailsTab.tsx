@@ -1,6 +1,7 @@
 import ContentSections from "./ContentSections";
 import ConfirmedAttendees from "./ConfirmedAttendees";
 import SectionSeparator from "./SectionSeparator";
+import VideoPlayer from "./VideoPlayer";
 
 type AccessType = 'main_event' | 'afterparty';
 
@@ -26,6 +27,29 @@ export default function EventDetailsTab({ accessType }: EventDetailsTabProps) {
             />
           </div>
         </header>
+      </div>
+
+      {/* Video Section - Right under hero image */}
+      <div className="px-4 space-y-6">
+        {isMainEvent ? (
+          // Main Event: 2 videos stacked
+          <div className="max-w-[700px] mx-auto space-y-6">
+            <VideoPlayer 
+              publicId="Nate_Chris_Anniversary_Sizzle_x8fnhg"
+            />
+            <VideoPlayer 
+              publicId="Market_Dessert_Garden_Sizzle_1_fdrcx8"
+              lazy
+            />
+          </div>
+        ) : (
+          // Afterparty: 1 video
+          <div className="max-w-[700px] mx-auto">
+            <VideoPlayer 
+              publicId="After_Party_Sizzle_V3_1_1_nuxxqn"
+            />
+          </div>
+        )}
       </div>
 
       {/* Main Intro Content */}

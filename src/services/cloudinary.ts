@@ -73,3 +73,35 @@ export const getCloudinaryUrl = (
   
   return `${baseUrl}/${publicId}`;
 };
+
+/**
+ * Generate a Cloudinary video URL
+ * @param publicId - The public ID of the video (from Cloudinary's "Display Name")
+ * @param transformations - Optional transformations (e.g., "q_auto,w_1280")
+ * @param format - Video format (default: mp4)
+ * @returns Full Cloudinary video URL
+ */
+export const getCloudinaryVideoUrl = (
+  publicId: string,
+  transformations?: string,
+  format: string = 'mp4'
+): string => {
+  const baseUrl = `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/video/upload`;
+  
+  if (transformations) {
+    return `${baseUrl}/${transformations}/${publicId}.${format}`;
+  }
+  
+  return `${baseUrl}/${publicId}.${format}`;
+};
+
+/**
+ * Generate a video poster/thumbnail URL from Cloudinary
+ * @param publicId - The public ID of the video
+ * @returns Cloudinary URL for video thumbnail (first frame)
+ */
+export const getCloudinaryVideoPoster = (
+  publicId: string
+): string => {
+  return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/video/upload/so_0/${publicId}.jpg`;
+};
