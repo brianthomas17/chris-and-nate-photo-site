@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { usePasswordAuth } from "@/context/PasswordAuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Eye, EyeOff } from "lucide-react";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { useImageLoader } from "@/hooks/useImageLoader";
 
@@ -10,6 +10,7 @@ export default function AuthForm() {
   const [password, setPassword] = useState('');
   const [formError, setFormError] = useState('');
   const [showLoginForm, setShowLoginForm] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [showHeroImage, setShowHeroImage] = useState(false);
   const { login } = usePasswordAuth();
 
@@ -74,14 +75,24 @@ export default function AuthForm() {
           <form onSubmit={handleSubmit} className="w-full flex flex-col items-center">
             <div className="w-full max-w-[300px] mx-auto">
               <div className="space-y-2">
-                <Input 
-                  id="password" 
-                  type="password" 
-                  placeholder="Enter Password" 
-                  value={password} 
-                  onChange={e => setPassword(e.target.value)} 
-                  className={`w-full text-center border-anniversary-gold bg-white/80 text-black placeholder:text-gray-600 rounded-md ${formError ? 'border-red-500' : ''}`} 
-                />
+                <div className="relative">
+                  <Input 
+                    id="password" 
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Enter Password" 
+                    value={password} 
+                    onChange={e => setPassword(e.target.value)} 
+                    className={`w-full text-center border-anniversary-gold bg-white/80 text-black placeholder:text-gray-600 rounded-md pr-10 ${formError ? 'border-red-500' : ''}`} 
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-anniversary-gold transition-colors cursor-pointer"
+                    aria-label="Toggle password visibility"
+                  >
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </button>
+                </div>
                 {formError && (
                   <div className="flex items-center gap-2 text-sm text-red-500 mt-1">
                     <AlertCircle size={16} />
