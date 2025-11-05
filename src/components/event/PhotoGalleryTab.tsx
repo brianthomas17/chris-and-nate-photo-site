@@ -5,6 +5,7 @@ import Download from 'yet-another-react-lightbox/plugins/download';
 import 'yet-another-react-lightbox/styles.css';
 import { fetchCloudinaryPhotos } from '@/services/cloudinary';
 import { Loader2, Download as DownloadIcon } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface CloudinaryImage {
   id: string;
@@ -81,7 +82,12 @@ export default function PhotoGalleryTab() {
     setIsDownloadingAll(true);
     setDownloadProgress(0);
     
+    toast.info('Preparing download...');
+    
     try {
+      // Fetch download-optimized URLs with CORS headers
+      const downloadImages = await fetchCloudinaryPhotos(selectedTag, true);
+      
       // Import JSZip dynamically
       const JSZip = (await import('jszip')).default;
       const zip = new JSZip();
@@ -89,25 +95,39 @@ export default function PhotoGalleryTab() {
       // Create a folder in the ZIP with the tag name
       const folder = zip.folder(selectedTag.replace(/\s+/g, '_'));
       
+      const failedDownloads: string[] = [];
+      let successCount = 0;
+      
       // Download each image and add to ZIP
-      for (let i = 0; i < images.length; i++) {
-        const image = images[i];
+      for (let i = 0; i < downloadImages.length; i++) {
+        const image = downloadImages[i];
         
         try {
-          // Fetch image as blob
+          // Fetch image as blob using CORS-friendly URL
           const response = await fetch(image.url);
+          
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+          
           const blob = await response.blob();
           
           // Add to ZIP with a clean filename
-          const fileName = `${String(i + 1).padStart(3, '0')}_${image.id.split('/').pop()}.jpg`;
+          const fileName = `${String(i + 1).padStart(3, '0')}_${image.public_id.split('/').pop()}.${image.format}`;
           folder?.file(fileName, blob);
           
+          successCount++;
+          
           // Update progress
-          setDownloadProgress(Math.round(((i + 1) / images.length) * 100));
+          setDownloadProgress(Math.round(((i + 1) / downloadImages.length) * 100));
         } catch (error) {
-          console.error(`Failed to download image ${image.id}:`, error);
-          // Continue with other images even if one fails
+          console.error(`Failed to download image ${image.public_id}:`, error);
+          failedDownloads.push(image.public_id);
         }
+      }
+      
+      if (successCount === 0) {
+        throw new Error('No images could be downloaded');
       }
       
       // Generate ZIP file
@@ -125,9 +145,16 @@ export default function PhotoGalleryTab() {
       document.body.removeChild(link);
       window.URL.revokeObjectURL(zipUrl);
       
+      // Show success/partial success message
+      if (failedDownloads.length === 0) {
+        toast.success(`Successfully downloaded all ${successCount} photos!`);
+      } else {
+        toast.warning(`Downloaded ${successCount} of ${downloadImages.length} photos. ${failedDownloads.length} failed.`);
+      }
+      
     } catch (error) {
       console.error('Failed to create ZIP file:', error);
-      alert('Failed to download photos. Please try again.');
+      toast.error('Failed to download photos. Please check your connection and try again.');
     } finally {
       setIsDownloadingAll(false);
       setDownloadProgress(0);

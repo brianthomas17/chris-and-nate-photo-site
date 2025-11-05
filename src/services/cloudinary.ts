@@ -17,9 +17,10 @@ const CLOUDINARY_CLOUD_NAME = 'dvrmpfclj';
 /**
  * Fetch images from a Cloudinary tag using the public list API
  * @param tag - The tag name in Cloudinary (e.g., "Highlights")
+ * @param forDownload - If true, adds CORS-friendly transformations for downloading
  * @returns Array of image objects with URLs
  */
-export const fetchCloudinaryPhotos = async (tag: string): Promise<CloudinaryImage[]> => {
+export const fetchCloudinaryPhotos = async (tag: string, forDownload: boolean = false): Promise<CloudinaryImage[]> => {
   try {
     // Cloudinary's image list endpoint (tag-based)
     // This endpoint is public and doesn't require authentication
@@ -37,16 +38,21 @@ export const fetchCloudinaryPhotos = async (tag: string): Promise<CloudinaryImag
     const data = await response.json();
     
     // Transform the response to include full URLs
-    const images: CloudinaryImage[] = data.resources.map((resource: any) => ({
-      public_id: resource.public_id,
-      version: resource.version,
-      format: resource.format,
-      width: resource.width,
-      height: resource.height,
-      created_at: resource.created_at,
-      // Construct the full image URL
-      url: `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/upload/v${resource.version}/${resource.public_id}.${resource.format}`
-    }));
+    const images: CloudinaryImage[] = data.resources.map((resource: any) => {
+      // Add CORS-friendly transformations for downloads
+      const transformations = forDownload ? 'fl_attachment,fl_force_strip/' : '';
+      
+      return {
+        public_id: resource.public_id,
+        version: resource.version,
+        format: resource.format,
+        width: resource.width,
+        height: resource.height,
+        created_at: resource.created_at,
+        // Construct the full image URL with optional download transformations
+        url: `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/upload/${transformations}v${resource.version}/${resource.public_id}.${resource.format}`
+      };
+    });
     
     return images;
   } catch (error) {
