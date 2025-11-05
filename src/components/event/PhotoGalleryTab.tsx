@@ -5,7 +5,7 @@ import Download from 'yet-another-react-lightbox/plugins/download';
 import 'yet-another-react-lightbox/styles.css';
 import { fetchCloudinaryPhotos } from '@/services/cloudinary';
 import { Loader2, Download as DownloadIcon } from 'lucide-react';
-import { toast } from 'sonner';
+import { useToast } from '@/hooks/use-toast';
 
 interface CloudinaryImage {
   id: string;
@@ -32,6 +32,7 @@ const TAGS = [
 ];
 
 export default function PhotoGalleryTab() {
+  const { toast } = useToast();
   const [selectedTag, setSelectedTag] = useState(TAGS[0]);
   const [images, setImages] = useState<CloudinaryImage[]>([]);
   const [loading, setLoading] = useState(false);
@@ -82,7 +83,10 @@ export default function PhotoGalleryTab() {
     setIsDownloadingAll(true);
     setDownloadProgress(0);
     
-    toast.info('Preparing download...');
+    toast({
+      title: "Preparing download...",
+      description: "Fetching images from Cloudinary",
+    });
     
     try {
       // Fetch download-optimized URLs with CORS headers
@@ -147,14 +151,25 @@ export default function PhotoGalleryTab() {
       
       // Show success/partial success message
       if (failedDownloads.length === 0) {
-        toast.success(`Successfully downloaded all ${successCount} photos!`);
+        toast({
+          title: "Download complete!",
+          description: `Successfully downloaded all ${successCount} photos`,
+        });
       } else {
-        toast.warning(`Downloaded ${successCount} of ${downloadImages.length} photos. ${failedDownloads.length} failed.`);
+        toast({
+          title: "Partial download",
+          description: `Downloaded ${successCount} of ${downloadImages.length} photos. ${failedDownloads.length} failed.`,
+          variant: "destructive",
+        });
       }
       
     } catch (error) {
       console.error('Failed to create ZIP file:', error);
-      toast.error('Failed to download photos. Please check your connection and try again.');
+      toast({
+        title: "Download failed",
+        description: "Please check your connection and try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsDownloadingAll(false);
       setDownloadProgress(0);
