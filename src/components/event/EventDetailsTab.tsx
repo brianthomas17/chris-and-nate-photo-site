@@ -39,7 +39,7 @@ export default function EventDetailsTab({ accessType }: EventDetailsTabProps) {
             />
             <VideoPlayer 
               publicId="Market_Dessert_Garden_Sizzle_1_fdrcx8"
-              lazy
+              deferredLoad
             />
           </div>
         ) : (
