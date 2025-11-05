@@ -6,9 +6,16 @@ interface VideoPlayerProps {
   title?: string;
   className?: string;
   deferredLoad?: boolean;
+  forceStreamingOptimization?: boolean;
 }
 
-export default function VideoPlayer({ publicId, title, className = '', deferredLoad = false }: VideoPlayerProps) {
+export default function VideoPlayer({ 
+  publicId, 
+  title, 
+  className = '', 
+  deferredLoad = false,
+  forceStreamingOptimization = false 
+}: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   
@@ -35,7 +42,7 @@ export default function VideoPlayer({ publicId, title, className = '', deferredL
     return () => observer.disconnect();
   }, [deferredLoad]);
 
-  const videoUrl = getCloudinaryVideoUrl(publicId, 'q_auto');
+  const videoUrl = getCloudinaryVideoUrl(publicId, 'q_auto', 'mp4', forceStreamingOptimization);
   const posterUrl = getCloudinaryVideoPoster(publicId);
   
   return (

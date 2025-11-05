@@ -79,17 +79,29 @@ export const getCloudinaryUrl = (
  * @param publicId - The public ID of the video (from Cloudinary's "Display Name")
  * @param transformations - Optional transformations (e.g., "q_auto,w_1280")
  * @param format - Video format (default: mp4)
+ * @param forceStreamingOptimization - Force H.264 baseline codec for proper streaming
  * @returns Full Cloudinary video URL
  */
 export const getCloudinaryVideoUrl = (
   publicId: string,
   transformations?: string,
-  format: string = 'mp4'
+  format: string = 'mp4',
+  forceStreamingOptimization: boolean = false
 ): string => {
   const baseUrl = `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/video/upload`;
   
-  if (transformations) {
-    return `${baseUrl}/${transformations}/${publicId}.${format}`;
+  let finalTransformations = transformations || '';
+  
+  // Add streaming optimization if requested (fixes duration metadata issues)
+  if (forceStreamingOptimization) {
+    const streamingCodec = 'vc_h264:baseline:3.1';
+    finalTransformations = finalTransformations 
+      ? `${finalTransformations},${streamingCodec}`
+      : streamingCodec;
+  }
+  
+  if (finalTransformations) {
+    return `${baseUrl}/${finalTransformations}/${publicId}.${format}`;
   }
   
   return `${baseUrl}/${publicId}.${format}`;

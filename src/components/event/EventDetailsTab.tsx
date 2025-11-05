@@ -47,6 +47,7 @@ export default function EventDetailsTab({ accessType }: EventDetailsTabProps) {
           <div className="max-w-[700px] mx-auto">
             <VideoPlayer 
               publicId="After_Party_Sizzle_V3_1_1_nuxxqn"
+              forceStreamingOptimization
             />
           </div>
         )}
