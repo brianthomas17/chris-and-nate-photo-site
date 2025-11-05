@@ -84,8 +84,8 @@ export default function PhotoGalleryTab() {
     setDownloadProgress(0);
     
     toast({
-      title: "Preparing download...",
-      description: "Fetching images from Cloudinary",
+      title: "Downloading...",
+      description: "Please wait while we prepare your photos",
     });
     
     try {
