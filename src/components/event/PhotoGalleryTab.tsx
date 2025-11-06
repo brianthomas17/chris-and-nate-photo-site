@@ -368,7 +368,7 @@ export default function PhotoGalleryTab() {
                     window.open(image.url, '_blank');
                   }
                 }}
-                className="absolute top-2 right-2 p-2 bg-anniversary-gold/90 hover:bg-anniversary-gold text-anniversary-purple rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-auto"
+                className="absolute top-2 right-2 p-2 bg-anniversary-gold/90 hover:bg-anniversary-gold text-anniversary-purple rounded-full opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10 pointer-events-auto"
                 aria-label="Download photo"
               >
                 <DownloadIcon className="h-4 w-4" />
