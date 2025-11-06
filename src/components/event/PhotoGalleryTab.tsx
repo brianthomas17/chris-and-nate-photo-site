@@ -40,6 +40,7 @@ export default function PhotoGalleryTab() {
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [isDownloadingAll, setIsDownloadingAll] = useState(false);
   const [downloadProgress, setDownloadProgress] = useState(0);
+  const [failedImages, setFailedImages] = useState<Array<{ image: any; url: string }>>([]);
 
   useEffect(() => {
     fetchImages(selectedTag);
@@ -99,7 +100,7 @@ export default function PhotoGalleryTab() {
       // Create a folder in the ZIP with the tag name
       const folder = zip.folder(selectedTag.replace(/\s+/g, '_'));
       
-      const failedDownloads: string[] = [];
+      const failedDownloads: Array<{ image: any; url: string }> = [];
       let successCount = 0;
       
       // Download each image and add to ZIP
@@ -126,9 +127,12 @@ export default function PhotoGalleryTab() {
           setDownloadProgress(Math.round(((i + 1) / downloadImages.length) * 100));
         } catch (error) {
           console.error(`Failed to download image ${image.public_id}:`, error);
-          failedDownloads.push(image.public_id);
+          failedDownloads.push({ image, url: image.url });
         }
       }
+      
+      // Store failed images for retry
+      setFailedImages(failedDownloads);
       
       if (successCount === 0) {
         throw new Error('No images could be downloaded');
@@ -155,6 +159,7 @@ export default function PhotoGalleryTab() {
           title: "Download complete!",
           description: `Successfully downloaded all ${successCount} photos`,
         });
+        setFailedImages([]);
       } else {
         toast({
           title: "Partial download",
@@ -167,6 +172,91 @@ export default function PhotoGalleryTab() {
       console.error('Failed to create ZIP file:', error);
       toast({
         title: "Download failed",
+        description: "Please check your connection and try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsDownloadingAll(false);
+      setDownloadProgress(0);
+    }
+  };
+
+  const retryFailedDownloads = async () => {
+    if (failedImages.length === 0) return;
+    
+    setIsDownloadingAll(true);
+    setDownloadProgress(0);
+    
+    toast({
+      title: "Retrying downloads...",
+      description: `Attempting to download ${failedImages.length} failed photos`,
+    });
+    
+    try {
+      const JSZip = (await import('jszip')).default;
+      const zip = new JSZip();
+      const folder = zip.folder(`${selectedTag.replace(/\s+/g, '_')}_Retry`);
+      
+      const stillFailed: Array<{ image: any; url: string }> = [];
+      let successCount = 0;
+      
+      for (let i = 0; i < failedImages.length; i++) {
+        const { image, url } = failedImages[i];
+        
+        try {
+          const response = await fetch(url);
+          
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+          
+          const blob = await response.blob();
+          const fileName = `${String(i + 1).padStart(3, '0')}_${image.public_id.split('/').pop()}.${image.format}`;
+          folder?.file(fileName, blob);
+          
+          successCount++;
+          setDownloadProgress(Math.round(((i + 1) / failedImages.length) * 100));
+        } catch (error) {
+          console.error(`Retry failed for image ${image.public_id}:`, error);
+          stillFailed.push({ image, url });
+        }
+      }
+      
+      if (successCount === 0) {
+        throw new Error('All retry attempts failed');
+      }
+      
+      // Generate and download ZIP
+      const zipBlob = await zip.generateAsync({ type: 'blob' });
+      const zipUrl = window.URL.createObjectURL(zipBlob);
+      const link = document.createElement('a');
+      link.href = zipUrl;
+      link.download = `${selectedTag.replace(/\s+/g, '_')}_Retry_Photos.zip`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(zipUrl);
+      
+      // Update failed images list
+      setFailedImages(stillFailed);
+      
+      if (stillFailed.length === 0) {
+        toast({
+          title: "Retry successful!",
+          description: `Downloaded all ${successCount} photos`,
+        });
+      } else {
+        toast({
+          title: "Partial retry success",
+          description: `Downloaded ${successCount} of ${failedImages.length} photos. ${stillFailed.length} still failed.`,
+          variant: "destructive",
+        });
+      }
+      
+    } catch (error) {
+      console.error('Retry failed:', error);
+      toast({
+        title: "Retry failed",
         description: "Please check your connection and try again.",
         variant: "destructive",
       });
@@ -197,7 +287,7 @@ export default function PhotoGalleryTab() {
 
       {/* Download All Button */}
       {!loading && images.length > 0 && (
-        <div className="flex justify-center px-4 pt-4">
+        <div className="flex justify-center gap-3 px-4 pt-4">
           <button
             onClick={downloadAllPhotos}
             disabled={isDownloadingAll}
@@ -215,6 +305,16 @@ export default function PhotoGalleryTab() {
               </>
             )}
           </button>
+          
+          {failedImages.length > 0 && !isDownloadingAll && (
+            <button
+              onClick={retryFailedDownloads}
+              className="px-4 py-2 bg-red-600 text-white rounded-lg font-bicyclette uppercase text-sm hover:bg-red-700 transition-all flex items-center gap-2"
+            >
+              <DownloadIcon className="h-4 w-4" />
+              Retry Failed Downloads ({failedImages.length})
+            </button>
+          )}
         </div>
       )}
 
