@@ -287,7 +287,7 @@ export default function PhotoGalleryTab() {
 
       {/* Download All Button */}
       {!loading && images.length > 0 && (
-        <div className="flex justify-center gap-3 px-4 pt-4">
+        <div className="hidden md:flex justify-center gap-3 px-4 pt-4">
           <button
             onClick={downloadAllPhotos}
             disabled={isDownloadingAll}
