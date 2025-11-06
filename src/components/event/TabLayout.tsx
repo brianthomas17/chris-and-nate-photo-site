@@ -36,48 +36,47 @@ export default function TabLayout() {
         <div className={`sticky top-0 z-50 bg-anniversary-purple border-b border-anniversary-gold/20 transition-all duration-300 ease-in-out ${
           isScrolled ? 'py-3' : 'py-6'
         }`}>
-          <div className={`container mx-auto px-4 transition-all duration-300 ease-in-out ${
-            isScrolled ? 'flex items-center justify-between gap-4' : 'flex flex-col items-center'
-          }`}>
-            {/* Tab 1 - Shows on left when scrolled */}
-            <TabsTrigger 
-              value="event" 
-              className={`font-bicyclette uppercase transition-all duration-300 ease-in-out ${
-                isScrolled ? 'flex-shrink-0' : 'hidden'
-              }`}
-            >
-              {eventTabLabel}
-            </TabsTrigger>
-
-            {/* Page Header */}
-            <h1 className={`font-fino text-anniversary-gold uppercase tracking-wide transition-all duration-300 ease-in-out ${
-              isScrolled ? 'text-xl md:text-2xl' : 'text-3xl md:text-4xl text-center'
-            }`}>
-              Chris & Nate
-            </h1>
-
-            {/* Tab 2 - Shows on right when scrolled */}
-            <TabsTrigger 
-              value="photos" 
-              className={`font-bicyclette uppercase transition-all duration-300 ease-in-out ${
-                isScrolled ? 'flex-shrink-0' : 'hidden'
-              }`}
-            >
-              Photo Gallery
-            </TabsTrigger>
-
-            {/* Default Tabs - Shows below title when not scrolled */}
-            {!isScrolled && (
-              <TabsList className="w-full max-w-md mx-auto mb-4 mt-4">
-                <TabsTrigger value="event" className="flex-1 font-bicyclette uppercase">
+          {!isScrolled ? (
+            /* Vertical Layout - Default */
+            <div className="flex flex-col items-center">
+              <h1 className="text-3xl md:text-4xl font-fino text-anniversary-gold text-center uppercase tracking-wide transition-all duration-300 ease-in-out">
+                Chris & Nate
+              </h1>
+              <div className="container mx-auto px-4 mt-4">
+                <TabsList className="w-full max-w-md mx-auto mb-4">
+                  <TabsTrigger value="event" className="flex-1 font-bicyclette uppercase">
+                    {eventTabLabel}
+                  </TabsTrigger>
+                  <TabsTrigger value="photos" className="flex-1 font-bicyclette uppercase">
+                    Photo Gallery
+                  </TabsTrigger>
+                </TabsList>
+              </div>
+            </div>
+          ) : (
+            /* Horizontal Layout - Scrolled */
+            <div className="container mx-auto px-4 flex items-center justify-center gap-8 relative">
+              <TabsList className="flex items-center justify-between w-full max-w-4xl gap-4 bg-transparent border-0 p-0">
+                <TabsTrigger 
+                  value="event" 
+                  className="font-bicyclette uppercase flex-shrink-0 transition-all duration-300 ease-in-out"
+                >
                   {eventTabLabel}
                 </TabsTrigger>
-                <TabsTrigger value="photos" className="flex-1 font-bicyclette uppercase">
+                
+                <h1 className="text-xl md:text-2xl font-fino text-anniversary-gold uppercase tracking-wide transition-all duration-300 ease-in-out flex-shrink-0">
+                  Chris & Nate
+                </h1>
+                
+                <TabsTrigger 
+                  value="photos" 
+                  className="font-bicyclette uppercase flex-shrink-0 transition-all duration-300 ease-in-out"
+                >
                   Photo Gallery
                 </TabsTrigger>
               </TabsList>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
         {/* Scrollable content area - OUTSIDE sticky container */}
