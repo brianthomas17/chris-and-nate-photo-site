@@ -37,60 +37,41 @@ export default function TabLayout() {
           isScrolled ? 'py-3' : 'py-6'
         }`}>
           <div className="container mx-auto px-4">
-            {/* Single structure that transitions smoothly */}
-            <div className={`transition-all duration-500 ease-in-out ${
-              isScrolled 
-                ? 'grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] gap-4 items-center max-w-4xl mx-auto' 
-                : 'flex flex-col items-center gap-4'
+            <div className={`flex items-center justify-center transition-all duration-500 ease-in-out ${
+              isScrolled ? 'flex-row gap-8 max-w-4xl mx-auto' : 'flex-col gap-4'
             }`}>
-              {/* Tab 1 - Transitions position and opacity */}
-              <div className={`transition-all duration-500 ease-in-out ${
-                isScrolled 
-                  ? 'opacity-100 translate-x-0 justify-self-end' 
-                  : 'opacity-0 absolute pointer-events-none -translate-x-full'
-              }`}>
-                <TabsList className="bg-transparent border-0 p-0">
-                  <TabsTrigger value="event" className="font-bicyclette uppercase">
-                    {eventTabLabel}
-                  </TabsTrigger>
-                </TabsList>
-              </div>
-
-              {/* Page Title - Transitions size and position */}
-              <h1 className={`font-fino text-anniversary-gold uppercase tracking-wide transition-all duration-500 ease-in-out whitespace-nowrap ${
-                isScrolled ? 'text-xl md:text-2xl' : 'text-3xl md:text-4xl text-center'
+              
+              {/* Page Title */}
+              <h1 className={`font-fino text-anniversary-gold uppercase tracking-wide transition-all duration-500 ease-in-out ${
+                isScrolled ? 'text-xl md:text-2xl order-2' : 'text-3xl md:text-4xl text-center order-1'
               }`}>
                 Chris & Nate
               </h1>
 
-              {/* Tab 2 - Transitions position and opacity */}
-              <div className={`transition-all duration-500 ease-in-out ${
+              {/* Single TabsList with both tabs */}
+              <TabsList className={`transition-all duration-500 ease-in-out ${
                 isScrolled 
-                  ? 'opacity-100 translate-x-0 justify-self-start' 
-                  : 'opacity-0 absolute pointer-events-none translate-x-full'
+                  ? 'order-1 flex-row w-auto gap-12 bg-transparent border-0 p-0' 
+                  : 'order-2 w-full max-w-md'
               }`}>
-                <TabsList className="bg-transparent border-0 p-0">
-                  <TabsTrigger value="photos" className="font-bicyclette uppercase">
-                    Photo Gallery
-                  </TabsTrigger>
-                </TabsList>
-              </div>
+                <TabsTrigger 
+                  value="event" 
+                  className={`font-bicyclette uppercase transition-all duration-500 ease-in-out ${
+                    isScrolled ? '' : 'flex-1'
+                  }`}
+                >
+                  {eventTabLabel}
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="photos" 
+                  className={`font-bicyclette uppercase transition-all duration-500 ease-in-out ${
+                    isScrolled ? '' : 'flex-1'
+                  }`}
+                >
+                  Photo Gallery
+                </TabsTrigger>
+              </TabsList>
 
-              {/* Default Tabs - Transitions opacity and scale */}
-              <div className={`transition-all duration-500 ease-in-out w-full max-w-md ${
-                isScrolled 
-                  ? 'opacity-0 scale-95 absolute pointer-events-none' 
-                  : 'opacity-100 scale-100'
-              }`}>
-                <TabsList className="w-full mb-4">
-                  <TabsTrigger value="event" className="flex-1 font-bicyclette uppercase">
-                    {eventTabLabel}
-                  </TabsTrigger>
-                  <TabsTrigger value="photos" className="flex-1 font-bicyclette uppercase">
-                    Photo Gallery
-                  </TabsTrigger>
-                </TabsList>
-              </div>
             </div>
           </div>
         </div>
