@@ -1,4 +1,4 @@
-import { useState, useEffect, memo } from 'react';
+import { useState, useEffect, memo, useCallback, useMemo } from 'react';
 import Lightbox from 'yet-another-react-lightbox';
 import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 import Download from 'yet-another-react-lightbox/plugins/download';
@@ -78,12 +78,12 @@ export default function PhotoGalleryTab() {
     }
   };
 
-  const openLightbox = (index: number) => {
+  const openLightbox = useCallback((index: number) => {
     setLightboxIndex(index);
     setLightboxOpen(true);
-  };
+  }, []);
 
-  const downloadAllPhotos = async () => {
+  const downloadAllPhotos = useCallback(async () => {
     if (images.length === 0) return;
     
     setIsDownloadingAll(true);
@@ -190,9 +190,9 @@ export default function PhotoGalleryTab() {
       setIsDownloadingAll(false);
       setDownloadProgress(0);
     }
-  };
+  }, [images, selectedTag, toast, downloadProgress]);
 
-  const retryFailedDownloads = async () => {
+  const retryFailedDownloads = useCallback(async () => {
     if (failedImages.length === 0) return;
     
     setIsDownloadingAll(true);
@@ -283,7 +283,7 @@ export default function PhotoGalleryTab() {
       setIsDownloadingAll(false);
       setDownloadProgress(0);
     }
-  };
+  }, [failedImages, selectedTag, toast, downloadProgress]);
 
   const ImageCard = memo(({ 
     image, 
@@ -425,18 +425,22 @@ export default function PhotoGalleryTab() {
       )}
 
       {/* Image Grid */}
-      {!loading && images.length > 0 && (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-4">
-          {images.map((image, index) => (
-            <ImageCard
-              key={image.id}
-              image={image}
-              index={index}
-              onOpenLightbox={() => openLightbox(index)}
-            />
-          ))}
-        </div>
-      )}
+      {useMemo(() => {
+        if (loading || images.length === 0) return null;
+        
+        return (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-4">
+            {images.map((image, index) => (
+              <ImageCard
+                key={image.id}
+                image={image}
+                index={index}
+                onOpenLightbox={() => openLightbox(index)}
+              />
+            ))}
+          </div>
+        );
+      }, [images, loading, openLightbox])}
 
       {/* Lightbox */}
       <Lightbox
