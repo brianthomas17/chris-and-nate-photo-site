@@ -37,8 +37,8 @@ export default function TabLayout() {
           isScrolled ? 'py-3' : 'py-6'
         }`}>
           <div className="container mx-auto px-4">
-            <div className={`flex items-center justify-center ${
-              isScrolled ? 'flex-row gap-8 max-w-4xl mx-auto' : 'flex-col gap-4'
+            <div className={`flex flex-col items-center justify-center ${
+              isScrolled ? 'gap-2 max-w-4xl mx-auto' : 'gap-4'
             }`}>
               
               <h1 className={`font-fino text-anniversary-gold uppercase tracking-wide ${
