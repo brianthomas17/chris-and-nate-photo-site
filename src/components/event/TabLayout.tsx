@@ -37,15 +37,13 @@ export default function TabLayout() {
           isScrolled ? 'py-3' : 'py-6'
         }`}>
           <div className="container mx-auto px-4">
-            <div className={`flex flex-col items-center justify-center ${
-              isScrolled ? 'gap-2 max-w-4xl mx-auto' : 'gap-4'
-            }`}>
+            <div className="flex flex-col items-center justify-center gap-4">
               
-              <h1 className={`font-fino text-anniversary-gold uppercase tracking-wide ${
-                isScrolled ? 'text-xl md:text-2xl' : 'text-3xl md:text-4xl text-center'
-              }`}>
-                Chris & Nate
-              </h1>
+              {!isScrolled && (
+                <h1 className="font-fino text-anniversary-gold uppercase tracking-wide text-3xl md:text-4xl text-center">
+                  Chris & Nate
+                </h1>
+              )}
 
               <TabsList className={`${
                 isScrolled 
