@@ -37,26 +37,24 @@ export default function TabLayout() {
           isScrolled ? 'py-3' : 'py-6'
         }`}>
           <div className="container mx-auto px-4">
-            <div className={`flex items-center justify-center transition-all duration-500 ease-in-out ${
+            <div className={`flex items-center justify-center ${
               isScrolled ? 'flex-row gap-8 max-w-4xl mx-auto' : 'flex-col gap-4'
             }`}>
               
-              {/* Page Title */}
-              <h1 className={`font-fino text-anniversary-gold uppercase tracking-wide transition-all duration-500 ease-in-out ${
-                isScrolled ? 'text-xl md:text-2xl order-2' : 'text-3xl md:text-4xl text-center order-1'
+              <h1 className={`font-fino text-anniversary-gold uppercase tracking-wide ${
+                isScrolled ? 'text-xl md:text-2xl' : 'text-3xl md:text-4xl text-center'
               }`}>
                 Chris & Nate
               </h1>
 
-              {/* Single TabsList with both tabs */}
-              <TabsList className={`transition-all duration-500 ease-in-out ${
+              <TabsList className={`${
                 isScrolled 
-                  ? 'order-1 flex-row w-auto gap-12 bg-transparent border-0 p-0' 
-                  : 'order-2 w-full max-w-md'
+                  ? 'w-auto gap-12 bg-transparent border-0 p-0' 
+                  : 'w-full max-w-md'
               }`}>
                 <TabsTrigger 
                   value="event" 
-                  className={`font-bicyclette uppercase transition-all duration-500 ease-in-out ${
+                  className={`font-bicyclette uppercase ${
                     isScrolled ? '' : 'flex-1'
                   }`}
                 >
@@ -64,7 +62,7 @@ export default function TabLayout() {
                 </TabsTrigger>
                 <TabsTrigger 
                   value="photos" 
-                  className={`font-bicyclette uppercase transition-all duration-500 ease-in-out ${
+                  className={`font-bicyclette uppercase ${
                     isScrolled ? '' : 'flex-1'
                   }`}
                 >
