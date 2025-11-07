@@ -6,6 +6,7 @@ import 'yet-another-react-lightbox/styles.css';
 import { fetchCloudinaryPhotos } from '@/services/cloudinary';
 import { Loader2, Download as DownloadIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { ImageSkeleton } from './ImageSkeleton';
 
 interface CloudinaryImage {
   id: string;
@@ -13,6 +14,8 @@ interface CloudinaryImage {
   width: number;
   height: number;
   created_at: string;
+  thumbnailUrl?: string;
+  placeholderUrl?: string;
 }
 
 const TAGS = [
@@ -62,6 +65,8 @@ export default function PhotoGalleryTab() {
         width: img.width,
         height: img.height,
         created_at: img.created_at,
+        thumbnailUrl: img.thumbnailUrl,
+        placeholderUrl: img.placeholderUrl,
       }));
       
       setImages(transformedImages);
@@ -266,6 +271,75 @@ export default function PhotoGalleryTab() {
     }
   };
 
+  const ImageCard = ({ 
+    image, 
+    index, 
+    onOpenLightbox 
+  }: { 
+    image: CloudinaryImage; 
+    index: number; 
+    onOpenLightbox: () => void;
+  }) => {
+    const [isLoaded, setIsLoaded] = useState(false);
+    
+    return (
+      <div
+        className="relative aspect-square group overflow-hidden rounded-lg cursor-pointer bg-anniversary-darkPurple/30"
+        onClick={onOpenLightbox}
+      >
+        {/* Blur placeholder - loads instantly */}
+        {image.placeholderUrl && !isLoaded && (
+          <img
+            src={image.placeholderUrl}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover"
+            aria-hidden="true"
+          />
+        )}
+        
+        {/* Optimized thumbnail - loads in background */}
+        <img
+          src={image.thumbnailUrl || image.url}
+          alt={`Photo ${index + 1}`}
+          className={`relative z-10 w-full h-full object-cover transition-all duration-300 ${
+            isLoaded ? 'opacity-100 scale-100 group-hover:scale-110' : 'opacity-0 scale-95'
+          }`}
+          loading="lazy"
+          onLoad={() => setIsLoaded(true)}
+        />
+        
+        {/* Hover overlay */}
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors pointer-events-none z-20" />
+        
+        {/* Download button */}
+        <button
+          onClick={async (e) => {
+            e.stopPropagation();
+            try {
+              const response = await fetch(image.url);
+              const blob = await response.blob();
+              const blobUrl = window.URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = blobUrl;
+              link.download = `photo-${image.id.split('/').pop()}.jpg`;
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              window.URL.revokeObjectURL(blobUrl);
+            } catch (error) {
+              console.error('Download failed:', error);
+              window.open(image.url, '_blank');
+            }
+          }}
+          className="absolute top-2 right-2 p-2 bg-anniversary-gold/90 hover:bg-anniversary-gold text-anniversary-purple rounded-full opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-30 pointer-events-auto"
+          aria-label="Download photo"
+        >
+          <DownloadIcon className="h-4 w-4" />
+        </button>
+      </div>
+    );
+  };
+
   return (
     <div className="space-y-8">
       {/* Tag Tabs */}
@@ -318,10 +392,12 @@ export default function PhotoGalleryTab() {
         </div>
       )}
 
-      {/* Loading State */}
+      {/* Loading State with Skeletons */}
       {loading && (
-        <div className="flex justify-center items-center py-20">
-          <Loader2 className="h-8 w-8 animate-spin text-anniversary-gold" />
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-4">
+          {Array.from({ length: 12 }).map((_, index) => (
+            <ImageSkeleton key={index} />
+          ))}
         </div>
       )}
 
@@ -336,44 +412,12 @@ export default function PhotoGalleryTab() {
       {!loading && images.length > 0 && (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-4">
           {images.map((image, index) => (
-            <div
+            <ImageCard
               key={image.id}
-              className="relative aspect-square group overflow-hidden rounded-lg cursor-pointer"
-              onClick={() => openLightbox(index)}
-            >
-              <img
-                src={image.url}
-                alt={`Photo ${index + 1}`}
-                className="w-full h-full object-cover transition-transform group-hover:scale-110"
-                loading="lazy"
-              />
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors pointer-events-none" />
-              
-              <button
-                onClick={async (e) => {
-                  e.stopPropagation();
-                  try {
-                    const response = await fetch(image.url);
-                    const blob = await response.blob();
-                    const blobUrl = window.URL.createObjectURL(blob);
-                    const link = document.createElement('a');
-                    link.href = blobUrl;
-                    link.download = `photo-${image.id.split('/').pop()}.jpg`;
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    window.URL.revokeObjectURL(blobUrl);
-                  } catch (error) {
-                    console.error('Download failed:', error);
-                    window.open(image.url, '_blank');
-                  }
-                }}
-                className="absolute top-2 right-2 p-2 bg-anniversary-gold/90 hover:bg-anniversary-gold text-anniversary-purple rounded-full opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10 pointer-events-auto"
-                aria-label="Download photo"
-              >
-                <DownloadIcon className="h-4 w-4" />
-              </button>
-            </div>
+              image={image}
+              index={index}
+              onOpenLightbox={() => openLightbox(index)}
+            />
           ))}
         </div>
       )}

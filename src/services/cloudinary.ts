@@ -9,10 +9,47 @@ export interface CloudinaryImage {
   height: number;
   created_at: string;
   url: string;
+  thumbnailUrl?: string;
+  placeholderUrl?: string;
 }
 
 // Replace with your actual Cloudinary cloud name
 const CLOUDINARY_CLOUD_NAME = 'dvrmpfclj';
+
+/**
+ * Generate an optimized thumbnail URL for grid display
+ * Uses Cloudinary's automatic format and quality optimization
+ */
+export const getCloudinaryThumbnailUrl = (
+  publicId: string,
+  version: number,
+  format: string,
+  width: number = 500
+): string => {
+  // Transformations:
+  // - w_500: resize to 500px width (suitable for grid)
+  // - q_auto:good: automatic quality optimization (70-80% quality)
+  // - f_auto: automatic format (WebP for supported browsers, fallback to original)
+  // - c_fill: fill the space with smart cropping
+  // - ar_1:1: square aspect ratio for grid
+  const transformations = `w_${width},h_${width},c_fill,ar_1:1,q_auto:good,f_auto`;
+  
+  return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/upload/${transformations}/v${version}/${publicId}.${format}`;
+};
+
+/**
+ * Generate a low-quality placeholder URL (blur-up technique)
+ */
+export const getCloudinaryPlaceholderUrl = (
+  publicId: string,
+  version: number,
+  format: string
+): string => {
+  // Very small, highly compressed, blurred version for instant loading
+  const transformations = 'w_50,q_auto:low,e_blur:1000,f_auto';
+  
+  return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/upload/${transformations}/v${version}/${publicId}.${format}`;
+};
 
 /**
  * Fetch images from a Cloudinary tag using the public list API
@@ -49,8 +86,12 @@ export const fetchCloudinaryPhotos = async (tag: string, forDownload: boolean = 
         width: resource.width,
         height: resource.height,
         created_at: resource.created_at,
-        // Construct the full image URL with optional download transformations
-        url: `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/upload/${transformations}v${resource.version}/${resource.public_id}.${resource.format}`
+        // Full resolution URL for lightbox/downloads
+        url: `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/upload/${transformations}v${resource.version}/${resource.public_id}.${resource.format}`,
+        // Add optimized thumbnail URL for grid display
+        thumbnailUrl: getCloudinaryThumbnailUrl(resource.public_id, resource.version, resource.format),
+        // Add tiny placeholder for blur-up effect
+        placeholderUrl: getCloudinaryPlaceholderUrl(resource.public_id, resource.version, resource.format),
       };
     });
     
