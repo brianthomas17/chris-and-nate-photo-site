@@ -39,18 +39,16 @@ export default function TabLayout() {
           <div className="container mx-auto px-4">
             <div className="flex flex-col items-center justify-center relative">
               
-              <h1 className={`font-fino text-anniversary-gold uppercase tracking-wide text-3xl md:text-4xl text-center transition-all duration-300 ${
-                isScrolled 
-                  ? 'absolute opacity-0 pointer-events-none' 
-                  : 'relative opacity-100 mb-4'
+              <h1 className={`font-fino text-anniversary-gold uppercase tracking-wide text-3xl md:text-4xl text-center transition-opacity duration-300 absolute top-0 left-0 right-0 ${
+                isScrolled ? 'opacity-0 pointer-events-none' : 'opacity-100'
               }`}>
                 Chris & Nate
               </h1>
 
-              <TabsList className={`${
+              <TabsList className={`transition-all duration-300 ${
                 isScrolled 
-                  ? 'w-auto gap-12 bg-transparent border-0 p-0' 
-                  : 'w-full max-w-md'
+                  ? 'w-auto gap-12 bg-transparent border-0 p-0 mt-0' 
+                  : 'w-full max-w-md mt-16'
               }`}>
                 <TabsTrigger 
                   value="event" 
