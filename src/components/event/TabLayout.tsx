@@ -37,10 +37,12 @@ export default function TabLayout() {
           isScrolled ? 'py-3' : 'py-6'
         }`}>
           <div className="container mx-auto px-4">
-            <div className="flex flex-col items-center justify-center gap-4">
+            <div className="flex flex-col items-center justify-center relative">
               
               <h1 className={`font-fino text-anniversary-gold uppercase tracking-wide text-3xl md:text-4xl text-center transition-all duration-300 ${
-                isScrolled ? 'invisible' : 'visible'
+                isScrolled 
+                  ? 'absolute opacity-0 pointer-events-none' 
+                  : 'relative opacity-100 mb-4'
               }`}>
                 Chris & Nate
               </h1>
