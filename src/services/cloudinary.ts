@@ -162,5 +162,8 @@ export const getCloudinaryVideoUrl = (
 export const getCloudinaryVideoPoster = (
   publicId: string
 ): string => {
-  return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/video/upload/so_0/${publicId}.jpg`;
+  // Use so_2 to grab a frame at 2 seconds instead of 0
+  // This avoids black/loading frames at the very start
+  // Add q_auto:good for optimized quality/size balance
+  return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/video/upload/so_2,q_auto:good/${publicId}.jpg`;
 };
