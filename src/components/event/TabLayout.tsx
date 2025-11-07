@@ -39,8 +39,8 @@ export default function TabLayout() {
           <div className="container mx-auto px-4">
             <div className="flex flex-col items-center justify-center gap-4">
               
-              <h1 className={`font-fino text-anniversary-gold uppercase tracking-wide text-3xl md:text-4xl text-center transition-opacity duration-300 ${
-                isScrolled ? 'opacity-0 h-0 overflow-hidden' : 'opacity-100'
+              <h1 className={`font-fino text-anniversary-gold uppercase tracking-wide text-3xl md:text-4xl text-center transition-all duration-300 ${
+                isScrolled ? 'invisible' : 'visible'
               }`}>
                 Chris & Nate
               </h1>
