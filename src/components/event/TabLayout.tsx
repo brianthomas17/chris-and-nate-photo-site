@@ -2,20 +2,10 @@ import { usePasswordAuth } from "@/context/PasswordAuthContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import EventDetailsTab from "./EventDetailsTab";
 import PhotoGalleryTab from "./PhotoGalleryTab";
-import { useState, useEffect } from "react";
+
 
 export default function TabLayout() {
   const { accessType } = usePasswordAuth();
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   if (!accessType) {
     return null;
@@ -33,36 +23,24 @@ export default function TabLayout() {
 
       <Tabs defaultValue="event" className="w-full">
         {/* Sticky Header + Tabs Container */}
-        <div className={`relative md:sticky top-0 z-50 bg-anniversary-purple border-b border-anniversary-gold/20 transition-all duration-500 ease-in-out ${
-          isScrolled ? 'py-3' : 'py-6'
-        }`}>
+        <div className="relative md:sticky top-0 z-50 bg-anniversary-purple border-b border-anniversary-gold/20 py-4">
           <div className="container mx-auto px-4">
-            <div className="flex flex-col items-center justify-center relative">
+            <div className="flex flex-col items-center justify-center gap-3">
               
-              <h1 className={`font-fino text-anniversary-gold uppercase tracking-wide text-3xl md:text-4xl text-center transition-opacity duration-300 absolute top-0 left-0 right-0 ${
-                isScrolled ? 'opacity-0 pointer-events-none' : 'opacity-100'
-              }`}>
+              <h1 className="font-fino text-anniversary-gold uppercase tracking-wide text-2xl md:text-3xl text-center">
                 Chris & Nate
               </h1>
 
-              <TabsList className={`transition-all duration-300 ${
-                isScrolled 
-                  ? 'w-auto gap-12 bg-transparent border-0 p-0 mt-0' 
-                  : 'w-full max-w-md mt-16'
-              }`}>
+              <TabsList className="w-full max-w-md">
                 <TabsTrigger 
                   value="event" 
-                  className={`font-bicyclette uppercase ${
-                    isScrolled ? '' : 'flex-1'
-                  }`}
+                  className="font-bicyclette uppercase flex-1"
                 >
                   {eventTabLabel}
                 </TabsTrigger>
                 <TabsTrigger 
                   value="photos" 
-                  className={`font-bicyclette uppercase ${
-                    isScrolled ? '' : 'flex-1'
-                  }`}
+                  className="font-bicyclette uppercase flex-1"
                 >
                   Photo Gallery
                 </TabsTrigger>
