@@ -35,7 +35,7 @@ export default function EventDetailsTab({ accessType }: EventDetailsTabProps) {
           // Main Event: 2 videos stacked
           <div className="max-w-[700px] mx-auto space-y-6">
             <VideoPlayer 
-              publicId="Nate_Chris_Anniversary_Sizzle_x8fnhg"
+              publicId="Nate_Chris_Anniversary_Sizzle_V6_1_1_h5sg9l"
             />
             <VideoPlayer 
               publicId="Market_Dessert_Garden_Sizzle_1_fdrcx8"
