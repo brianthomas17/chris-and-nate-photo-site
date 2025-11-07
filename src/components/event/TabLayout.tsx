@@ -39,11 +39,11 @@ export default function TabLayout() {
           <div className="container mx-auto px-4">
             <div className="flex flex-col items-center justify-center gap-4">
               
-              {!isScrolled && (
-                <h1 className="font-fino text-anniversary-gold uppercase tracking-wide text-3xl md:text-4xl text-center">
-                  Chris & Nate
-                </h1>
-              )}
+              <h1 className={`font-fino text-anniversary-gold uppercase tracking-wide text-3xl md:text-4xl text-center transition-opacity duration-300 ${
+                isScrolled ? 'opacity-0 h-0 overflow-hidden' : 'opacity-100'
+              }`}>
+                Chris & Nate
+              </h1>
 
               <TabsList className={`${
                 isScrolled 
