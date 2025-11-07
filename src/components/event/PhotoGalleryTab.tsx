@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 import Lightbox from 'yet-another-react-lightbox';
 import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 import Download from 'yet-another-react-lightbox/plugins/download';
@@ -128,15 +128,21 @@ export default function PhotoGalleryTab() {
           
           successCount++;
           
-          // Update progress
-          setDownloadProgress(Math.round(((i + 1) / downloadImages.length) * 100));
+          // Update progress - throttled to reduce re-renders
+          const newProgress = Math.round(((i + 1) / downloadImages.length) * 100);
+          const currentProgress = downloadProgress;
+          
+          // Only update if progress changed by 5% or more, or if it's the last image
+          if (newProgress - currentProgress >= 5 || i === downloadImages.length - 1) {
+            setDownloadProgress(newProgress);
+          }
         } catch (error) {
           console.error(`Failed to download image ${image.public_id}:`, error);
           failedDownloads.push({ image, url: image.url });
         }
       }
       
-      // Store failed images for retry
+      // Store failed images for retry (moved outside loop)
       setFailedImages(failedDownloads);
       
       if (successCount === 0) {
@@ -220,7 +226,15 @@ export default function PhotoGalleryTab() {
           folder?.file(fileName, blob);
           
           successCount++;
-          setDownloadProgress(Math.round(((i + 1) / failedImages.length) * 100));
+          
+          // Update progress - throttled to reduce re-renders
+          const newProgress = Math.round(((i + 1) / failedImages.length) * 100);
+          const currentProgress = downloadProgress;
+          
+          // Only update if progress changed by 5% or more, or if it's the last image
+          if (newProgress - currentProgress >= 5 || i === failedImages.length - 1) {
+            setDownloadProgress(newProgress);
+          }
         } catch (error) {
           console.error(`Retry failed for image ${image.public_id}:`, error);
           stillFailed.push({ image, url });
@@ -271,7 +285,7 @@ export default function PhotoGalleryTab() {
     }
   };
 
-  const ImageCard = ({ 
+  const ImageCard = memo(({ 
     image, 
     index, 
     onOpenLightbox 
@@ -338,7 +352,9 @@ export default function PhotoGalleryTab() {
         </button>
       </div>
     );
-  };
+  });
+
+  ImageCard.displayName = 'ImageCard';
 
   return (
     <div className="space-y-8">
