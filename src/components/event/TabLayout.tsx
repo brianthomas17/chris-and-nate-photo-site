@@ -33,7 +33,7 @@ export default function TabLayout() {
 
       <Tabs defaultValue="event" className="w-full">
         {/* Sticky Header + Tabs Container */}
-        <div className={`sticky top-0 z-50 bg-anniversary-purple border-b border-anniversary-gold/20 transition-all duration-500 ease-in-out ${
+        <div className={`relative md:sticky top-0 z-50 bg-anniversary-purple border-b border-anniversary-gold/20 transition-all duration-500 ease-in-out ${
           isScrolled ? 'py-3' : 'py-6'
         }`}>
           <div className="container mx-auto px-4">
