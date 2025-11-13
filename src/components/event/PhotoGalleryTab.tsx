@@ -32,7 +32,7 @@ const MAIN_EVENT_TAGS = [
   'Japanese Market',
   'Afterparty',
   'Photo Booth',
-  'Film',
+  'Old School Camera',
 ];
 
 const AFTERPARTY_TAGS = [
@@ -40,7 +40,7 @@ const AFTERPARTY_TAGS = [
   'Japanese Market',
   'Afterparty',
   'Photo Booth',
-  'Film',
+  'Old School Camera',
 ];
 
 interface PhotoGalleryTabProps {
