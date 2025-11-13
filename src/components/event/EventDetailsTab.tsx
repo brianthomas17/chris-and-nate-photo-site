@@ -35,12 +35,12 @@ export default function EventDetailsTab({ accessType }: EventDetailsTabProps) {
           // Main Event: 2 videos stacked
           <div className="max-w-[700px] mx-auto space-y-6">
             <VideoPlayer 
-              publicId="Nate_Chris_Anniversary_Sizzle_V6_1_1_h5sg9l"
+              publicId="Nate_Chris_Anniversary_Sizzle_V6_1_qkmhrb"
               title="Thank you video from Chris & Nate"
               forceStreamingOptimization
             />
             <VideoPlayer 
-              publicId="Market_Dessert_Garden_Sizzle_1_fdrcx8"
+              publicId="Market_Dessert_Garden_Sizzle_qm6lyu"
               title="Sizzle Reel"
               deferredLoad
             />
@@ -49,7 +49,7 @@ export default function EventDetailsTab({ accessType }: EventDetailsTabProps) {
           // Afterparty: 1 video
           <div className="max-w-[700px] mx-auto">
             <VideoPlayer 
-              publicId="After_Party_Sizzle_V3_1_1_nuxxqn"
+              publicId="After_Party_Sizzle_V3_1_op8iip"
               title="Thank you video from Chris & Nate"
               forceStreamingOptimization
             />
