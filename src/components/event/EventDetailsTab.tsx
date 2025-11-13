@@ -36,10 +36,12 @@ export default function EventDetailsTab({ accessType }: EventDetailsTabProps) {
           <div className="max-w-[700px] mx-auto space-y-6">
             <VideoPlayer 
               publicId="Nate_Chris_Anniversary_Sizzle_V6_1_1_h5sg9l"
+              title="Thank you video from Chris & Nate"
               forceStreamingOptimization
             />
             <VideoPlayer 
               publicId="Market_Dessert_Garden_Sizzle_1_fdrcx8"
+              title="Sizzle Reel"
               deferredLoad
             />
           </div>
@@ -48,6 +50,7 @@ export default function EventDetailsTab({ accessType }: EventDetailsTabProps) {
           <div className="max-w-[700px] mx-auto">
             <VideoPlayer 
               publicId="After_Party_Sizzle_V3_1_1_nuxxqn"
+              title="Thank you video from Chris & Nate"
               forceStreamingOptimization
             />
           </div>
