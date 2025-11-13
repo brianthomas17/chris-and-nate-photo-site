@@ -43,6 +43,7 @@ export default function EventDetailsTab({ accessType }: EventDetailsTabProps) {
               publicId="Market_Dessert_Garden_Sizzle_qm6lyu"
               title="Sizzle Reel"
               deferredLoad
+              forceStreamingOptimization
             />
           </div>
         ) : (
