@@ -42,7 +42,7 @@ export default function VideoPlayer({
     return () => observer.disconnect();
   }, [deferredLoad]);
 
-  const videoUrl = getCloudinaryVideoUrl(publicId, 'q_auto:best', 'mp4', forceStreamingOptimization);
+  const videoUrl = getCloudinaryVideoUrl(publicId, 'q_100', 'mp4', forceStreamingOptimization);
   const posterUrl = getCloudinaryVideoPoster(publicId);
   
   return (
