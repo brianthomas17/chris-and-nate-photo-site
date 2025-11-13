@@ -47,7 +47,12 @@ export default function VideoPlayer({
   
   return (
     <div ref={containerRef} className={`w-full ${className}`}>
-      <div className="relative rounded-xl shadow-lg border border-anniversary-gold/20 bg-anniversary-darkPurple/50 backdrop-blur-sm overflow-hidden">
+      {title && (
+        <p className="text-anniversary-gold text-lg mb-3 text-center font-light">
+          {title}
+        </p>
+      )}
+      <div className="relative rounded-xl shadow-lg border-4 border-anniversary-gold/40 bg-anniversary-darkPurple/50 backdrop-blur-sm overflow-hidden">
         <video
           ref={videoRef}
           controls
@@ -61,11 +66,6 @@ export default function VideoPlayer({
           Your browser doesn't support video playback.
         </video>
       </div>
-      {title && (
-        <p className="text-anniversary-gold text-sm mt-3 text-center font-light">
-          {title}
-        </p>
-      )}
     </div>
   );
 }
