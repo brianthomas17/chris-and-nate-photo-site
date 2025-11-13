@@ -57,7 +57,7 @@ export default function TabLayout() {
           </TabsContent>
 
           <TabsContent value="photos" className="pt-4">
-            <PhotoGalleryTab />
+            <PhotoGalleryTab accessType={accessType} />
           </TabsContent>
         </div>
       </Tabs>
