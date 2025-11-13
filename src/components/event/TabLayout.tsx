@@ -28,7 +28,7 @@ export default function TabLayout() {
             <div className="flex flex-col items-center justify-center gap-3">
               
               <h1 className="font-fino text-anniversary-gold uppercase tracking-wide text-2xl md:text-3xl text-center">
-                Chris & Nate
+                Chris & Nate's 10 Year Wedding Anniversary Party
               </h1>
 
               <TabsList className="w-full max-w-md">
