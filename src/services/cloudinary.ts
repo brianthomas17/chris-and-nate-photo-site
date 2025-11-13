@@ -95,6 +95,21 @@ export const fetchCloudinaryPhotos = async (tag: string, forDownload: boolean = 
       };
     });
     
+    // Sort Photo Booth images by filename numbers
+    if (tag === 'Photo Booth') {
+      images.sort((a, b) => {
+        // Extract filename from public_id (e.g., "folder/123_image.jpg" -> "123_image.jpg")
+        const filenameA = a.public_id.split('/').pop() || '';
+        const filenameB = b.public_id.split('/').pop() || '';
+        
+        // Extract leading numbers from filenames
+        const numA = parseInt(filenameA.match(/^\d+/)?.[0] || '0');
+        const numB = parseInt(filenameB.match(/^\d+/)?.[0] || '0');
+        
+        return numA - numB;
+      });
+    }
+    
     return images;
   } catch (error) {
     console.error('Error fetching Cloudinary photos:', error);

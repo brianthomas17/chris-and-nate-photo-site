@@ -24,7 +24,7 @@ const TAGS = [
   'Arrivals and Cocktail Hour',
   'Chris and Nate Portraits',
   'Family Photos',
-  'Doggos',
+  "Robyn's Dog Cafe",
   'Sean Evans Meet and Greet',
   'Hot Ones',
   'Dinner and Dessert Forest',
