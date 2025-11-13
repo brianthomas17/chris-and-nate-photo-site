@@ -7,6 +7,7 @@ import { fetchCloudinaryPhotos } from '@/services/cloudinary';
 import { Loader2, Download as DownloadIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { ImageSkeleton } from './ImageSkeleton';
+import { AccessType } from '@/types';
 
 interface CloudinaryImage {
   id: string;
@@ -18,7 +19,7 @@ interface CloudinaryImage {
   placeholderUrl?: string;
 }
 
-const TAGS = [
+const MAIN_EVENT_TAGS = [
   'Highlights',
   'Setup',
   'Arrivals and Cocktail Hour',
@@ -34,7 +35,20 @@ const TAGS = [
   'Film',
 ];
 
-export default function PhotoGalleryTab() {
+const AFTERPARTY_TAGS = [
+  'Highlights',
+  'Japanese Market',
+  'Afterparty',
+  'Photo Booth',
+  'Film',
+];
+
+interface PhotoGalleryTabProps {
+  accessType: AccessType;
+}
+
+export default function PhotoGalleryTab({ accessType }: PhotoGalleryTabProps) {
+  const TAGS = accessType === 'main_event' ? MAIN_EVENT_TAGS : AFTERPARTY_TAGS;
   const { toast } = useToast();
   const [selectedTag, setSelectedTag] = useState(TAGS[0]);
   const [images, setImages] = useState<CloudinaryImage[]>([]);

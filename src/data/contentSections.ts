@@ -47,7 +47,6 @@ St Joseph's Arts Society<br>
 <p>You won't want to miss this interactive, edible wonderland! Be prepared to explore, discover and lean into temptation … this is not a passive buffet, come with a sense of wonder!</p>
 
 <h3>AFTERPARTY FROM 9:00PM UNTIL 1:00AM</h3>
-<h4>Call time 8:30 PM</h4>
 <p>Lose yourself on the dance floor as Bootie SF brings the mashup madness into the morning hours. </p>
 <p>Dress code: Elevated Club Vibes</p>`,
     order_index: 2,
@@ -77,35 +76,13 @@ San Francisco, CA 94111</a><br>
 <h3>Main Event Attire</h3>
 <p>Chic — Formalwear welcome.</p>
 
-<h3>Parking</h3>
-<p>Rideshare is strongly encouraged—we'll be going late! Limited street parking available near the venue.</p>
-
-<h3>Hotel Recommendations</h3>
-<p><a href="https://www.hyatt.com/jdv-by-hyatt/en-US/sfojl-jdv-laurel-inn" target="_blank">Laurel Inn Hyatt</a><br>
-Pacific Heights ~ $450/night</p>
-
-<p><a href="https://www.hotelviasf.com/" target="_blank">Hotel VIA</a><br>
-South Beach ~ $300/night</p>
-
-<p><a href="https://www.hyatt.com/jdv-by-hyatt/en-US/sfojd-jdv-hotel-kabuki?src=corp_lclb_google_seo_sfojd&?utm_source=google" target="_blank">Hotel Kabuki</a><br>
-Japantown ~ $250/night</p>
-
-<p><a href="https://www.marriott.com/en-us/hotels/sfovn-courtyard-san-francisco-downtown-van-ness-ave/overview/" target="_blank">Courtyard on VanNess</a><br>
-Downtown ~ $190/night</p>
-
 <h3>FAQ</h3>
 
 <h4>What's the dress code?</h4>
 <p>Chic — Formalwear welcome! <br>Bring a change of clothes for the afterparty, where the dress theme is elevated club vibes – there will be a coat check and changing area available.</p>
 
 <h4>Should I bring a gift? Is there a registry?</h4>
-<p>Please don't bring any gifts, there is no registry. We just want to celebrate with you!</p>
-
-<h4>Is there a hotel block?</h4>
-<p>No hotel block, but see above for recommended options in the city!</p>
-
-<h4>Will there be photos?</h4>
-<p>Yes! We'll have a photographer capturing the evening, and you'll also have access to upload your own photos and videos.</p>`,
+<p>Please don't bring any gifts, there is no registry. We just want to celebrate with you!</p>`,
     order_index: 4,
     visible_to_main_event: true,
     visible_to_afterparty: false,
