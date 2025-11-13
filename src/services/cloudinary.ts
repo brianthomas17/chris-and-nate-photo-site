@@ -102,9 +102,9 @@ export const fetchCloudinaryPhotos = async (tag: string, forDownload: boolean = 
         const filenameA = a.public_id.split('/').pop() || '';
         const filenameB = b.public_id.split('/').pop() || '';
         
-        // Extract leading numbers from filenames
-        const numA = parseInt(filenameA.match(/^\d+/)?.[0] || '0');
-        const numB = parseInt(filenameB.match(/^\d+/)?.[0] || '0');
+        // Extract numbers from RG_XX_... format (e.g., "RG_01_abc" -> 1, "RG_100_xyz" -> 100)
+        const numA = parseInt(filenameA.match(/RG_(\d+)/)?.[1] || '0');
+        const numB = parseInt(filenameB.match(/RG_(\d+)/)?.[1] || '0');
         
         return numA - numB;
       });
