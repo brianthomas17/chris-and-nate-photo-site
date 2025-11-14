@@ -14,22 +14,7 @@ export default function EventDetailsTab({ accessType }: EventDetailsTabProps) {
 
   return (
     <div className="space-y-12">
-      {/* Hero Image Section */}
-      <div className="px-4 flex justify-center">
-        <header className="relative rounded-xl shadow-lg border border-anniversary-gold/20 bg-anniversary-darkPurple/50 backdrop-blur-sm overflow-hidden w-fit">
-          <div className="w-full max-w-[700px] aspect-square">
-            <img 
-              src="/lovable-uploads/55aeeccb-f695-402f-bdbd-a0dc52edc692.png" 
-              alt="Chris & Nate Anniversary Celebration"
-              className="w-full h-full object-cover"
-              loading="eager"
-              sizes="(max-width: 768px) 100vw, 700px"
-            />
-          </div>
-        </header>
-      </div>
-
-      {/* Video Section - Right under hero image */}
+      {/* Video Section - First thing you see */}
       <div className="px-4 space-y-6">
         {isMainEvent ? (
           // Main Event: 2 videos stacked
@@ -41,7 +26,7 @@ export default function EventDetailsTab({ accessType }: EventDetailsTabProps) {
             />
             <VideoPlayer 
               publicId="Market_Dessert_Garden_Sizzle_qm6lyu"
-              title="Sizzle Reel"
+              title="Japanese Market & Dessert Garden Sizzle Reel"
               deferredLoad
               forceStreamingOptimization
             />
@@ -56,6 +41,21 @@ export default function EventDetailsTab({ accessType }: EventDetailsTabProps) {
             />
           </div>
         )}
+      </div>
+
+      {/* Hero Image Section */}
+      <div className="px-4 flex justify-center">
+        <header className="relative rounded-xl shadow-lg border border-anniversary-gold/20 bg-anniversary-darkPurple/50 backdrop-blur-sm overflow-hidden w-fit">
+          <div className="w-full max-w-[700px] aspect-square">
+            <img 
+              src="/lovable-uploads/55aeeccb-f695-402f-bdbd-a0dc52edc692.png" 
+              alt="Chris & Nate Anniversary Celebration"
+              className="w-full h-full object-cover"
+              loading="eager"
+              sizes="(max-width: 768px) 100vw, 700px"
+            />
+          </div>
+        </header>
       </div>
 
       {/* Main Intro Content */}
