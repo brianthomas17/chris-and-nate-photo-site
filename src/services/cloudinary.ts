@@ -182,3 +182,18 @@ export const getCloudinaryVideoPoster = (
   // Add q_auto:good for optimized quality/size balance
   return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/video/upload/so_2,q_auto:good/${publicId}.jpg`;
 };
+
+/**
+ * Generate a Cloudinary video download URL for the original, uncompressed file
+ * @param publicId - The public ID of the video
+ * @param format - Video format (default: mp4)
+ * @returns Cloudinary URL with download attachment flag
+ */
+export const getCloudinaryVideoDownloadUrl = (
+  publicId: string,
+  format: string = 'mp4'
+): string => {
+  // fl_attachment forces browser to download instead of playing
+  // No quality transformations = original file
+  return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/video/upload/fl_attachment/${publicId}.${format}`;
+};

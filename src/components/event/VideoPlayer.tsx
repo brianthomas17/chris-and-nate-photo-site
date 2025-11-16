@@ -1,5 +1,7 @@
-import { useEffect, useRef } from 'react';
-import { getCloudinaryVideoUrl, getCloudinaryVideoPoster } from "@/services/cloudinary";
+import { useEffect, useRef, useState } from 'react';
+import { getCloudinaryVideoUrl, getCloudinaryVideoPoster, getCloudinaryVideoDownloadUrl } from "@/services/cloudinary";
+import { Download } from 'lucide-react';
+import { Button } from "@/components/ui/button";
 
 interface VideoPlayerProps {
   publicId: string;
@@ -18,6 +20,10 @@ export default function VideoPlayer({
 }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const hideControlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  
+  const [showControls, setShowControls] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   
   useEffect(() => {
     if (!deferredLoad || !containerRef.current) return;
@@ -42,6 +48,55 @@ export default function VideoPlayer({
     return () => observer.disconnect();
   }, [deferredLoad]);
 
+  useEffect(() => {
+    return () => {
+      if (hideControlsTimeoutRef.current) {
+        clearTimeout(hideControlsTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const handleDownload = () => {
+    const downloadUrl = getCloudinaryVideoDownloadUrl(publicId, 'mp4');
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = `${title || publicId}.mp4`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleMouseMove = () => {
+    setShowControls(true);
+    
+    // Clear existing timeout
+    if (hideControlsTimeoutRef.current) {
+      clearTimeout(hideControlsTimeoutRef.current);
+    }
+    
+    // Hide controls after 3 seconds of inactivity (only when playing)
+    if (isPlaying) {
+      hideControlsTimeoutRef.current = setTimeout(() => {
+        setShowControls(false);
+      }, 3000);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (isPlaying) {
+      setShowControls(false);
+    }
+  };
+
+  const handlePlay = () => {
+    setIsPlaying(true);
+  };
+
+  const handlePause = () => {
+    setIsPlaying(false);
+    setShowControls(true); // Always show controls when paused
+  };
+
   const videoUrl = getCloudinaryVideoUrl(publicId, 'q_auto:best', 'mp4', forceStreamingOptimization);
   const posterUrl = getCloudinaryVideoPoster(publicId);
   
@@ -52,7 +107,11 @@ export default function VideoPlayer({
           {title}
         </p>
       )}
-      <div className="relative rounded-xl shadow-lg border-4 border-anniversary-gold/40 bg-anniversary-darkPurple/50 backdrop-blur-sm overflow-hidden">
+      <div 
+        className="relative rounded-xl shadow-lg border-4 border-anniversary-gold/40 bg-anniversary-darkPurple/50 backdrop-blur-sm overflow-hidden"
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+      >
         <video
           ref={videoRef}
           controls
@@ -60,10 +119,28 @@ export default function VideoPlayer({
           poster={posterUrl}
           preload={deferredLoad ? "none" : "metadata"}
           playsInline
+          onPlay={handlePlay}
+          onPause={handlePause}
         >
           <source src={videoUrl} type="video/mp4" />
           Your browser doesn't support video playback.
         </video>
+        
+        {/* Overlay Download Button */}
+        <div 
+          className={`absolute top-4 right-4 transition-opacity duration-300 ${
+            showControls || !isPlaying ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          }`}
+        >
+          <Button
+            onClick={handleDownload}
+            size="sm"
+            className="bg-anniversary-darkPurple/90 hover:bg-anniversary-darkPurple border-2 border-anniversary-gold/60 text-anniversary-gold hover:text-anniversary-gold shadow-lg backdrop-blur-sm"
+          >
+            <Download className="h-4 w-4 mr-2" />
+            Download
+          </Button>
+        </div>
       </div>
     </div>
   );
