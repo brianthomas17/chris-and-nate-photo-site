@@ -73,11 +73,12 @@ export default function VideoPlayer({
   };
 
   const handleDownload = () => {
-    const downloadUrl = getCloudinaryVideoDownloadUrl(publicId, 'mp4');
     const filename = getDownloadFilename();
+    // Pass the filename to Cloudinary to set Content-Disposition header
+    const downloadUrl = getCloudinaryVideoDownloadUrl(publicId, 'mp4', filename);
     const link = document.createElement('a');
     link.href = downloadUrl;
-    link.download = `${filename}.mp4`;
+    link.download = `${filename}.mp4`; // Keep as fallback for same-origin files
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
