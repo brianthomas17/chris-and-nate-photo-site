@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { getCloudinaryVideoUrl, getCloudinaryVideoPoster, getCloudinaryVideoDownloadUrl } from "@/services/cloudinary";
 import { Download } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 
 interface VideoPlayerProps {
   publicId: string;
@@ -26,6 +27,8 @@ export default function VideoPlayer({
   
   const [showControls, setShowControls] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const { toast } = useToast();
   
   useEffect(() => {
     if (!deferredLoad || !containerRef.current) return;
@@ -73,6 +76,11 @@ export default function VideoPlayer({
   };
 
   const handleDownload = () => {
+    // Prevent multiple simultaneous downloads
+    if (isDownloading) return;
+    
+    setIsDownloading(true);
+    
     const filename = getDownloadFilename();
     // Pass the filename to Cloudinary to set Content-Disposition header
     const downloadUrl = getCloudinaryVideoDownloadUrl(publicId, 'mp4', filename);
@@ -82,6 +90,18 @@ export default function VideoPlayer({
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    
+    // Show success toast
+    toast({
+      title: "Download started",
+      description: `${filename}.mp4`,
+      duration: 3000,
+    });
+    
+    // Reset downloading state after 2 seconds
+    setTimeout(() => {
+      setIsDownloading(false);
+    }, 2000);
   };
 
   const handleMouseMove = () => {
@@ -153,11 +173,12 @@ export default function VideoPlayer({
         >
           <Button
             onClick={handleDownload}
+            disabled={isDownloading}
             size="sm"
-            className="bg-anniversary-darkPurple/90 hover:bg-anniversary-darkPurple border-2 border-anniversary-gold/60 text-anniversary-gold hover:text-anniversary-gold shadow-lg backdrop-blur-sm"
+            className="bg-anniversary-darkPurple/90 hover:bg-anniversary-darkPurple border-2 border-anniversary-gold/60 text-anniversary-gold hover:text-anniversary-gold shadow-lg backdrop-blur-sm disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Download className="h-4 w-4 mr-2" />
-            Download
+            {isDownloading ? 'Downloading...' : 'Download'}
           </Button>
         </div>
       </div>
