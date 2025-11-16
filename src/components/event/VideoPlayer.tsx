@@ -9,6 +9,7 @@ interface VideoPlayerProps {
   className?: string;
   deferredLoad?: boolean;
   forceStreamingOptimization?: boolean;
+  downloadFilename?: string;
 }
 
 export default function VideoPlayer({ 
@@ -16,7 +17,8 @@ export default function VideoPlayer({
   title, 
   className = '', 
   deferredLoad = false,
-  forceStreamingOptimization = false 
+  forceStreamingOptimization = false,
+  downloadFilename
 }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -24,7 +26,6 @@ export default function VideoPlayer({
   
   const [showControls, setShowControls] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isFullscreen, setIsFullscreen] = useState(false);
   
   useEffect(() => {
     if (!deferredLoad || !containerRef.current) return;
@@ -57,29 +58,26 @@ export default function VideoPlayer({
     };
   }, []);
 
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
-    };
-
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
-    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
-    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+  const getDownloadFilename = (): string => {
+    if (downloadFilename) {
+      return downloadFilename;
+    }
     
-    return () => {
-      document.removeEventListener('fullscreenchange', handleFullscreenChange);
-      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
-      document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
-      document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
+    const filenameMap: Record<string, string> = {
+      'Nate_Chris_Anniversary_Sizzle_V6_1_qkmhrb': 'Thank you video from Chris and Nate',
+      'Market_Dessert_Garden_Sizzle_qm6lyu': 'Japanese Market & Dessert Garden Sizzle Reel',
+      'After_Party_Sizzle_V3_1_op8iip': 'Thank you video from Chris and Nate',
     };
-  }, []);
+    
+    return filenameMap[publicId] || publicId;
+  };
 
   const handleDownload = () => {
     const downloadUrl = getCloudinaryVideoDownloadUrl(publicId, 'mp4');
+    const filename = getDownloadFilename();
     const link = document.createElement('a');
     link.href = downloadUrl;
-    link.download = `${title || publicId}.mp4`;
+    link.download = `${filename}.mp4`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -134,6 +132,7 @@ export default function VideoPlayer({
         <video
           ref={videoRef}
           controls
+          controlsList="nodownload"
           className="w-full"
           poster={posterUrl}
           preload={deferredLoad ? "none" : "metadata"}
@@ -160,13 +159,6 @@ export default function VideoPlayer({
             Download
           </Button>
         </div>
-        
-        {/* Fullscreen Tooltip */}
-        {isFullscreen && (
-          <div className="absolute top-4 left-4 bg-anniversary-darkPurple/90 text-anniversary-gold text-sm px-4 py-2 rounded-md border border-anniversary-gold/40 shadow-lg backdrop-blur-sm">
-            Exit fullscreen to download
-          </div>
-        )}
       </div>
     </div>
   );
