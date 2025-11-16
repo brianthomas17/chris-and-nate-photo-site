@@ -191,9 +191,18 @@ export const getCloudinaryVideoPoster = (
  */
 export const getCloudinaryVideoDownloadUrl = (
   publicId: string,
-  format: string = 'mp4'
+  format: string = 'mp4',
+  customFilename?: string
 ): string => {
-  // fl_attachment forces browser to download instead of playing
+  // If custom filename provided, use Cloudinary's fl_attachment with filename
+  // This sets the Content-Disposition header server-side, which browsers always respect
+  if (customFilename) {
+    // URL encode the filename to handle spaces and special characters
+    const encodedFilename = encodeURIComponent(customFilename);
+    return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/video/upload/fl_attachment:${encodedFilename}/${publicId}.${format}`;
+  }
+  
+  // Default: just use fl_attachment flag (downloads with publicId as filename)
   // No quality transformations = original file
   return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/video/upload/fl_attachment/${publicId}.${format}`;
 };
