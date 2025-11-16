@@ -197,9 +197,15 @@ export const getCloudinaryVideoDownloadUrl = (
   // If custom filename provided, use Cloudinary's fl_attachment with filename
   // This sets the Content-Disposition header server-side, which browsers always respect
   if (customFilename) {
-    // URL encode the filename to handle spaces and special characters
-    const encodedFilename = encodeURIComponent(customFilename);
-    return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/video/upload/fl_attachment:${encodedFilename}/${publicId}.${format}`;
+    // Sanitize filename for Cloudinary fl_attachment parameter
+    // Replace spaces with underscores and remove/replace special characters
+    const sanitizedFilename = customFilename
+      .replace(/\s+/g, '_')           // spaces → underscores
+      .replace(/&/g, 'and')            // & → "and"
+      .replace(/[<>:"/\\|?*]/g, '')    // Remove invalid filename chars
+      .replace(/[^\w\s.-]/g, '');      // Remove any remaining special chars except word chars, dots, hyphens
+    
+    return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/video/upload/fl_attachment:${sanitizedFilename}/${publicId}.${format}`;
   }
   
   // Default: just use fl_attachment flag (downloads with publicId as filename)
