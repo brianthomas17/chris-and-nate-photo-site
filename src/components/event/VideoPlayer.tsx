@@ -24,6 +24,7 @@ export default function VideoPlayer({
   
   const [showControls, setShowControls] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   
   useEffect(() => {
     if (!deferredLoad || !containerRef.current) return;
@@ -53,6 +54,24 @@ export default function VideoPlayer({
       if (hideControlsTimeoutRef.current) {
         clearTimeout(hideControlsTimeoutRef.current);
       }
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+    
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
     };
   }, []);
 
@@ -141,6 +160,13 @@ export default function VideoPlayer({
             Download
           </Button>
         </div>
+        
+        {/* Fullscreen Tooltip */}
+        {isFullscreen && (
+          <div className="absolute top-4 left-4 bg-anniversary-darkPurple/90 text-anniversary-gold text-sm px-4 py-2 rounded-md border border-anniversary-gold/40 shadow-lg backdrop-blur-sm">
+            Exit fullscreen to download
+          </div>
+        )}
       </div>
     </div>
   );
