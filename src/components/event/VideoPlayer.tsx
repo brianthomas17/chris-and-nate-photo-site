@@ -60,7 +60,6 @@ export default function VideoPlayer({
           poster={posterUrl}
           preload={deferredLoad ? "none" : "metadata"}
           playsInline
-          controlsList="nodownload"
         >
           <source src={videoUrl} type="video/mp4" />
           Your browser doesn't support video playback.
