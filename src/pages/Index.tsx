@@ -1,7 +1,7 @@
-
 import { usePasswordAuth } from "@/context/PasswordAuthContext";
 import AuthForm from "@/components/AuthForm";
 import TabLayout from "@/components/event/TabLayout";
+import SingleVideoLayout from "@/components/event/SingleVideoLayout";
 
 const Index = () => {
   const { accessType, loading } = usePasswordAuth();
@@ -17,6 +17,13 @@ const Index = () => {
     );
   }
 
+  // Render different layouts based on access type
+  const renderContent = () => {
+    if (!accessType) return <AuthForm />;
+    if (accessType === 'brownie') return <SingleVideoLayout />;
+    return <TabLayout />;
+  };
+
   return (
     <div className="relative min-h-screen">
       {/* Background SVG - positioned in the center with max-width 50% */}
@@ -30,7 +37,7 @@ const Index = () => {
       </div>
 
       <div className="relative z-10">
-        {accessType ? <TabLayout /> : <AuthForm />}
+        {renderContent()}
       </div>
     </div>
   );
