@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-type AccessType = 'main_event' | 'afterparty';
+type AccessType = 'main_event' | 'afterparty' | 'brownie';
 
 interface PasswordAuthContextType {
   accessType: AccessType | null;
@@ -14,7 +14,8 @@ const PasswordAuthContext = createContext<PasswordAuthContextType | undefined>(u
 // Simple password constants (not focused on security, just access filtering)
 const PASSWORDS = {
   MAIN_EVENT: 'walnut',
-  AFTERPARTY: 'afterparty'
+  AFTERPARTY: 'afterparty',
+  BROWNIE: 'brownie'
 } as const;
 
 export const usePasswordAuth = () => {
@@ -43,6 +44,9 @@ export const PasswordAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
       return true;
     } else if (trimmedPassword === PASSWORDS.AFTERPARTY) {
       setAccessType('afterparty');
+      return true;
+    } else if (trimmedPassword === PASSWORDS.BROWNIE) {
+      setAccessType('brownie');
       return true;
     }
     

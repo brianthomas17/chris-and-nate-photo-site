@@ -2,8 +2,7 @@ import ContentSections from "./ContentSections";
 import ConfirmedAttendees from "./ConfirmedAttendees";
 import SectionSeparator from "./SectionSeparator";
 import VideoPlayer from "./VideoPlayer";
-
-type AccessType = 'main_event' | 'afterparty';
+import { AccessType } from "@/types";
 
 interface EventDetailsTabProps {
   accessType: AccessType;
