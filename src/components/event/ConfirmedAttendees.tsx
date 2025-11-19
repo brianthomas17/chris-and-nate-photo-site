@@ -111,6 +111,7 @@ const attendees = [
   { first_name: "Tom", last_name: "Zambito" },
   { first_name: "Jigish", last_name: "Patel" },
   { first_name: "Eric", last_name: "Lukoff" },
+  { first_name: "Hunter", last_name: "Rae" },
 ];
 
 export default function ConfirmedAttendees() {
