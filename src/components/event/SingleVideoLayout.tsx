@@ -41,7 +41,7 @@ export default function SingleVideoLayout() {
           <div className="flex justify-center">
             <Button
               asChild
-              className="bg-anniversary-gold hover:bg-anniversary-gold/90 text-anniversary-darkPurple font-semibold"
+              className="bg-anniversary-gold hover:bg-anniversary-gold/90 text-anniversary-purple font-semibold"
             >
               <a href={GOOGLE_DRIVE_DOWNLOAD_URL} target="_blank" rel="noopener noreferrer">
                 <Download className="w-4 h-4 mr-2" />
