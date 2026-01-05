@@ -1,4 +1,8 @@
-import VideoPlayer from "./VideoPlayer";
+import { Download } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+// TODO: Replace with actual Google Drive download link
+const GOOGLE_DRIVE_DOWNLOAD_URL = "https://drive.google.com/PLACEHOLDER";
 
 export default function SingleVideoLayout() {
   return (
@@ -19,12 +23,33 @@ export default function SingleVideoLayout() {
 
       {/* Video Content */}
       <div className="container mx-auto px-4 relative z-10 py-12">
-        <div className="max-w-[700px] mx-auto">
-          <VideoPlayer 
-            publicId="Nate_Chris_Anniversary_Sizzle_V6_1_qkmhrb"
-            title="Special Video"
-            forceStreamingOptimization
-          />
+        <div className="max-w-[700px] mx-auto space-y-4">
+          {/* YouTube Embed */}
+          <div className="relative rounded-xl shadow-lg border-4 border-anniversary-gold/40 bg-anniversary-darkPurple/50 backdrop-blur-sm overflow-hidden">
+            <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+              <iframe
+                className="absolute top-0 left-0 w-full h-full"
+                src="https://www.youtube.com/embed/TOK6baCN2vY"
+                title="Chris & Nate's Anniversary Video"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          </div>
+
+          {/* Download Button */}
+          <div className="flex justify-center">
+            <Button
+              asChild
+              className="bg-anniversary-gold hover:bg-anniversary-gold/90 text-anniversary-purple font-semibold"
+            >
+              <a href={GOOGLE_DRIVE_DOWNLOAD_URL} target="_blank" rel="noopener noreferrer">
+                <Download className="w-4 h-4 mr-2" />
+                Download Video
+              </a>
+            </Button>
+          </div>
         </div>
       </div>
     </div>
