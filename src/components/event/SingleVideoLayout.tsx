@@ -42,11 +42,11 @@ export default function SingleVideoLayout() {
             <Button
               asChild
               variant="outline"
-              className="border-anniversary-gold text-anniversary-gold hover:bg-anniversary-gold/10 font-fino uppercase tracking-wider"
+              className="bg-anniversary-darkPurple/90 border-2 border-anniversary-gold text-anniversary-gold hover:bg-anniversary-darkPurple rounded-lg px-8 py-3 h-auto font-fino uppercase tracking-wider"
             >
               <a href={GOOGLE_DRIVE_DOWNLOAD_URL} target="_blank" rel="noopener noreferrer">
-                <Download className="w-4 h-4 mr-2" />
-                Download Video
+                <Download className="w-5 h-5 mr-3" />
+                Download
               </a>
             </Button>
           </div>
