@@ -1,7 +1,7 @@
 import { Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const GOOGLE_DRIVE_DOWNLOAD_URL = "https://drive.google.com/file/d/1UDzbv1DUoQ-Z9SDdfU_SZ71Lu1VQzDUB/view?usp=sharing";
+const GOOGLE_DRIVE_DOWNLOAD_URL = "https://drive.usercontent.google.com/download?id=1UDzbv1DUoQ-Z9SDdfU_SZ71Lu1VQzDUB&export=download&confirm=t";
 
 export default function SingleVideoLayout() {
   return (
