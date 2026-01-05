@@ -1,8 +1,7 @@
 import { Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-// TODO: Replace with actual Google Drive download link
-const GOOGLE_DRIVE_DOWNLOAD_URL = "https://drive.google.com/PLACEHOLDER";
+const GOOGLE_DRIVE_DOWNLOAD_URL = "https://drive.google.com/file/d/1UDzbv1DUoQ-Z9SDdfU_SZ71Lu1VQzDUB/view?usp=sharing";
 
 export default function SingleVideoLayout() {
   return (
