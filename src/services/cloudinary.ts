@@ -110,6 +110,21 @@ export const fetchCloudinaryPhotos = async (tag: string, forDownload: boolean = 
       });
     }
     
+    // Sort Robyn's Dog Cafe images by the timestamp number in filename
+    // Format: Chris_Nate_10Y_Anniversary2025_0816_145821-0069_CBP.jpg
+    if (tag === "Robyn's Dog Cafe") {
+      images.sort((a, b) => {
+        const filenameA = a.public_id.split('/').pop() || '';
+        const filenameB = b.public_id.split('/').pop() || '';
+        
+        // Extract the 6-digit number after "0816_" (e.g., "145821")
+        const numA = parseInt(filenameA.match(/0816_(\d+)/)?.[1] || '0');
+        const numB = parseInt(filenameB.match(/0816_(\d+)/)?.[1] || '0');
+        
+        return numA - numB;
+      });
+    }
+    
     return images;
   } catch (error) {
     console.error('Error fetching Cloudinary photos:', error);
